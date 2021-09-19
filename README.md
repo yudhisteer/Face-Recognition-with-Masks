@@ -1,1 +1,1 @@
-# Face-Detection-with-Masks
+# Automating Attendance System using Face-Recognition-with-Masks
