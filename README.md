@@ -8,17 +8,16 @@
 
 ### 1.1 Face Verification vs Face Recognition
 
-### Verification
+### 1.1.1 Verification
 Face verification is quite simple. We can take our FaceID for example which we use to unlock our phone or at the airport when scanning our passport and verifying if it is really us. So it works in 2 steps:
 
 - **We input the image or the ID of a person.**
-- **We output whether the image ir ID is that of the claimed person.**
 
-![image](https://user-images.githubusercontent.com/59663734/142724385-df2203a3-5f8c-435f-8ea6-7f9cc690861a.png)
+<p align="center"> ![image](https://user-images.githubusercontent.com/59663734/142724385-df2203a3-5f8c-435f-8ea6-7f9cc690861a.png) </p>
 
 It is a ```1:1``` problem. We expect to have a high accuracy of the face verification system - ```>99%``` - so that it can further be used into the face recognition system.
 
-### Face Recognition
+### 1.1.2 Face Recognition
 Face recognition is much harder than face verification. It is used mainly for attendance system in offices, or when facebook automatically tags your friend. The process is as such:
 
 - **We have a database of K persons.**
@@ -29,7 +28,7 @@ Face recognition is much harder than face verification. It is used mainly for at
 
 Face recognition is a ```1:K``` problem where K is the number of persons in our database.
 
-### The One Shot Learning Dilemma
+### 1.2 The One Shot Learning Dilemma
 The problem with the face recognition for automating the attendance system at RT Knits is to be able for the neural network to recognize a particular person from only **one** image. Since we are going to have only one picture of the employees, the system should be able to recognize the person again. 
 
 Suppose we have 100 employees then one simple solution would be to take this one image and feed it into a CNN and and output a softmax unit with 101 outputs(100 outputs is for the employees and the one left is to indicate none). However, this would not work well for two reasons:
@@ -39,7 +38,7 @@ Suppose we have 100 employees then one simple solution would be to take this one
 
 Instead we would want our neural network to learn a ```similarity function.```
 
-### Similarity Function
+### 1.3 Similarity Function
 
 The similarity function takes as input two images and output the degree of difference between the two images - <img src="https://latex.codecogs.com/svg.image?d(img_{1},&space;img_{2})" title="d(img_{1}, img_{2})" />
 
@@ -59,7 +58,7 @@ Given a new image, we use that function d to compare against the images in our d
 
 For someone not in our database, when we will do the pairwise comparison and compute the function ```d``` then we would expect to get very large numbers for all the pairs as shown above. The ```d``` function solves the ```one shot learning``` problem whereby if someone new joins the team then we only need to add that new person's image to our database and it would work just fine. 
 
-### Siamese Network
+### 1.4 Siamese Network
 The idea of running two identical convolutional neural networks on two different inputs and comparing them is called a Siamese Neural Network. 
 
 We feed in a picture of a person into a sequence of convolutions, pooling and fully connected layers and end up with a 128 feature vector. These 128 numbers is represented by <img src="https://latex.codecogs.com/png.image?\dpi{100}&space;f(x^{(i)})" title="f(x^{(i)})" /> and is called the ```encoding``` of the image where <img src="https://latex.codecogs.com/png.image?\dpi{100}&space;img_{(i)}&space;=&space;x^{(i)}" title="img_{(i)} = x^{(i)}" />.
@@ -77,7 +76,7 @@ To sum up:
 
 When we vary the parameters of the different layers of our NN, we end up with different encodings. But we want to learn a specific set of parameters such that the above two conditions are met.
 
-### Triplet Loss Function
+### 1.5 Triplet Loss Function
 In Triplet Loss, we will be looking at three images at a time: an ```anchor```, a ```positive``` image(one who is similar to the anchor image) and a ```negative``` image(one who is different from the anchor image). We want the distance between the anchor and the positive to be minimum and the distance between the anchor and the negative image to be maximum. 
 
 We denote the ```anchor``` as ```A```, ```positive``` as ```P``` and ```negative``` as ```N```. 
@@ -108,17 +107,18 @@ To define our loss fucntion on a single triplet we need 3 images: ```A```, ```P`
 To define our ```cost function```:
 <img src="https://latex.codecogs.com/png.image?\dpi{100}&space;J&space;=&space;\sum_{i=1}^{m}&space;=&space;L(A^{(i)},P^{(i)},N^{(i)})" title="J = \sum_{i=1}^{m} = L(A^{(i)},P^{(i)},N^{(i)})" />
 
-At RT Knits we have 2000 employees and we assume we will have 20,000 images(10 pictures of each employee), then we need need to take these 20K pictures and generate triplets of ```(A,P,N)``` and then train our learning algorithm by using gradient descent to minimize the cost fucntion defined above. This will have the effect of backpropagating to all the parameters in the NN in order to learn an encoding such that <img src="https://latex.codecogs.com/svg.image?d(x^{(i)},x^{(j)})" title="d(x^{(i)},x^{(j)})" /> is small for images of the same person and big for images of different person. 
-
 **Note**: We need atleast more than 1 picture of a person as we need a pair of ```A``` and ```P``` in order to train our NN.
 
-![image](https://user-images.githubusercontent.com/59663734/142730472-09f4eace-cf55-4067-aeb2-1b279c8f428f.png)
+![image](https://user-images.githubusercontent.com/59663734/142739186-12eab359-fe42-458f-99cd-662dbba9a34e.png)
+<p align="center">
+  Fig. The anchor(in orange) pulls images of the same person closer and pushes images of a different person further away.
+  </p>
 
 To summarise:
 
-1. We randomly select an ```anchor``` image.
-2. We randomly select  an image of the same person as the anchor image - ```positive```.
-3. We randomly select  an image of a different person as the anchor image - ```negative```.
+1. We randomly select an ```anchor``` image(orange border).
+2. We randomly select  an image of the same person as the anchor image - ```positive```(green border).
+3. We randomly select  an image of a different person as the anchor image - ```negative```(red border).
 4. We train our model and adjust parameters so that the positive image is closest to the anchor and the negative one is far from the anchor. 
 5. We repeat the process above so that all images of the same person are close to each other and further from the others.
 
@@ -126,7 +126,9 @@ The diagram above shows the steps described.
 
 **Note:** One of the problem when we choose A,P and N randomly then the conditon <img src="https://latex.codecogs.com/svg.image?\left\|f(A)-f(P)&space;\right\|^2&space;-&space;\left\|f(A)-f(N)&space;\right\|^2&space;&plus;&space;\alpha&space;\leq&space;&space;0" title="\left\|f(A)-f(P) \right\|^2 - \left\|f(A)-f(N) \right\|^2 + \alpha \leq 0" /> is easily satisfied and the NN will not learn much from it. What we want is to choose triplets that are **hard** to train on. That is in order to satisfy this condition: <img src="https://latex.codecogs.com/png.image?\dpi{100}&space;d(A,P)&space;&plus;&space;\alpha&space;\leq&space;d(A,N)" title="d(A,P) + \alpha \leq d(A,N)" />, we want <img src="https://latex.codecogs.com/png.image?\dpi{100}&space;d(A,P)&space;\approx&space;d(A,N)" title="d(A,P) \approx d(A,N)" />. Now the NN will try hard to push d(A,N) and push d(A,P) up so that there is atleast a margin <img src="https://latex.codecogs.com/png.image?\dpi{100}&space;\alpha&space;" title="\alpha " /> between the two components. Thus it is important that is is only by choosing hard triplets that our gradient descent will really do some want in learning the similarity and differences in the images. 
 
+At RT Knits we have 2000 employees and we assume we will have 20,000 images(10 pictures of each employee), then we need need to take these 20K pictures and generate triplets of ```(A,P,N)``` and then train our learning algorithm by using gradient descent to minimize the cost function defined above. This will have the effect of backpropagating to all the parameters in the NN in order to learn an encoding such that <img src="https://latex.codecogs.com/svg.image?d(x^{(i)},x^{(j)})" title="d(x^{(i)},x^{(j)})" /> is small for images of the same person and big for images of different person. 
 
+### Face Verification with Binary Classification
 
 
 ## Phase 2: Mask Detection
