@@ -98,15 +98,35 @@ Finally, the equation becomes:
 
 For example, if we have d(A,N) = 0.50 and d(A,P) = 0.49, then the two values are too close to each other and it is not good enough. We would want d(A,N) to be much bigger than d(A,P) like 0.7 instead of 0.50. To achive this gap of 0.2, we introduce the margin <img src="https://latex.codecogs.com/png.image?\dpi{100}&space;\alpha&space;" title="\alpha " /> which helps push d(A,N) up or push d(A,P) down to achieve better results. 
 
-To define our loss fucntion we need 3 images: ```A```, ```P``` and ```N```:
+To define our loss fucntion on a single triplet we need 3 images: ```A```, ```P``` and ```N```:
 
 <img src="https://latex.codecogs.com/svg.image?L(A,P,N)&space;=&space;max(\left\|f(A)-f(P)&space;\right\|^2&space;-&space;\left\|f(A)-f(N)&space;\right\|^2&space;&plus;&space;\alpha,&space;0)" title="L(A,P,N) = max(\left\|f(A)-f(P) \right\|^2 - \left\|f(A)-f(N) \right\|^2 + \alpha, 0)" />
 
 - we take the ```max``` of the loss because as long as <img src="https://latex.codecogs.com/svg.image?\left\|f(A)-f(P)&space;\right\|^2&space;-&space;\left\|f(A)-f(N)&space;\right\|^2&space;&plus;&space;\alpha" title="\left\|f(A)-f(P) \right\|^2 - \left\|f(A)-f(N) \right\|^2 + \alpha" /> <img src="https://latex.codecogs.com/png.image?\dpi{100}&space;\leq&space;" title="\leq " /> 0, the loss = 0.
--  
+-  However if <img src="https://latex.codecogs.com/svg.image?\left\|f(A)-f(P)&space;\right\|^2&space;-&space;\left\|f(A)-f(N)&space;\right\|^2&space;&plus;&space;\alpha" title="\left\|f(A)-f(P) \right\|^2 - \left\|f(A)-f(N) \right\|^2 + \alpha" /> > 0 then the loss = <img src="https://latex.codecogs.com/svg.image?\left\|f(A)-f(P)&space;\right\|^2&space;-&space;\left\|f(A)-f(N)&space;\right\|^2&space;&plus;&space;\alpha" title="\left\|f(A)-f(P) \right\|^2 - \left\|f(A)-f(N) \right\|^2 + \alpha" />. We will have a ```positive``` loss.
 
+To define our ```cost function```:
+<img src="https://latex.codecogs.com/png.image?\dpi{100}&space;J&space;=&space;\sum_{i=1}^{m}&space;=&space;L(A^{(i)},P^{(i)},N^{(i)})" title="J = \sum_{i=1}^{m} = L(A^{(i)},P^{(i)},N^{(i)})" />
+
+At RT Knits we have 2000 employees and we assume we will have 20,000 images(10 pictures of each employee), then we need need to take these 20K pictures and generate triplets of ```(A,P,N)``` and then train our learning algorithm by using gradient descent to minimize the cost fucntion defined above. This will have the effect of backpropagating to all the parameters in the NN in order to learn an encoding such that <img src="https://latex.codecogs.com/svg.image?d(x^{(i)},x^{(j)})" title="d(x^{(i)},x^{(j)})" /> is small for images of the same person and big for images of different person. 
+
+**Note**: We need atleast more than 1 picture of a person as we need a pair of ```A``` and ```P``` in order to train our NN.
 
 ![image](https://user-images.githubusercontent.com/59663734/142730472-09f4eace-cf55-4067-aeb2-1b279c8f428f.png)
+
+To summarise:
+
+1. We randomly select an ```anchor``` image.
+2. We randomly select  an image of the same person as the anchor image - ```positive```.
+3. We randomly select  an image of a different person as the anchor image - ```negative```.
+4. We train our model and adjust parameters so that the positive image is closest to the anchor and the negative one is far from the anchor. 
+5. We repeat the process above so that all images of the same person are close to each other and further from the others.
+
+The diagram above shows the steps described.
+
+**Note:** One of the problem when we choose A,P and N randomly then the conditon <img src="https://latex.codecogs.com/svg.image?\left\|f(A)-f(P)&space;\right\|^2&space;-&space;\left\|f(A)-f(N)&space;\right\|^2&space;&plus;&space;\alpha&space;\leq&space;&space;0" title="\left\|f(A)-f(P) \right\|^2 - \left\|f(A)-f(N) \right\|^2 + \alpha \leq 0" /> is easily satisfied and the NN will not learn much from it. What we want is to choose triplets that are **hard** to train on. That is in order to satisfy this condition: <img src="https://latex.codecogs.com/png.image?\dpi{100}&space;d(A,P)&space;&plus;&space;\alpha&space;\leq&space;d(A,N)" title="d(A,P) + \alpha \leq d(A,N)" />, we want <img src="https://latex.codecogs.com/png.image?\dpi{100}&space;d(A,P)&space;\approx&space;d(A,N)" title="d(A,P) \approx d(A,N)" />. Now the NN will try hard to push d(A,N) and push d(A,P) up so that there is atleast a margin <img src="https://latex.codecogs.com/png.image?\dpi{100}&space;\alpha&space;" title="\alpha " /> between the two components. Thus it is important that is is only by choosing hard triplets that our gradient descent will really do some want in learning the similarity and differences in the images. 
+
+
 
 
 ## Phase 2: Mask Detection
