@@ -78,9 +78,35 @@ To sum up:
 When we vary the parameters of the different layers of our NN, we end up with different encodings. But we want to learn a specific set of parameters such that the above two conditions are met.
 
 ### Triplet Loss Function
+In Triplet Loss, we will be looking at three images at a time: an ```anchor```, a ```positive``` image(one who is similar to the anchor image) and a ```negative``` image(one who is different from the anchor image). We want the distance between the anchor and the positive to be minimum and the distance between the anchor and the negative image to be maximum. 
+
+We denote the ```anchor``` as ```A```, ```positive``` as ```P``` and ```negative``` as ```N```. 
+
+For a robust face recognition, we want the following:
+
+<img src="https://latex.codecogs.com/png.image?\dpi{100}&space;\left\|f(A)-f(P)&space;\right\|^2\leq&space;\left\|f(A)-f(N)&space;\right\|^2" title="\left\|f(A)-f(P) \right\|^2\leq \left\|f(A)-f(N) \right\|^2" /> where <img src="https://latex.codecogs.com/svg.image?d(A,P)&space;=&space;\left\|f(A)-f(P)&space;\right\|^2" title="d(A,P) = \left\|f(A)-f(P) \right\|^2" /> and <img src="https://latex.codecogs.com/svg.image?d(A,N)&space;=&space;\left\|f(A)-f(N)&space;\right\|^2" title="d(A,N) = \left\|f(A)-f(N) \right\|^2" />
+
+We can also write the equation above as :
+
+<img src="https://latex.codecogs.com/png.image?\dpi{100}&space;\left\|f(A)-f(P)&space;\right\|^2&space;-&space;&space;\left\|f(A)-f(N)&space;\right\|^2\leq&space;0" title="\left\|f(A)-f(P) \right\|^2 - \left\|f(A)-f(N) \right\|^2\leq 0" />
+
+To make sure the neural network does not output zero for all the encodings, i.e, it does not set all the encodings equal to each other, we modify the above equation such that the differenve between ```d(A,P)``` and ```d(A,N)``` should be <img src="https://latex.codecogs.com/png.image?\dpi{100}&space;0-\alpha&space;" title="0-\alpha " /> where <img src="https://latex.codecogs.com/png.image?\dpi{100}&space;\alpha&space;" title="\alpha " /> is called a ```margin```
+
+Finally, the equation becomes:
+
+<img src="https://latex.codecogs.com/svg.image?\left\|f(A)-f(P)&space;\right\|^2&space;-&space;\left\|f(A)-f(N)&space;\right\|^2&space;&plus;&space;\alpha&space;&space;\leq&space;0" title="\left\|f(A)-f(P) \right\|^2 - \left\|f(A)-f(N) \right\|^2 + \alpha \leq 0" />
+
+For example, if we have d(A,N) = 0.50 and d(A,P) = 0.49, then the two values are too close to each other and it is not good enough. We would want d(A,N) to be much bigger than d(A,P) like 0.7 instead of 0.50. To achive this gap of 0.2, we introduce the margin <img src="https://latex.codecogs.com/png.image?\dpi{100}&space;\alpha&space;" title="\alpha " /> which helps push d(A,N) up or push d(A,P) down to achieve better results. 
+
+To define our loss fucntion we need 3 images: ```A```, ```P``` and ```N```:
+
+<img src="https://latex.codecogs.com/svg.image?L(A,P,N)&space;=&space;max(\left\|f(A)-f(P)&space;\right\|^2&space;-&space;\left\|f(A)-f(N)&space;\right\|^2&space;&plus;&space;\alpha,&space;0)" title="L(A,P,N) = max(\left\|f(A)-f(P) \right\|^2 - \left\|f(A)-f(N) \right\|^2 + \alpha, 0)" />
+
+- we take the ```max``` of the loss because as long as <img src="https://latex.codecogs.com/svg.image?\left\|f(A)-f(P)&space;\right\|^2&space;-&space;\left\|f(A)-f(N)&space;\right\|^2&space;&plus;&space;\alpha" title="\left\|f(A)-f(P) \right\|^2 - \left\|f(A)-f(N) \right\|^2 + \alpha" /> <img src="https://latex.codecogs.com/png.image?\dpi{100}&space;\leq&space;" title="\leq " /> 0, the loss = 0.
+-  
+
 
 ![image](https://user-images.githubusercontent.com/59663734/142730472-09f4eace-cf55-4067-aeb2-1b279c8f428f.png)
-
 
 
 ## Phase 2: Mask Detection
@@ -91,8 +117,9 @@ When we vary the parameters of the different layers of our NN, we end up with di
 ### 3.1 FaceNet
 FaceNet is a deep neural network used for extracting features from an image of a person’s face. It was developed in 2015 by three researchers at Google: Florian Schroff, Dmitry Kalenichenko, and James Philbin.
 
-
 ![1-s2 0-S0925231220316945-gr3](https://user-images.githubusercontent.com/59663734/142723211-05e51b72-8794-442e-b1fa-ae9f5a6ed9bc.jpg)
+
+
 
 
 ## Conclusion
