@@ -53,11 +53,11 @@ So how do we address the face verification problem?
 
 where <img src="https://latex.codecogs.com/svg.image?\tau&space;" title="\tau " /> is a threshold.
 
-Given a new image, we use that fucntion d to compare against the images in our database. If the image pairs are different then we would have a large number and if they are the same then we would have a small enough number that will be less than our ```threshold``` <img src="https://latex.codecogs.com/svg.image?\tau&space;" title="\tau " />.
+Given a new image, we use that function d to compare against the images in our database. If the image pairs are different then we would have a large number and if they are the same then we would have a small enough number that will be less than our ```threshold``` <img src="https://latex.codecogs.com/svg.image?\tau&space;" title="\tau " />.
 
 ![image](https://user-images.githubusercontent.com/59663734/142725497-32e644cd-0562-40ab-a569-46e57108918e.png)
 
-For someone not in our database, when we will do the pairwise comparison and compute the fucntion ```d``` then we would expect to get very large numbers for all the pairs as shown above. The ```d``` function solves the ```one shot learning``` problem whereby if someone new joins the team then we only need to add that new person's image to our database and it would work just fine. 
+For someone not in our database, when we will do the pairwise comparison and compute the function ```d``` then we would expect to get very large numbers for all the pairs as shown above. The ```d``` function solves the ```one shot learning``` problem whereby if someone new joins the team then we only need to add that new person's image to our database and it would work just fine. 
 
 ### Siamese Network
 The idea of running two identical convolutional neural networks on two different inputs and comparing them is called a Siamese Neural Network. 
@@ -79,6 +79,7 @@ When we vary the parameters of the different layers of our NN, we end up with di
 
 ### Triplet Loss Function
 
+![image](https://user-images.githubusercontent.com/59663734/142730472-09f4eace-cf55-4067-aeb2-1b279c8f428f.png)
 
 
 
