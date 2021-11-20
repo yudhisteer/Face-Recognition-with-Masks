@@ -129,8 +129,19 @@ The diagram above shows the steps described.
 
 At RT Knits we have 2000 employees and we assume we will have 20,000 images(10 pictures of each employee), then we need need to take these 20K pictures and generate triplets of ```(A,P,N)``` and then train our learning algorithm by using gradient descent to minimize the cost function defined above. This will have the effect of backpropagating to all the parameters in the NN in order to learn an encoding such that <img src="https://latex.codecogs.com/svg.image?d(x^{(i)},x^{(j)})" title="d(x^{(i)},x^{(j)})" /> is small for images of the same person and big for images of different person. 
 
-### Face Verification with Binary Classification
+### 1.6 Face Verification with Binary Classification
+Another option to the Triplet Loss Function is to to take the Siamese Network and have them compute the 128D embedding to be then fed to a logistic regression unit to make prediction.
 
+- Same person: <img src="https://latex.codecogs.com/svg.image?\hat{y}&space;=&space;1" title="\hat{y} = 1" />
+- Different person: <img src="https://latex.codecogs.com/svg.image?\hat{y}&space;=&space;0" title="\hat{y} = 0" />
+
+The output <img src="https://latex.codecogs.com/svg.image?\hat{y}" title="\hat{y}" /> will be a ```sigmoid function``` applied to difference between the two set of encodings. The formula below computes the element-wise differenece in absolute values between the two encodings:
+
+<img src="https://latex.codecogs.com/svg.image?\hat{y}&space;=&space;\sigma&space;(\sum_{k=1}^{128}w_{i}\left|f(x^{(i)})_{k}&space;-&space;f(x^{(j)})_{k}&space;\right|&space;&plus;&space;b&space;)" title="\hat{y} = \sigma (\sum_{k=1}^{128}w_{i}\left|f(x^{(i)})_{k} - f(x^{(j)})_{k} \right| + b )" />
+
+![image](https://user-images.githubusercontent.com/59663734/142739837-07e261de-9201-4eb4-857e-1c532f6138da.png)
+
+In summary, we just need to create a training set of pairs of images where ```target label = 1``` of **same** person and ```target label = 0``` of **different** person.
 
 ## Phase 2: Mask Detection
 
@@ -148,3 +159,6 @@ FaceNet is a deep neural network used for extracting features from an image of a
 ## Conclusion
 
 ## References
+1. https://arsfutura.com/magazine/face-recognition-with-facenet-and-mtcnn/
+2. https://www.youtube.com/watch?v=0NSLgoEtdnw&list=PLkDaE6sCZn6Gl29AoE31iwdVwSG-KnDzF&index=36
+3. 
