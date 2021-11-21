@@ -8,7 +8,7 @@
 
 ### 1.1 Face Verification vs Face Recognition
 
-### 1.1.1 Verification
+### 1.1.1 Verification - Is this the same person?
 Face verification is quite simple. We can take our FaceID for example which we use to unlock our phone or at the airport when scanning our passport and verifying if it is really us. So it works in 2 steps:
 
 - **We input the image or the ID of a person.**
@@ -20,7 +20,7 @@ Face verification is quite simple. We can take our FaceID for example which we u
 
 It is a ```1:1``` problem. We expect to have a high accuracy of the face verification system - ```>99%``` - so that it can further be used into the face recognition system.
 
-### 1.1.2 Face Recognition
+### 1.1.2 Face Recognition - Who is this person?
 Face recognition is much harder than face verification. It is used mainly for attendance system in offices, or when facebook automatically tags your friend. The process is as such:
 
 - **We have a database of K persons.**
@@ -157,7 +157,7 @@ FaceNet is a deep neural network used for extracting features from an image of a
 
 ![1-s2 0-S0925231220316945-gr3](https://user-images.githubusercontent.com/59663734/142723211-05e51b72-8794-442e-b1fa-ae9f5a6ed9bc.jpg)
 
-### 3.2 ResNet
+### 3.2 Resnet Network
 <p align="center">
   <img src= "https://user-images.githubusercontent.com/59663734/142753156-d5bb6d19-ab56-42f2-9522-d06ac374dd66.png" />
  </p>
@@ -254,6 +254,31 @@ We feed into into a fully connected layer with dropout and units = ```128``` whi
         output = tf.layers.dense(inputs=net,units=class_num,activation=None)
         print("output shape:",output.shape)
 ```
+
+### 3.3 Inception Network
+When designing a layer for a convNet, we need to pick the type of filters we want: ```1x1```, ```3x3``` or ```5x5``` or even the type of pooling. To get rid of this conundrum, the inception layer allowsus to implement them all. So why do we use filters of different size? For our example, our image will be of the same dimension but the **target** in the image may be of different size, i.e, a person may stand far from the camera or one may be close to it. Having different kernel size allow us to extract features of different size. 
+
+We can start by understanding the Naive version of the Inception model where we apply different types of kernel on an input and concatenante the output as shown below. The idea is instead of us selecting the filter sizes, we use them all and concatanate their output and let the NN learn whichever combination of filter sizes it wants. However, the problem with this method is the **computational cost**. 
+
+![image](https://user-images.githubusercontent.com/59663734/142761227-875b8713-1edb-4058-a6c6-7f396d8cce1e.png)
+
+### 3.3.1 Network in Network
+
+If we look at the computational cost of the ```5x5``` filters of the ```28x28x192``` input volume, we have a whopping 120M multiplies to perform. It is important to remember that this is only for the ```5x5``` filter and we still need to computer for the other 2 filters and pooling layer. A soltution to this is to implement a ```1x1``` convolution before the ```5x5``` filter that will output the same ```28x28x32``` volume but will reduce the number of multiplies by one tenth.
+
+![image](https://user-images.githubusercontent.com/59663734/142761522-9a60199a-2044-4e26-b975-aff7e6da3a81.png)
+
+How does this work?
+A ```1x1``` convolution also called a ```Network in network``` will take the element-wise product between the 192 numbers(example above) in the input and the 192 numbers in the filter and apply a relu activation function and output a single number. We will have a number of filters so the output will be ```HxWx#filters```.
+
+If we want to reduce the height and width of an input then we can use pooling to do so, however, if we want to reduce the number of channels of an input(192) then we use a ```1x1x#channels``` filter with the numbers of filters equal to the number of channels we want to output. In the example above in the middle sectiom, we want the channel to be 16 so we use 16 filters. 
+
+We create a bottle neck by shrinking the number of channels from 192 to 16 and then increasing it again to 32. This allow us to diminish dramatically the computational cost which is now about 12.4M multiplies.  The ```1x1``` convolution is an important building block in the inception network which allow us to go deeper into the network by maintaining the computational cost and learn more features.
+
+
+### 3.3.2 Inception with Dimension Reduction
+
+
 
 ## Conclusion
 
