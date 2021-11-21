@@ -14,7 +14,9 @@ Face verification is quite simple. We can take our FaceID for example which we u
 - **We input the image or the ID of a person.**
 - **We verify if the output is the same as the claimed person.**
 
-![image](https://user-images.githubusercontent.com/59663734/142724385-df2203a3-5f8c-435f-8ea6-7f9cc690861a.png)
+<p align="center">
+  <img src= "https://user-images.githubusercontent.com/59663734/142724385-df2203a3-5f8c-435f-8ea6-7f9cc690861a.png" />
+  </p>
 
 It is a ```1:1``` problem. We expect to have a high accuracy of the face verification system - ```>99%``` - so that it can further be used into the face recognition system.
 
@@ -25,7 +27,9 @@ Face recognition is much harder than face verification. It is used mainly for at
 - **We take the image of a person.**
 - **We output the ID if the image is any of the K persons or if it is not.**
 
-![image](https://user-images.githubusercontent.com/59663734/142724421-6f94ee75-3731-493b-86d7-3b0836847b80.png)
+<p align="center">
+  <img src= "https://user-images.githubusercontent.com/59663734/142724421-6f94ee75-3731-493b-86d7-3b0836847b80.png" />
+ </p>
 
 Face recognition is a ```1:K``` problem where K is the number of persons in our database.
 
@@ -153,8 +157,103 @@ FaceNet is a deep neural network used for extracting features from an image of a
 
 ![1-s2 0-S0925231220316945-gr3](https://user-images.githubusercontent.com/59663734/142723211-05e51b72-8794-442e-b1fa-ae9f5a6ed9bc.jpg)
 
+### 3.2 ResNet
+<p align="center">
+  <img src= "https://user-images.githubusercontent.com/59663734/142753156-d5bb6d19-ab56-42f2-9522-d06ac374dd66.png" />
+ </p>
+<p align="center">
+  Fig. The Resnet architecture with the Resnet Block.
+  </p>
+  
+We start by building our Resnet Block which will be duplicated ```4``` times in the whole architecture. In our function ```resnet_block```, we define a kernel size of  ```3 x 3```, ```32``` filters, with padding = ```"same"```, a ```l2``` regularizer and a ```relu``` activation function.
+  
+  
+```
+    #----models
+    def resnet_block(self,input_x, k_size=3,filters=32):
+        net = tf.layers.conv2d(
+            inputs=input_x,
+            filters = filters,
+            kernel_size=[k_size,k_size],
+            kernel_regularizer=tf.keras.regularizers.l2(0.1),
+            padding="same",
+            activation=tf.nn.relu
+        )
+        net = tf.layers.conv2d(
+            inputs=net,
+            filters=filters,
+            kernel_size=[k_size, k_size],
+            kernel_regularizer=tf.keras.regularizers.l2(0.1),
+            padding="same",
+            activation=tf.nn.relu
+        )
 
+        net_1 = tf.layers.conv2d(
+            inputs=input_x,
+            filters=filters,
+            kernel_size=[k_size, k_size],
+            kernel_regularizer=tf.keras.regularizers.l2(0.1),
+            padding="same",
+            activation=tf.nn.relu
+        )
 
+        add = tf.add(net,net_1)
+
+        add_result = tf.nn.relu(add)
+
+        return add_result
+```
+
+Next, we define a function ```simple_resnet``` where we will design the whole architecture. We coede the first Resnet block and the max pooling layer:
+
+```
+        net = self.resnet_block(tf_input,k_size=3,filters=16)
+        net = tf.layers.max_pooling2d(inputs=net, pool_size=[2,2], strides=2)
+        print("pool_1 shape:",net.shape)
+```
+
+We duplicate the above code and increase the number of filters as we go deeper:
+
+```
+        net = self.resnet_block(tf_input,k_size=3,filters=16)
+        net = tf.layers.max_pooling2d(inputs=net, pool_size=[2,2], strides=2)
+        print("pool_1 shape:",net.shape)
+
+        net = self.resnet_block(net, k_size=3, filters=32)
+        net = tf.layers.max_pooling2d(inputs=net, pool_size=[2, 2], strides=2)
+        print("pool_2 shape:", net.shape)
+
+        net = self.resnet_block(net, k_size=3, filters=48)
+        net = tf.layers.max_pooling2d(inputs=net, pool_size=[2, 2], strides=2)
+        print("pool_3 shape:", net.shape)
+
+        net = self.resnet_block(net, k_size=3, filters=64)
+        net = tf.layers.max_pooling2d(inputs=net, pool_size=[2, 2], strides=2)
+        print("pool_4 shape:", net.shape)
+```
+
+We then flatten our layer:
+
+```
+        #----flatten
+        net = tf.layers.flatten(net)
+        print("flatten shape:",net.shape)
+```
+
+We feed into into a fully connected layer with dropout and units = ```128``` which represent the ```encoding```.
+
+```
+        #----dropout
+        net = tf.nn.dropout(net,keep_prob=tf_keep_prob)
+
+        #----FC
+        net = tf.layers.dense(inputs=net,units=128,activation=tf.nn.relu)
+        print("FC shape:",net.shape)
+
+        #----output
+        output = tf.layers.dense(inputs=net,units=class_num,activation=None)
+        print("output shape:",output.shape)
+```
 
 ## Conclusion
 
