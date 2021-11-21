@@ -262,7 +262,7 @@ We can start by understanding the Naive version of the Inception model where we 
 
 ![image](https://user-images.githubusercontent.com/59663734/142761227-875b8713-1edb-4058-a6c6-7f396d8cce1e.png)
 
-### 3.3.1 Network in Network
+#### 3.3.1 Network in Network
 
 If we look at the computational cost of the ```5x5``` filters of the ```28x28x192``` input volume, we have a whopping ```120M``` multiplies to perform. It is important to remember that this is only for the ```5x5``` filter and we still need to computer for the other 2 filters and pooling layer. A soltution to this is to implement a ```1x1``` convolution before the ```5x5``` filter that will output the same ```28x28x32``` volume but will reduce the number of multiplies by one tenth.
 
@@ -276,7 +276,7 @@ If we want to reduce the height and width of an input then we can use pooling to
 We create a bottle neck by shrinking the number of channels from 192 to 16 and then increasing it again to 32. This allow us to diminish dramatically the computational cost which is now about ```12.4M``` multiplies.  The ```1x1``` convolution is an important building block in the inception network which allow us to go deeper into the network by maintaining the computational cost and learn more features.
 
 
-### 3.3.2 Inception with Dimension Reduction
+#### 3.3.2 Inception with Dimension Reduction
 To reduce our computational cost we should modify out architecture in fig 3.1 and add 1x1 convoltution to it. As shown above, the 1x1 filters will allow us to have fewer weights therefore fewer calculations and therefore faster inference. The figure below shows one Inception module. The Inception network just puts a lot of these modules together.
 
 ![image](https://user-images.githubusercontent.com/59663734/142762642-b684146a-28c7-4c16-b7ea-26d6a67d8b18.png)
@@ -285,6 +285,9 @@ We have ```9``` of the inception block concatanate to each other with some addit
 
 ![image](https://user-images.githubusercontent.com/59663734/142762952-90a602b5-5fb7-43c7-8589-e41c02f22647.png)
 
+### 3.4 Inception-Resnet V1 Network
+
+![image](https://user-images.githubusercontent.com/59663734/142763781-1a990187-307c-45db-9f61-01bf89b1c861.png)
 
 ## Conclusion
 
@@ -295,3 +298,4 @@ We have ```9``` of the inception block concatanate to each other with some addit
 4. https://www.youtube.com/watch?v=96b_weTZb2w&list=PLkDaE6sCZn6Gl29AoE31iwdVwSG-KnDzF&index=33
 5. https://www.youtube.com/watch?v=6jfw8MuKwpI&list=PLkDaE6sCZn6Gl29AoE31iwdVwSG-KnDzF&index=34
 6. https://www.youtube.com/watch?v=d2XB5-tuCWU&list=PLkDaE6sCZn6Gl29AoE31iwdVwSG-KnDzF&index=35
+7. https://www.aiuai.cn/aifarm465.html
