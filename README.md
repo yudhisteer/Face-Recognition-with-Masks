@@ -468,8 +468,7 @@ In an ```if``` condition we check if the width of our bbox is more than the widt
 
 We display the images:
 
-![image](https://user-images.githubusercontent.com/59663734/142857614-c40efb4a-9043-407c-95c7-20cf30beae15.png)
-
+![image](https://user-images.githubusercontent.com/59663734/142858127-52759a18-4b40-4447-9426-1cc8fe851f50.png)
  
 #### 3.5.1 Face Detection with MTCNN
 
