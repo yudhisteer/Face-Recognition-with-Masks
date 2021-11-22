@@ -451,6 +451,26 @@ We run the file and check the folders. We got x folders which had wrong images. 
 
 
 
+### 3.3 Custom Face Mask Dataset
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ### 3.1 FaceNet
 FaceNet is a deep neural network used for extracting features from an image of a person’s face. It was developed in 2015 by three researchers at Google: Florian Schroff, Dmitry Kalenichenko, and James Philbin.
 
