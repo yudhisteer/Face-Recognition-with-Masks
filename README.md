@@ -456,6 +456,20 @@ Our original image is 250x250 so we want our cropped face image to be over 100x1
 ```
 
 In an ```if``` condition we check if the width of our bbox is more than the width_threshold and the height is more than the height_threshold then the height of the cropped image  is ```bbox[1]:bbox[1] + bbox[3]``` and width is ```bbox[0]:bbox[0] + bbox[2]```. We then save the file. 
+
+```
+            for num,bbox in enumerate(bboxes):
+                if bbox[2] > width_threshold and bbox[3] > height_threshold:
+                    img_crop = img_ori[bbox[1]:bbox[1] + bbox[3],bbox[0]:bbox[0] + bbox[2], :]
+                    save_path = os.path.join(save_dir,str(idx) + '_' + str(num) + ".png")
+                    # print("save_path:",save_path)
+                    cv2.imwrite(save_path,img_crop)
+```
+
+We display the images:
+
+![image](https://user-images.githubusercontent.com/59663734/142857614-c40efb4a-9043-407c-95c7-20cf30beae15.png)
+
  
 #### 3.5.1 Face Detection with MTCNN
 
