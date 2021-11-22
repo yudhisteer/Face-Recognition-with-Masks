@@ -341,7 +341,7 @@ After cropping the pictures, we check the folders and we see that in folder ```0
 
 We can set a process of removing mislabelled images using the distance function ```d``` described before:
 
-1. In a subfolder in the main directory, we select one image one by one as the target image and the other images become the reference images.
+1. In a subfolder in the main directory, we select one image one by one as the **target image** and the other images become the **reference images**.
 2. We calculate the average distances between the target image and the reference image. 
 3. We see that the average distance, when a correct image is selected as the target image, is not much as compared when the mislabelled image is selected as the target image. Also we might have more than one mislabelled image in a folder. That is the reason why we make each image the target image and calculate the average distance.
 **Note:** The distance between a target image and itself is zero. 
@@ -352,9 +352,9 @@ We can set a process of removing mislabelled images using the distance function 
 
 We use the pretrained weights of Inception Resnet V1 trained on VGGFace dataset and has an accuracy of 0.9965 on LFW dataset. We start by restoring the ```.pb``` file and create a fucntion ```img_removal_by_embed``` to do the following processes:
 
-1. Collect all folders:
+**1. Collect all folders:**
 
-``
+```
     # ----collect all folders
     dirs = [obj.path for obj in os.scandir(root_dir) if obj.is_dir()]
     if len(dirs) == 0:
@@ -365,7 +365,7 @@ We use the pretrained weights of Inception Resnet V1 trained on VGGFace dataset 
             dirs = dirs[dataset_range[0]:dataset_range[1]]
 ```
 
-2. Initialize our model:
+**2. Initialize our model:**
 
 ```
         # ----model init
@@ -374,7 +374,7 @@ We use the pretrained weights of Inception Resnet V1 trained on VGGFace dataset 
         tf_embeddings = tf_dict['embeddings']
 ```
 
-3. Set the method to calculate the distance d:
+**3. Set the method to calculate the distance d:**
 
 ```
         # ----tf setting for calculating distance
@@ -391,7 +391,7 @@ We use the pretrained weights of Inception Resnet V1 trained on VGGFace dataset 
             sess_cal.run(tf.global_variables_initializer())
 ```
 
-4. Process each folder and create subfolders to move the mislabelled images:
+**4. Process each folder and create subfolders to move the mislabelled images:**
 
 ```
         #----process each folder
@@ -407,7 +407,7 @@ We use the pretrained weights of Inception Resnet V1 trained on VGGFace dataset 
                     os.makedirs(save_dir)
 ```
 
-5. Calculate the embeddings:
+**5. Calculate the embeddings:**
 
 ```
                 # ----calculate embeddings
@@ -418,7 +418,7 @@ We use the pretrained weights of Inception Resnet V1 trained on VGGFace dataset 
                     num_end = np.minimum(num_start + batch_size, len_path)
 ```
 
-6. Calcuate the average distance:
+**6. Calcuate the average distance using the embeddings:**
 
 ```
                 # ----calculate avg distance of each image
@@ -430,7 +430,7 @@ We use the pretrained weights of Inception Resnet V1 trained on VGGFace dataset 
                     ave_dis[idx] = np.sum(distance) / (embeddings.shape[0] - 1)
 ```
 
-7. Remove the images:
+**7. Remove the mislabelled images if average distance greater than threshold(1.25):**
 
 ```
                 # ----remove or copy images
