@@ -290,6 +290,7 @@ We have ```9``` of the inception block concatanate to each other with some addit
 ![image](https://user-images.githubusercontent.com/59663734/142763781-1a990187-307c-45db-9f61-01bf89b1c861.png)
 
 ### 3.5 Face Detection
+Object detection refers to the task of identifying various objects within an image and drawing a bounding box around each of them. Initially researchers developed R-CNN for object detection, localization and classification. The output is a bounding box surrounding the object detected with the classification result of the object. With time, we improved the R-CNN network and came up with Fast R-CNN and Faster R-CNN. However, one major drawback of the network was that the inference time was too long for real-time object detection. New architectures such as ```YOLO``` and the ones describe below are better suited for real-time object detection.
 
 There are several methods for face detection:
 - SSD
@@ -297,17 +298,63 @@ There are several methods for face detection:
 - Dlib
 - OpenCV
 
-![image](https://user-images.githubusercontent.com/59663734/142825662-18084ba1-6ab1-405f-8fc6-8122b3300359.png)
-
+Our goal is to use a face detection algorithm to detect faces and crop it with margin 20 or 40 as shown below. 
 
 ![image](https://user-images.githubusercontent.com/59663734/142823899-d1193e71-a01a-4844-9810-6185488384d5.png)
 
-
 #### 3.5.1 Face Detection with SSD
 
-In the first phase I used Dlib but now I will use SSD and MTCNN for face detection. While MTCNN is more widely used, SSD performs faster inference howveer has low accuracy. SSD uses lower resolution layers to detect larger scale objects. It speeds up the process by eliminating the need for the region proposal network.
+In the first phase I used Dlib but now I will use SSD and MTCNN for face detection. While MTCNN is more widely used, SSD performs faster inference however has low accuracy. SSD uses lower resolution layers to detect larger scale objects. It speeds up the process by eliminating the need for the region proposal network.
 
-Our goal is to use SSD to detect faces and crop it with margin 20 or 40 as shown above. 
+The architecture of SSD consists of 3 main components:
+
+1. Base network - VGG-16
+2. Extra feature layers
+3. Prediction layers
+
+Before we dive in into SSD, it is important we understand our Object Localisation and Object Detection works.
+
+**How does it work?**
+
+By starting simple, suppose we want to perform object localisation whereby if we detect a person's face in a picture we want to know where in the picture is the face located. We may also have other objects in the picture, for example a car, we will also need to take this into consideration. Now our CNN softmax output will not just contain the object class label but also the parameters below:
+
+![CodeCogsEqn](https://user-images.githubusercontent.com/59663734/142835042-35a3de01-1d18-4d8b-9c7f-e3d12080960d.png) where
+
+- p: "0" if no object and "1" if object
+- c1: "1" if face, "0" otherwise
+- c2: "1" if car, "0" otherwise
+- x: x-position - center point of object
+- y: y-position - center point of object
+- w: width of bounding box
+- h: height of bounding box
+ 
+If we have a picture as shown below we may divide it into a ```5x5``` grid cells and predict what value will our ```y``` predict in each individual cell.
+
+![image](https://user-images.githubusercontent.com/59663734/142837554-05605efa-da36-480f-a710-f013153da318.png)
+
+For the first grid cell which does not contain an object, we have p = 0 as the first parameter in out y value and for the rest we don't care so we use ? to represent as placeholder. For the thrid grid cell, we detect an object and a face so out p = 1 and c1 = 1 and the x,y,w and h represents values for the bounding box. During training we will try to make our network output similar vectors. 
+
+SSD does not use a pre-defined region proposal network. Instead, it computes both the location and class scores using small convolution filters. After extracting the feature maps, SSD applies 3 × 3 convolution filters for each cell to make predictions.
+
+**How to know our bounding box is correct?**
+
+IoU is used to measure the overlap between two boudning boxes. 
+
+![image](https://user-images.githubusercontent.com/59663734/142840525-4db003b6-9a6a-4b08-9ee7-8002216cdc2b.png)
+
+Normally if our IoU is greater than or equal to 0.5 we deem it to be a correct prediction. But we can be more stringent and increase the threshold where 1 is the maximum value.
+
+**Anchor Boxes**
+
+1. It is not possible for one object to be strictly within one grid cell. And when it is not, how do we determine which cell do we asscoiate to the object.  
+- The solution for this is to associate the cell which contains the **center point** of the bouding box of the object. 
+
+2. Each of the grid cell can detect only one object. But we may have one grid cell containing more than one object. How do we handle multiple center points?
+- We can use a bigger grid - 19x19 - instead of a 5x5 which reduces this problem. Also, we have 
+
+
+What we need to do is predefined anchor boxes and associate perdiction with the anchor boxes. 
+
 
 #### 3.5.1 Face Detection with MTCNN
 
@@ -322,3 +369,5 @@ Our goal is to use SSD to detect faces and crop it with margin 20 or 40 as shown
 5. https://www.youtube.com/watch?v=6jfw8MuKwpI&list=PLkDaE6sCZn6Gl29AoE31iwdVwSG-KnDzF&index=34
 6. https://www.youtube.com/watch?v=d2XB5-tuCWU&list=PLkDaE6sCZn6Gl29AoE31iwdVwSG-KnDzF&index=35
 7. https://www.aiuai.cn/aifarm465.html
+8. https://jonathan-hui.medium.com/ssd-object-detection-single-shot-multibox-detector-for-real-time-processing-9bd8deac0e06
+9. https://medium.com/inveterate-learner/real-time-object-detection-part-1-understanding-ssd-65797a5e675b
