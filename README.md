@@ -358,8 +358,21 @@ Previously, each obejct is assigned to a grid cell which contains that object's 
 
 For the image above, both objects have their ceneterpoint in the same cell. So we set a tall anchor box which can be used to predict a standing person and a wide anchor box can be used to predict a car. We use these anchor boxes in each of the grid cell and output one vector y for every anchor box. 
 
-SSD contains 8732 default boxes. During inference, we have 8732 boxes for each class (because we output a confidence score for each box). Most of these boxes are negative and among the positive ones, there would be a lot of overlapping boxes. 
- 
+**4. Non-Maximal Suppression (NMS)**
+
+SSD contains 8732 default boxes. During inference, we have 8732 boxes for each class (because we output a confidence score for each box). Most of these boxes are negative and among the positive ones, there would be a lot of overlapping boxes.  Non-Maximal Suppression (NMS) is applied to get rid of overlapping boxes per class It works as such: 
+
+1. sort the boxes based on the confidence score
+2. pick the box with the largest confidence score
+3. remove all the other predicted boxes with Jaccard overlap > the NMS threshold (0.45 here)
+4. repeat the process until all boxes are covered.
+
+![image](https://user-images.githubusercontent.com/59663734/142847066-bb095fbe-e264-4029-a348-f04fdabd2978.png)
+
+To sum up:
+- The network is very sensitive to default boxes and it is important to choose the default boxes based on the dataset that it is being used on.
+- SSD does not work well with small objects: earlier layers which have smaller receptive field and are responsible for small object detection, are too shallow. 
+
  
 #### 3.5.1 Face Detection with MTCNN
 
