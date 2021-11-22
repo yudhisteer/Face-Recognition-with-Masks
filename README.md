@@ -152,143 +152,6 @@ In summary, we just need to create a training set of pairs of images where ```ta
 ## Phase 3: Face Recognition with Mask
 ![2-Figure1-1](https://user-images.githubusercontent.com/59663734/142723133-243c6b53-47ea-43e7-809b-c4dd790aa98f.png)
 
-### 3.1 FaceNet
-FaceNet is a deep neural network used for extracting features from an image of a person’s face. It was developed in 2015 by three researchers at Google: Florian Schroff, Dmitry Kalenichenko, and James Philbin.
-
-![1-s2 0-S0925231220316945-gr3](https://user-images.githubusercontent.com/59663734/142723211-05e51b72-8794-442e-b1fa-ae9f5a6ed9bc.jpg)
-
-### 3.2 Resnet Network
-<p align="center">
-  <img src= "https://user-images.githubusercontent.com/59663734/142753156-d5bb6d19-ab56-42f2-9522-d06ac374dd66.png" />
- </p>
-<p align="center">
-  Fig. The Resnet architecture with the Resnet Block.
-  </p>
-  
-We start by building our Resnet Block which will be duplicated ```4``` times in the whole architecture. In our function ```resnet_block```, we define a kernel size of  ```3 x 3```, ```32``` filters, with padding = ```"same"```, a ```l2``` regularizer and a ```relu``` activation function.
-  
-  
-```
-    #----models
-    def resnet_block(self,input_x, k_size=3,filters=32):
-        net = tf.layers.conv2d(
-            inputs=input_x,
-            filters = filters,
-            kernel_size=[k_size,k_size],
-            kernel_regularizer=tf.keras.regularizers.l2(0.1),
-            padding="same",
-            activation=tf.nn.relu
-        )
-        net = tf.layers.conv2d(
-            inputs=net,
-            filters=filters,
-            kernel_size=[k_size, k_size],
-            kernel_regularizer=tf.keras.regularizers.l2(0.1),
-            padding="same",
-            activation=tf.nn.relu
-        )
-
-        net_1 = tf.layers.conv2d(
-            inputs=input_x,
-            filters=filters,
-            kernel_size=[k_size, k_size],
-            kernel_regularizer=tf.keras.regularizers.l2(0.1),
-            padding="same",
-            activation=tf.nn.relu
-        )
-
-        add = tf.add(net,net_1)
-
-        add_result = tf.nn.relu(add)
-
-        return add_result
-```
-
-Next, we define a function ```simple_resnet``` where we will design the whole architecture. We coede the first Resnet block and the max pooling layer:
-
-```
-        net = self.resnet_block(tf_input,k_size=3,filters=16)
-        net = tf.layers.max_pooling2d(inputs=net, pool_size=[2,2], strides=2)
-        print("pool_1 shape:",net.shape)
-```
-
-We duplicate the above code and increase the number of filters as we go deeper:
-
-```
-        net = self.resnet_block(tf_input,k_size=3,filters=16)
-        net = tf.layers.max_pooling2d(inputs=net, pool_size=[2,2], strides=2)
-        print("pool_1 shape:",net.shape)
-
-        net = self.resnet_block(net, k_size=3, filters=32)
-        net = tf.layers.max_pooling2d(inputs=net, pool_size=[2, 2], strides=2)
-        print("pool_2 shape:", net.shape)
-
-        net = self.resnet_block(net, k_size=3, filters=48)
-        net = tf.layers.max_pooling2d(inputs=net, pool_size=[2, 2], strides=2)
-        print("pool_3 shape:", net.shape)
-
-        net = self.resnet_block(net, k_size=3, filters=64)
-        net = tf.layers.max_pooling2d(inputs=net, pool_size=[2, 2], strides=2)
-        print("pool_4 shape:", net.shape)
-```
-
-We then flatten our layer:
-
-```
-        #----flatten
-        net = tf.layers.flatten(net)
-        print("flatten shape:",net.shape)
-```
-
-We feed into into a fully connected layer with dropout and units = ```128``` which represent the ```encoding```.
-
-```
-        #----dropout
-        net = tf.nn.dropout(net,keep_prob=tf_keep_prob)
-
-        #----FC
-        net = tf.layers.dense(inputs=net,units=128,activation=tf.nn.relu)
-        print("FC shape:",net.shape)
-
-        #----output
-        output = tf.layers.dense(inputs=net,units=class_num,activation=None)
-        print("output shape:",output.shape)
-```
-
-### 3.3 Inception Network
-When designing a layer for a convNet, we need to pick the type of filters we want: ```1x1```, ```3x3``` or ```5x5``` or even the type of pooling. To get rid of this conundrum, the inception layer allowsus to implement them all. So why do we use filters of different size? For our example, our image will be of the same dimension but the **target** in the image may be of different size, i.e, a person may stand far from the camera or one may be close to it. Having different kernel size allow us to extract features of different size. 
-
-We can start by understanding the Naive version of the Inception model where we apply different types of kernel on an input and concatenate the output as shown below. The idea is instead of us selecting the filter sizes, we use them all and concatanate their output and let the NN learn whichever combination of filter sizes it wants. However, the problem with this method is the **computational cost**. 
-
-![image](https://user-images.githubusercontent.com/59663734/142761227-875b8713-1edb-4058-a6c6-7f396d8cce1e.png)
-
-#### 3.3.1 Network in Network
-
-If we look at the computational cost of the ```5x5``` filters of the ```28x28x192``` input volume, we have a whopping ```120M``` multiplies to perform. It is important to remember that this is only for the ```5x5``` filter and we still need to computer for the other 2 filters and pooling layer. A soltution to this is to implement a ```1x1``` convolution before the ```5x5``` filter that will output the same ```28x28x32``` volume but will reduce the number of multiplies by one tenth.
-
-![image](https://user-images.githubusercontent.com/59663734/142761522-9a60199a-2044-4e26-b975-aff7e6da3a81.png)
-
-How does this work?
-A ```1x1``` convolution also called a ```Network in network``` will take the element-wise product between the 192 numbers(example above) in the input and the 192 numbers in the filter and apply a relu activation function and output a single number. We will have a number of filters so the output will be ```HxWx#filters```.
-
-If we want to reduce the height and width of an input then we can use pooling to do so, however, if we want to reduce the number of channels of an input(192) then we use a ```1x1x#channels``` filter with the numbers of filters equal to the number of channels we want to output. In the example above in the middle sectiom, we want the channel to be 16 so we use 16 filters. 
-
-We create a bottle neck by shrinking the number of channels from 192 to 16 and then increasing it again to 32. This allow us to diminish dramatically the computational cost which is now about ```12.4M``` multiplies.  The ```1x1``` convolution is an important building block in the inception network which allow us to go deeper into the network by maintaining the computational cost and learn more features.
-
-
-#### 3.3.2 Inception with Dimension Reduction
-To reduce our computational cost we should modify out architecture in fig 3.1 and add 1x1 convoltution to it. As shown above, the 1x1 filters will allow us to have fewer weights therefore fewer calculations and therefore faster inference. The figure below shows one Inception module. The Inception network just puts a lot of these modules together.
-
-![image](https://user-images.githubusercontent.com/59663734/142762642-b684146a-28c7-4c16-b7ea-26d6a67d8b18.png)
-
-We have ```9``` of the inception block concatanate to each other with some additional max pooling to change the dimension. We should note that the last layer is a fully connected layer followed by a softmax layer to make prediction but we also have two side branches comming from the hidden layers trying to make prediction with a softmax output. This help ensure that the features computed in the hidden layers are also good to make accurate predictions and this help the network from overfitting. 
-
-![image](https://user-images.githubusercontent.com/59663734/142762952-90a602b5-5fb7-43c7-8589-e41c02f22647.png)
-
-### 3.4 Inception-Resnet V1 Network
-
-![image](https://user-images.githubusercontent.com/59663734/142763781-1a990187-307c-45db-9f61-01bf89b1c861.png)
-
 ### 3.5 Face Detection
 Object detection refers to the task of identifying various objects within an image and drawing a bounding box around each of them. Initially researchers developed R-CNN for object detection, localization and classification. The output is a bounding box surrounding the object detected with the classification result of the object. With time, we improved the R-CNN network and came up with Fast R-CNN and Faster R-CNN. However, one major drawback of the network was that the inference time was too long for real-time object detection. New architectures such as ```YOLO``` and the ones describe below are better suited for real-time object detection.
 
@@ -304,7 +167,7 @@ Our goal is to use a face detection algorithm to detect faces and crop it with m
 
 #### 3.5.1 Face Detection with SSD
 
-In the first phase I used Dlib but now I will use SSD and MTCNN for face detection. While MTCNN is more widely used, SSD performs faster inference however has low accuracy. SSD uses lower resolution layers to detect larger scale objects. It speeds up the process by eliminating the need for the region proposal network.
+In the first phase I used Dlib but now I will use SSD for face detection. While MTCNN is more widely used, SSD performs faster inference however has low accuracy. SSD uses lower resolution layers to detect larger scale objects. It speeds up the process by eliminating the need for the region proposal network.
 
 The architecture of SSD consists of 3 main components:
 
@@ -469,8 +332,146 @@ In an ```if``` condition we check if the width of our bbox is more than the widt
 We display the images:
 
 ![image](https://user-images.githubusercontent.com/59663734/142858127-52759a18-4b40-4447-9426-1cc8fe851f50.png)
+
+### 3.1 FaceNet
+FaceNet is a deep neural network used for extracting features from an image of a person’s face. It was developed in 2015 by three researchers at Google: Florian Schroff, Dmitry Kalenichenko, and James Philbin.
+
+![1-s2 0-S0925231220316945-gr3](https://user-images.githubusercontent.com/59663734/142723211-05e51b72-8794-442e-b1fa-ae9f5a6ed9bc.jpg)
+
+### 3.2 Resnet Network
+<p align="center">
+  <img src= "https://user-images.githubusercontent.com/59663734/142753156-d5bb6d19-ab56-42f2-9522-d06ac374dd66.png" />
+ </p>
+<p align="center">
+  Fig. The Resnet architecture with the Resnet Block.
+  </p>
+  
+We start by building our Resnet Block which will be duplicated ```4``` times in the whole architecture. In our function ```resnet_block```, we define a kernel size of  ```3 x 3```, ```32``` filters, with padding = ```"same"```, a ```l2``` regularizer and a ```relu``` activation function.
+  
+  
+```
+    #----models
+    def resnet_block(self,input_x, k_size=3,filters=32):
+        net = tf.layers.conv2d(
+            inputs=input_x,
+            filters = filters,
+            kernel_size=[k_size,k_size],
+            kernel_regularizer=tf.keras.regularizers.l2(0.1),
+            padding="same",
+            activation=tf.nn.relu
+        )
+        net = tf.layers.conv2d(
+            inputs=net,
+            filters=filters,
+            kernel_size=[k_size, k_size],
+            kernel_regularizer=tf.keras.regularizers.l2(0.1),
+            padding="same",
+            activation=tf.nn.relu
+        )
+
+        net_1 = tf.layers.conv2d(
+            inputs=input_x,
+            filters=filters,
+            kernel_size=[k_size, k_size],
+            kernel_regularizer=tf.keras.regularizers.l2(0.1),
+            padding="same",
+            activation=tf.nn.relu
+        )
+
+        add = tf.add(net,net_1)
+
+        add_result = tf.nn.relu(add)
+
+        return add_result
+```
+
+Next, we define a function ```simple_resnet``` where we will design the whole architecture. We coede the first Resnet block and the max pooling layer:
+
+```
+        net = self.resnet_block(tf_input,k_size=3,filters=16)
+        net = tf.layers.max_pooling2d(inputs=net, pool_size=[2,2], strides=2)
+        print("pool_1 shape:",net.shape)
+```
+
+We duplicate the above code and increase the number of filters as we go deeper:
+
+```
+        net = self.resnet_block(tf_input,k_size=3,filters=16)
+        net = tf.layers.max_pooling2d(inputs=net, pool_size=[2,2], strides=2)
+        print("pool_1 shape:",net.shape)
+
+        net = self.resnet_block(net, k_size=3, filters=32)
+        net = tf.layers.max_pooling2d(inputs=net, pool_size=[2, 2], strides=2)
+        print("pool_2 shape:", net.shape)
+
+        net = self.resnet_block(net, k_size=3, filters=48)
+        net = tf.layers.max_pooling2d(inputs=net, pool_size=[2, 2], strides=2)
+        print("pool_3 shape:", net.shape)
+
+        net = self.resnet_block(net, k_size=3, filters=64)
+        net = tf.layers.max_pooling2d(inputs=net, pool_size=[2, 2], strides=2)
+        print("pool_4 shape:", net.shape)
+```
+
+We then flatten our layer:
+
+```
+        #----flatten
+        net = tf.layers.flatten(net)
+        print("flatten shape:",net.shape)
+```
+
+We feed into into a fully connected layer with dropout and units = ```128``` which represent the ```encoding```.
+
+```
+        #----dropout
+        net = tf.nn.dropout(net,keep_prob=tf_keep_prob)
+
+        #----FC
+        net = tf.layers.dense(inputs=net,units=128,activation=tf.nn.relu)
+        print("FC shape:",net.shape)
+
+        #----output
+        output = tf.layers.dense(inputs=net,units=class_num,activation=None)
+        print("output shape:",output.shape)
+```
+
+### 3.3 Inception Network
+When designing a layer for a convNet, we need to pick the type of filters we want: ```1x1```, ```3x3``` or ```5x5``` or even the type of pooling. To get rid of this conundrum, the inception layer allowsus to implement them all. So why do we use filters of different size? For our example, our image will be of the same dimension but the **target** in the image may be of different size, i.e, a person may stand far from the camera or one may be close to it. Having different kernel size allow us to extract features of different size. 
+
+We can start by understanding the Naive version of the Inception model where we apply different types of kernel on an input and concatenate the output as shown below. The idea is instead of us selecting the filter sizes, we use them all and concatanate their output and let the NN learn whichever combination of filter sizes it wants. However, the problem with this method is the **computational cost**. 
+
+![image](https://user-images.githubusercontent.com/59663734/142761227-875b8713-1edb-4058-a6c6-7f396d8cce1e.png)
+
+#### 3.3.1 Network in Network
+
+If we look at the computational cost of the ```5x5``` filters of the ```28x28x192``` input volume, we have a whopping ```120M``` multiplies to perform. It is important to remember that this is only for the ```5x5``` filter and we still need to computer for the other 2 filters and pooling layer. A soltution to this is to implement a ```1x1``` convolution before the ```5x5``` filter that will output the same ```28x28x32``` volume but will reduce the number of multiplies by one tenth.
+
+![image](https://user-images.githubusercontent.com/59663734/142761522-9a60199a-2044-4e26-b975-aff7e6da3a81.png)
+
+How does this work?
+A ```1x1``` convolution also called a ```Network in network``` will take the element-wise product between the 192 numbers(example above) in the input and the 192 numbers in the filter and apply a relu activation function and output a single number. We will have a number of filters so the output will be ```HxWx#filters```.
+
+If we want to reduce the height and width of an input then we can use pooling to do so, however, if we want to reduce the number of channels of an input(192) then we use a ```1x1x#channels``` filter with the numbers of filters equal to the number of channels we want to output. In the example above in the middle sectiom, we want the channel to be 16 so we use 16 filters. 
+
+We create a bottle neck by shrinking the number of channels from 192 to 16 and then increasing it again to 32. This allow us to diminish dramatically the computational cost which is now about ```12.4M``` multiplies.  The ```1x1``` convolution is an important building block in the inception network which allow us to go deeper into the network by maintaining the computational cost and learn more features.
+
+
+#### 3.3.2 Inception with Dimension Reduction
+To reduce our computational cost we should modify out architecture in fig 3.1 and add 1x1 convoltution to it. As shown above, the 1x1 filters will allow us to have fewer weights therefore fewer calculations and therefore faster inference. The figure below shows one Inception module. The Inception network just puts a lot of these modules together.
+
+![image](https://user-images.githubusercontent.com/59663734/142762642-b684146a-28c7-4c16-b7ea-26d6a67d8b18.png)
+
+We have ```9``` of the inception block concatanate to each other with some additional max pooling to change the dimension. We should note that the last layer is a fully connected layer followed by a softmax layer to make prediction but we also have two side branches comming from the hidden layers trying to make prediction with a softmax output. This help ensure that the features computed in the hidden layers are also good to make accurate predictions and this help the network from overfitting. 
+
+![image](https://user-images.githubusercontent.com/59663734/142762952-90a602b5-5fb7-43c7-8589-e41c02f22647.png)
+
+### 3.4 Inception-Resnet V1 Network
+
+![image](https://user-images.githubusercontent.com/59663734/142763781-1a990187-307c-45db-9f61-01bf89b1c861.png)
+
+
  
-#### 3.5.1 Face Detection with MTCNN
 
 
 ## Conclusion
