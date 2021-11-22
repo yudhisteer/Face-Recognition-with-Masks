@@ -335,26 +335,119 @@ We display the images:
 
 
 ### 3.2 Data Cleaning
+After cropping the pictures, we check the folders and we see that in folder ```0000157``` we got one mislabelled image as shown below. This signifies that the CASIA dataset is not a cleaned dataset and there may be other instances of mislabelled images. We cannot check each of the ```10,575``` folders individually so we need an algorithm that will do this for us. 
 
+![image](https://user-images.githubusercontent.com/59663734/142935195-d12ee28e-7dc3-4f2f-8b91-538c3919e5fb.png)
 
+We can set a process of removing mislabelled images using the distance function ```d``` described before:
 
+1. In a subfolder in the main directory, we select one image one by one as the target image and the other images become the reference images.
+2. We calculate the average distances between the target image and the reference image. 
+3. We see that the average distance, when a correct image is selected as the target image, is not much as compared when the mislabelled image is selected as the target image. Also we might have more than one mislabelled image in a folder. That is the reason why we make each image the target image and calculate the average distance.
+**Note:** The distance between a target image and itself is zero. 
+5. We compare the average distances to a threshold.
+6. We remove the target image(mislabelled image) when its average distance exceeds the threshold.
 
+![image](https://user-images.githubusercontent.com/59663734/142935906-405ce329-48d7-43ab-8230-341271216ccc.png)
 
+We use the pretrained weights of Inception Resnet V1 trained on VGGFace dataset and has an accuracy of 0.9965 on LFW dataset. We start by restoring the ```.pb``` file and create a fucntion ```img_removal_by_embed``` to do the following processes:
 
+1. Collect all folders:
 
+``
+    # ----collect all folders
+    dirs = [obj.path for obj in os.scandir(root_dir) if obj.is_dir()]
+    if len(dirs) == 0:
+        print("No sub-dirs in ", root_dir)
+    else:
+        #----dataset range
+        if dataset_range is not None:
+            dirs = dirs[dataset_range[0]:dataset_range[1]]
+```
 
+2. Initialize our model:
 
+```
+        # ----model init
+        sess, tf_dict = model_restore_from_pb(pb_path, node_dict, GPU_ratio=GPU_ratio)
+        tf_input = tf_dict['input']
+        tf_embeddings = tf_dict['embeddings']
+```
 
+3. Set the method to calculate the distance d:
 
+```
+        # ----tf setting for calculating distance
+        with tf.Graph().as_default():
+            tf_tar = tf.placeholder(dtype=tf.float32, shape=tf_embeddings.shape[-1])
+            tf_ref = tf.placeholder(dtype=tf.float32, shape=tf_embeddings.shape)
+            tf_dis = tf.sqrt(tf.reduce_sum(tf.square(tf.subtract(tf_ref, tf_tar)), axis=1))
+            # ----GPU setting
+            config = tf.ConfigProto(log_device_placement=True,
+                                    allow_soft_placement=True,
+                                    )
+            config.gpu_options.allow_growth = True
+            sess_cal = tf.Session(config=config)
+            sess_cal.run(tf.global_variables_initializer())
+```
 
+4. Process each folder and create subfolders to move the mislabelled images:
 
+```
+        #----process each folder
+        for dir_path in dirs:
+            paths = [file.path for file in os.scandir(dir_path) if file.name.split(".")[-1] in img_format]
+            len_path = len(paths)
+            if len_path == 0:
+                print("No images in ",dir_path)
+            else:
+                # ----create the sub folder in the output folder
+                save_dir = os.path.join(output_dir, dir_path.split("\\")[-1])
+                if not os.path.exists(save_dir):
+                    os.makedirs(save_dir)
+```
 
+5. Calculate the embeddings:
 
+```
+                # ----calculate embeddings
+                ites = math.ceil(len_path / batch_size)
+                embeddings = np.zeros([len_path, tf_embeddings.shape[-1]], dtype=np.float32)
+                for idx in range(ites):
+                    num_start = idx * batch_size
+                    num_end = np.minimum(num_start + batch_size, len_path)
+```
 
+6. Calcuate the average distance:
 
+```
+                # ----calculate avg distance of each image
+                feed_dict_2 = {tf_ref: embeddings}
+                ave_dis = np.zeros(embeddings.shape[0], dtype=np.float32)
+                for idx, embedding in enumerate(embeddings):
+                    feed_dict_2[tf_tar] = embedding
+                    distance = sess_cal.run(tf_dis, feed_dict=feed_dict_2)
+                    ave_dis[idx] = np.sum(distance) / (embeddings.shape[0] - 1)
+```
 
+7. Remove the images:
 
+```
+                # ----remove or copy images
+                for idx,path in enumerate(paths):
+                    if ave_dis[idx] > threshold:
+                        print("path:{}, ave_distance:{}".format(path,ave_dis[idx]))
+                        if type == "copy":
+                            save_path = os.path.join(save_dir,path.split("\\")[-1])
+                            shutil.copy(path,save_path)
+                        elif type == "move":
+                            save_path = os.path.join(save_dir,path.split("\\")[-1])
+                            shutil.move(path,save_path)
+```
 
+We run the file and check the folders. We got x folders which had wrong images. In the folders, we see that our algorithm correctly identified the wrong person in Linda Hamilton's folder and in Bill Murray's folder we had moer than one mislabelled images. However, we see that the algorithm also remove the images of the correct label. Mainly because the images were blurred or fuzzy, or the subjet had sunglasses in them or there were pictures when the person was too young or too old. 
+
+![image](https://user-images.githubusercontent.com/59663734/142937113-3235d10a-9a9b-47fe-b4d8-c5d4c6e776de.png)
 
 
 
