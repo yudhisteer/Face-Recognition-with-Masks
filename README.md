@@ -314,7 +314,7 @@ The architecture of SSD consists of 3 main components:
 
 Before we dive in into SSD, it is important we understand our Object Localisation and Object Detection works.
 
-**How does it work?**
+**1. How does it work?**
 
 By starting simple, suppose we want to perform object localisation whereby if we detect a person's face in a picture we want to know where in the picture is the face located. We may also have other objects in the picture, for example a car, we will also need to take this into consideration. Now our CNN softmax output will not just contain the object class label but also the parameters below:
 
@@ -336,26 +336,31 @@ For the first grid cell which does not contain an object, we have p = 0 as the f
 
 SSD does not use a pre-defined region proposal network. Instead, it computes both the location and class scores using small convolution filters. After extracting the feature maps, SSD applies 3 × 3 convolution filters for each cell to make predictions.
 
-**How to know our bounding box is correct?**
+**2. How to know our bounding box is correct?**
 
-IoU is used to measure the overlap between two boudning boxes. 
+```IoU``` is used to measure the overlap between two boudning boxes. 
 
 ![image](https://user-images.githubusercontent.com/59663734/142840525-4db003b6-9a6a-4b08-9ee7-8002216cdc2b.png)
 
 Normally if our IoU is greater than or equal to 0.5 we deem it to be a correct prediction. But we can be more stringent and increase the threshold where 1 is the maximum value.
 
-**Anchor Boxes**
+**3. Anchor Boxes**
 
 1. It is not possible for one object to be strictly within one grid cell. And when it is not, how do we determine which cell do we asscoiate to the object.  
 - The solution for this is to associate the cell which contains the **center point** of the bouding box of the object. 
 
 2. Each of the grid cell can detect only one object. But we may have one grid cell containing more than one object. How do we handle multiple center points?
-- We can use a bigger grid - 19x19 - instead of a 5x5 which reduces this problem. Also, we have 
+- We can use a bigger grid - 19x19 - instead of a 5x5 which reduces this problem. Also, we need to do is predefined anchor boxes and associate perdiction with the anchor boxes. 
 
+Previously, each obejct is assigned to a grid cell which contains that object's midpoint. Now, each obejct is assigned to a grid cell which contains that object's midpoint **and** anchor box for the grid cell with the highest IoU(similar shape).  
 
-What we need to do is predefined anchor boxes and associate perdiction with the anchor boxes. 
+![image](https://user-images.githubusercontent.com/59663734/142845336-85efa649-4611-47d9-8885-f8660a13ad8f.png)
 
+For the image above, both objects have their ceneterpoint in the same cell. So we set a tall anchor box which can be used to predict a standing person and a wide anchor box can be used to predict a car. We use these anchor boxes in each of the grid cell and output one vector y for every anchor box. 
 
+SSD contains 8732 default boxes. During inference, we have 8732 boxes for each class (because we output a confidence score for each box). Most of these boxes are negative and among the positive ones, there would be a lot of overlapping boxes. 
+ 
+ 
 #### 3.5.1 Face Detection with MTCNN
 
 
