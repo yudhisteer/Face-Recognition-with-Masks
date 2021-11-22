@@ -360,7 +360,7 @@ For the image above, both objects have their ceneterpoint in the same cell. So w
 
 **4. Non-Maximal Suppression (NMS)**
 
-SSD contains 8732 default boxes. During inference, we have 8732 boxes for each class (because we output a confidence score for each box). Most of these boxes are negative and among the positive ones, there would be a lot of overlapping boxes.  Non-Maximal Suppression (NMS) is applied to get rid of overlapping boxes per class It works as such: 
+SSD contains 8732 default boxes. During inference, we have 8732 boxes for each class (because we output a confidence score for each box). Most of these boxes are negative and among the positive ones, there would be a lot of overlapping boxes.  Non-Maximal Suppression (NMS) is applied to get rid of overlapping boxes per class. It works as such: 
 
 1. sort the boxes based on the confidence score
 2. pick the box with the largest confidence score
@@ -373,6 +373,89 @@ To sum up:
 - The network is very sensitive to default boxes and it is important to choose the default boxes based on the dataset that it is being used on.
 - SSD does not work well with small objects: earlier layers which have smaller receptive field and are responsible for small object detection, are too shallow. 
 
+**5. Implementation**
+
+I used a trained facemask detection algorithm to crop the pictures. Similar to the one explained above, I adjusted the bounding box to crop the images:
+
+![image](https://user-images.githubusercontent.com/59663734/142854038-95faeefb-a400-4c99-ba09-b92d44424c7b.png)
+
+I loaded the ```.pb``` file with a default margin of 44 and GPU-ration of 0.1:
+
+```
+    def __init__(self,pb_path,margin=44,GPU_ratio=0.1):
+        # ----var
+        node_dict = {'input': 'data_1:0',
+                     'detection_bboxes': 'loc_branch_concat_1/concat:0',
+                     'detection_scores': 'cls_branch_concat_1/concat:0'}
+```
+
+We restore the model to get the nodes and get the input shape which is used to resize the images:
+
+```
+        # ====model restore from pb file
+        sess, tf_dict = model_restore_from_pb(pb_path, node_dict,GPU_ratio = GPU_ratio)
+        tf_input = tf_dict['input']
+        model_shape = tf_input.shape  # [N,H,W,C]
+        print("model_shape = ", model_shape)
+        img_size = (tf_input.shape[2].value,tf_input.shape[1].value)
+        detection_bboxes = tf_dict['detection_bboxes']
+        detection_scores = tf_dict['detection_scores']
+```
+
+In the ```inference``` function we use sess.run to get the detection boxes, the detection scores:
+
+```
+        y_bboxes_output, y_cls_output = self.sess.run([self.detection_bboxes, self.detection_scores],
+                                                      feed_dict={self.tf_input: img_4d})
+```
+
+We then need to decode the boudning boxes and do the non-max suppression:
+
+```
+        # remove the batch dimension, for batch is always 1 for inference.
+        y_bboxes = self.decode_bbox(self.anchors_exp, y_bboxes_output)[0]
+        y_cls = y_cls_output[0]
+        # To speed up, do single class NMS, not multiple classes NMS.
+        bbox_max_scores = np.max(y_cls, axis=1)
+        bbox_max_score_classes = np.argmax(y_cls, axis=1)
+
+        # keep_idx is the alive bounding box after nms.
+        keep_idxs = self.single_class_non_max_suppression(y_bboxes, bbox_max_scores,  conf_thresh=self.conf_thresh,
+                                                          iou_thresh=self.iou_thresh )
+        # ====draw bounding box
+```
+
+In order to draw the boudnign box we need to get the (xmin,ymin) and (xmax,ymax) coordinates. Our boudning boxes are unit coordinates in the range [0,1]. We have to make them to real sizes. We need to get the width of the bounding box using (xmax-xmin) and height using (ymax-ymin).
+
+```
+        # ====draw bounding box
+        for idx in keep_idxs:
+            conf = float(bbox_max_scores[idx])
+            #print("conf = ",conf)
+            class_id = bbox_max_score_classes[idx]
+            bbox = y_bboxes[idx]
+            #print(bbox)
+
+            xmin = np.maximum(0, int(bbox[0] * ori_width - self.margin / 2))
+            ymin = np.maximum(0, int(bbox[1] * ori_height - self.margin / 2))
+            xmax = np.minimum(int(bbox[2] * ori_width + self.margin / 2), ori_width)
+            ymax = np.minimum(int(bbox[3] * ori_height + self.margin / 2), ori_height)
+
+            re_boxes.append([xmin, ymin, xmax - xmin, ymax - ymin])
+            re_confidence.append(conf)
+            re_classes.append('face')
+            re_mask_id.append(class_id)
+        return re_boxes, re_confidence, re_classes, re_mask_id
+```
+
+Our original image is 250x250 so we want our cropped face image to be over 100x100. This enable us to detect faces which is well aligned(the main person in the image). We use two thresholds for the width and height:
+
+```
+    width_threshold = 100 + margin // 2 #allow us to get a full face and not cropped ones
+    height_threshold = 100 + margin // 2
+```
+
+In an ```if``` condition we check if the width of our bbox is more than the width_threshold and the height is more than the height_threshold then the height of the cropped image  is ```bbox[1]:bbox[1] + bbox[3]``` and width is ```bbox[0]:bbox[0] + bbox[2]```. We then save the file. 
  
 #### 3.5.1 Face Detection with MTCNN
 
