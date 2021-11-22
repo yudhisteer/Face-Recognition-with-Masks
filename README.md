@@ -338,7 +338,7 @@ SSD does not use a pre-defined region proposal network. Instead, it computes bot
 
 **2. How to know our bounding box is correct?**
 
-```IoU``` is used to measure the overlap between two boudning boxes. 
+```IoU``` is used to measure the overlap between two bounding boxes. 
 
 ![image](https://user-images.githubusercontent.com/59663734/142840525-4db003b6-9a6a-4b08-9ee7-8002216cdc2b.png)
 
@@ -347,7 +347,7 @@ Normally if our IoU is greater than or equal to 0.5 we deem it to be a correct p
 **3. Anchor Boxes**
 
 1. It is not possible for one object to be strictly within one grid cell. And when it is not, how do we determine which cell do we asscoiate to the object.  
-- The solution for this is to associate the cell which contains the **center point** of the bouding box of the object. 
+- The solution for this is to associate the cell which contains the **center point** of the bounding box of the object. 
 
 2. Each of the grid cell can detect only one object. But we may have one grid cell containing more than one object. How do we handle multiple center points?
 - We can use a bigger grid - 19x19 - instead of a 5x5 which reduces this problem. Also, we need to do is predefined anchor boxes and associate perdiction with the anchor boxes. 
@@ -409,7 +409,7 @@ In the ```inference``` function we use sess.run to get the detection boxes, the 
                                                       feed_dict={self.tf_input: img_4d})
 ```
 
-We then need to decode the boudning boxes and do the non-max suppression:
+We then need to decode the bounding boxes and do the non-max suppression:
 
 ```
         # remove the batch dimension, for batch is always 1 for inference.
@@ -425,7 +425,7 @@ We then need to decode the boudning boxes and do the non-max suppression:
         # ====draw bounding box
 ```
 
-In order to draw the boudnign box we need to get the (xmin,ymin) and (xmax,ymax) coordinates. Our boudning boxes are unit coordinates in the range [0,1]. We have to make them to real sizes. We need to get the width of the bounding box using (xmax-xmin) and height using (ymax-ymin).
+In order to draw the bounding box we need to get the (xmin,ymin) and (xmax,ymax) coordinates. Our bounding boxes are unit coordinates in the range [0,1]. We have to make them to real sizes. We need to get the width of the bounding box using (xmax-xmin) and height using (ymax-ymin).
 
 ```
         # ====draw bounding box
