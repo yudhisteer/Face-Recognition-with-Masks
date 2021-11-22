@@ -289,6 +289,29 @@ We have ```9``` of the inception block concatanate to each other with some addit
 
 ![image](https://user-images.githubusercontent.com/59663734/142763781-1a990187-307c-45db-9f61-01bf89b1c861.png)
 
+### 3.5 Face Detection
+
+There are several methods for face detection:
+- SSD
+- MTCNN
+- Dlib
+- OpenCV
+
+![image](https://user-images.githubusercontent.com/59663734/142825662-18084ba1-6ab1-405f-8fc6-8122b3300359.png)
+
+
+![image](https://user-images.githubusercontent.com/59663734/142823899-d1193e71-a01a-4844-9810-6185488384d5.png)
+
+
+#### 3.5.1 Face Detection with SSD
+
+In the first phase I used Dlib but now I will use SSD and MTCNN for face detection. While MTCNN is more widely used, SSD performs faster inference howveer has low accuracy. SSD uses lower resolution layers to detect larger scale objects. It speeds up the process by eliminating the need for the region proposal network.
+
+Our goal is to use SSD to detect faces and crop it with margin 20 or 40 as shown above. 
+
+#### 3.5.1 Face Detection with MTCNN
+
+
 ## Conclusion
 
 ## References
