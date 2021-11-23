@@ -517,7 +517,9 @@ We then add the two images: face mask and face:
 ```
 
 
+![image](https://user-images.githubusercontent.com/59663734/143057055-327f0114-8370-493c-8c72-5d55bff2fbab.png)
 
+The face masks have successfully been added to the images. Although we have some side face image, we cannot really modify the mask to fit in each image correspondingly so we can say it is a satisfying result. 
 
 
 
