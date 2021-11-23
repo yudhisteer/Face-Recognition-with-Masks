@@ -454,20 +454,11 @@ We run the file and check the folders. We got ```3981``` folders which had ```20
 ### 3.3 Custom Face Mask Dataset
 Our end goal is to be able to recognize faces with mask. The CASIA dataset already have half a million of pictures of faces and we know that by using the Inception Resnet V1 model we can create a face recognition model. What we want to do now is have the same CASIA dataset with the same folders and same pictures but with the persons wearing a mask. We don't have such as dataset so we need to ceate one. What we want to do is to show our AI the picture of a person **without** a mask, then a picture of the same person **with** a mask and tell him that it is the same person. 
 
+![image](https://user-images.githubusercontent.com/59663734/142997230-bc4e6fb0-4122-4cdd-8e2f-8a7eb61b3a4b.png)
 
+In order to achieve the process above, we need to have our mask in ```png``` format. PNG formats had 4 channels. The fourth channel is used to describe the transparency. I will use the Dlib library which is a pre-trained to recognize 68 landmark points that cover the jaw, chin, eyebrows, nose, eyes, and lips of a face. The numbers 48 to 68 are those for the mouth as shown below.
 
-
-
-
-
-
-
-
-
-
-
-
-
+![image](https://user-images.githubusercontent.com/59663734/143016227-3df5cba5-8a75-4c4f-8556-28ebc819e8ad.png)
 
 
 
