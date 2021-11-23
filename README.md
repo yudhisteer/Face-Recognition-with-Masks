@@ -461,6 +461,69 @@ In order to achieve the process above, we need to have our mask in ```png``` for
 ![image](https://user-images.githubusercontent.com/59663734/143016227-3df5cba5-8a75-4c4f-8556-28ebc819e8ad.png)
 
 
+We start by creating a function ```detect_mouth``` which we will use to read the face landmarks from 48 to 68 and calculate the coordinates:
+
+```
+            #----get the mouth part
+            for i in range(48, 68):
+                x.append(landmark.part(i).x)
+                y.append(landmark.part(i).y)
+
+            y_max = np.minimum(max(y) + height // 3, img_rgb.shape[0])
+            y_min = np.maximum(min(y) - height // 3, 0)
+            x_max = np.minimum(max(x) + width // 3, img_rgb.shape[1])
+            x_min = np.maximum(min(x) - width // 3, 0)
+
+            size = ((x_max-x_min),(y_max-y_min))#(width,height)
+```
+
+
+In another function ```mask_wearing``` we first process the folders and create directories for each folder in the main folder. Then we randomly select a PNG mask image from the folder:
+
+```
+                        if size is not None: #there is a face
+                            # ----random selection of face mask
+                            which = random.randint(0, len_mask - 1)
+                            item_name = mask_files[which]
+```
+
+We read the image with ```cv2.IMREAD_UNCHANGED``` to make sure the image has 4 channels. We resize it based on our mouth detection coordinates found before. We use ```cv2.threshold``` to make the values of the image of the mask ```0```(black) or ```255```(white), i.e, we have the image of a white mask with black background. We use ```cv2.bitwise_and``` to create the mask of the face mask:
+
+```
+                            # ----face mask process
+                            item_img = cv2.imread(item_name, cv2.IMREAD_UNCHANGED)
+                            item_img = cv2.resize(item_img, size)
+                            item_img_bgr = item_img[:, :, :3]
+                            item_alpha_ch = item_img[:, :, 3]
+                            _, item_mask = cv2.threshold(item_alpha_ch, 220, 255, cv2.THRESH_BINARY)
+                            img_item = cv2.bitwise_and(item_img_bgr, item_img_bgr, mask=item_mask)
+```
+
+We declare the coordinates of our Region of Interest(ROI) from the mouth detection values. We create an invert mask with ```cv2.bitwise_not``` of the face mask and then use ```cv2.bitwise_and``` to mask the face mask onto the person's face:
+
+```
+                            # ----mouth part process
+                            roi = img[y_min:y_min + size[1], x_min:x_min + size[0]]
+                            item_mask_inv = cv2.bitwise_not(item_mask)
+                            roi = cv2.bitwise_and(roi, roi, mask=item_mask_inv)
+```
+
+We then add the two images: face mask and face:
+
+``
+                            # ----addition of mouth and face mask
+                            dst = cv2.add(roi, img_item)
+                            img[y_min: y_min + size[1], x_min:x_min + size[0]] = dst
+```
+
+
+
+
+
+
+
+
+
 
 ### 3.1 FaceNet
 FaceNet is a deep neural network used for extracting features from an image of a person’s face. It was developed in 2015 by three researchers at Google: Florian Schroff, Dmitry Kalenichenko, and James Philbin.
