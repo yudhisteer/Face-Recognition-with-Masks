@@ -445,14 +445,14 @@ We use the pretrained weights of Inception Resnet V1 trained on VGGFace dataset 
                             shutil.move(path,save_path)
 ```
 
-We run the file and check the folders. We got x folders which had wrong images. In the folders, we see that our algorithm correctly identified the wrong person in Linda Hamilton's folder and in Bill Murray's folder we had moer than one mislabelled images. However, we see that the algorithm also remove the images of the correct label. Mainly because the images were blurred or fuzzy, or the subjet had sunglasses in them or there were pictures when the person was too young or too old. 
+We run the file and check the folders. We got ```3981``` folders which had wrong images. In the folders, we see that our algorithm correctly identified the wrong person in Linda Hamilton's folder and in Bill Murray's folder we had moer than one mislabelled images. However, we see that the algorithm also remove the images of the correct label. Mainly because the images were blurred or fuzzy, or the subjet had sunglasses in them or there were pictures when the person was too young or too old. 
 
 ![image](https://user-images.githubusercontent.com/59663734/142937113-3235d10a-9a9b-47fe-b4d8-c5d4c6e776de.png)
 
 
 
 ### 3.3 Custom Face Mask Dataset
-
+Our end goal is to be able to recognize faces with mask. The CASIA dataset already have half a million of pictures of faces and we know that by using the Inception Resnet V1 model we can create a face recognition model. What we want to do now is have the same CASIA dataset with the same folders and same pictures but with the persons wearing a mask. We don't have such as dataset so we need to ceate one. What we want to do is to show our AI the picture of a person **without** a mask, then a picture of the same person **with** a mask and tell him that it is the same person. 
 
 
 
