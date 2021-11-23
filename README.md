@@ -131,6 +131,11 @@ The diagram above shows the steps described.
 
 **Note:** One of the problem when we choose A,P and N randomly then the conditon <img src="https://latex.codecogs.com/svg.image?\left\|f(A)-f(P)&space;\right\|^2&space;-&space;\left\|f(A)-f(N)&space;\right\|^2&space;&plus;&space;\alpha&space;\leq&space;&space;0" title="\left\|f(A)-f(P) \right\|^2 - \left\|f(A)-f(N) \right\|^2 + \alpha \leq 0" /> is easily satisfied and the NN will not learn much from it. What we want is to choose triplets that are **hard** to train on. That is in order to satisfy this condition: <img src="https://latex.codecogs.com/png.image?\dpi{100}&space;d(A,P)&space;&plus;&space;\alpha&space;\leq&space;d(A,N)" title="d(A,P) + \alpha \leq d(A,N)" />, we want <img src="https://latex.codecogs.com/png.image?\dpi{100}&space;d(A,P)&space;\approx&space;d(A,N)" title="d(A,P) \approx d(A,N)" />. Now the NN will try hard to push d(A,N) and push d(A,P) up so that there is atleast a margin <img src="https://latex.codecogs.com/png.image?\dpi{100}&space;\alpha&space;" title="\alpha " /> between the two components. Thus it is important that is is only by choosing hard triplets that our gradient descent will really do some want in learning the similarity and differences in the images. 
 
+<p align="center">
+  <img src= "https://user-images.githubusercontent.com/59663734/143081544-1d3ad257-328d-459d-bc03-b6c194bfc6af.png" />
+</p>
+
+
 At RT Knits we have 2000 employees and we assume we will have 20,000 images(10 pictures of each employee), then we need need to take these 20K pictures and generate triplets of ```(A,P,N)``` and then train our learning algorithm by using gradient descent to minimize the cost function defined above. This will have the effect of backpropagating to all the parameters in the NN in order to learn an encoding such that <img src="https://latex.codecogs.com/svg.image?d(x^{(i)},x^{(j)})" title="d(x^{(i)},x^{(j)})" /> is small for images of the same person and big for images of different person. 
 
 ### 1.6 Face Verification with Binary Classification
@@ -143,7 +148,9 @@ The output <img src="https://latex.codecogs.com/svg.image?\hat{y}" title="\hat{y
 
 <img src="https://latex.codecogs.com/svg.image?\hat{y}&space;=&space;\sigma&space;(\sum_{k=1}^{128}w_{i}\left|f(x^{(i)})_{k}&space;-&space;f(x^{(j)})_{k}&space;\right|&space;&plus;&space;b&space;)" title="\hat{y} = \sigma (\sum_{k=1}^{128}w_{i}\left|f(x^{(i)})_{k} - f(x^{(j)})_{k} \right| + b )" />
 
-![image](https://user-images.githubusercontent.com/59663734/142739837-07e261de-9201-4eb4-857e-1c532f6138da.png)
+<p align="center">
+  <img src= "https://user-images.githubusercontent.com/59663734/142739837-07e261de-9201-4eb4-857e-1c532f6138da.png" />
+</p>
 
 In summary, we just need to create a training set of pairs of images where ```target label = 1``` of **same** person and ```target label = 0``` of **different** person.
 
@@ -163,7 +170,9 @@ There are several methods for face detection:
 
 Our goal is to use a face detection algorithm to detect faces and crop it with margin 20 or 40 as shown below. 
 
-![image](https://user-images.githubusercontent.com/59663734/142823899-d1193e71-a01a-4844-9810-6185488384d5.png)
+<p align="center">
+  <img src= "https://user-images.githubusercontent.com/59663734/142823899-d1193e71-a01a-4844-9810-6185488384d5.png" />
+</p>
 
 #### 3.5.1 Face Detection with SSD
 
@@ -203,7 +212,9 @@ SSD does not use a pre-defined region proposal network. Instead, it computes bot
 
 ```IoU``` is used to measure the overlap between two bounding boxes. 
 
-![image](https://user-images.githubusercontent.com/59663734/142840525-4db003b6-9a6a-4b08-9ee7-8002216cdc2b.png)
+<p align="center">
+  <img src= "https://user-images.githubusercontent.com/59663734/142840525-4db003b6-9a6a-4b08-9ee7-8002216cdc2b.png" />
+</p>
 
 Normally if our IoU is greater than or equal to 0.5 we deem it to be a correct prediction. But we can be more stringent and increase the threshold where 1 is the maximum value.
 
@@ -217,7 +228,9 @@ Normally if our IoU is greater than or equal to 0.5 we deem it to be a correct p
 
 Previously, each obejct is assigned to a grid cell which contains that object's midpoint. Now, each obejct is assigned to a grid cell which contains that object's midpoint **and** anchor box for the grid cell with the highest IoU(similar shape).  
 
-![image](https://user-images.githubusercontent.com/59663734/142845336-85efa649-4611-47d9-8885-f8660a13ad8f.png)
+<p align="center">
+  <img src= "https://user-images.githubusercontent.com/59663734/142845336-85efa649-4611-47d9-8885-f8660a13ad8f.png" />
+</p>
 
 For the image above, both objects have their ceneterpoint in the same cell. So we set a tall anchor box which can be used to predict a standing person and a wide anchor box can be used to predict a car. We use these anchor boxes in each of the grid cell and output one vector y for every anchor box. 
 
@@ -240,7 +253,9 @@ To sum up:
 
 I used a trained facemask detection algorithm to crop the pictures. Similar to the one explained above, I adjusted the bounding box to crop the images:
 
-![image](https://user-images.githubusercontent.com/59663734/142854038-95faeefb-a400-4c99-ba09-b92d44424c7b.png)
+<p align="center">
+  <img src= "https://user-images.githubusercontent.com/59663734/142854038-95faeefb-a400-4c99-ba09-b92d44424c7b.png" />
+</p>
 
 I loaded the ```.pb``` file with a default margin of 44 and GPU-ration of 0.1:
 
@@ -517,7 +532,9 @@ We then add the two images: face mask and face:
 ```
 
 
-![image](https://user-images.githubusercontent.com/59663734/143057055-327f0114-8370-493c-8c72-5d55bff2fbab.png)
+<p align="center">
+  <img src= "https://user-images.githubusercontent.com/59663734/143057055-327f0114-8370-493c-8c72-5d55bff2fbab.png" />
+</p>
 
 The face masks have successfully been added to the images. Although we have some side face image, we cannot really modify the mask to fit in each image correspondingly so we can say it is a satisfying result. 
 
@@ -530,7 +547,9 @@ The face masks have successfully been added to the images. Although we have some
 ### 3.1 FaceNet
 FaceNet is a deep neural network used for extracting features from an image of a person’s face. It was developed in 2015 by three researchers at Google: Florian Schroff, Dmitry Kalenichenko, and James Philbin.
 
-![1-s2 0-S0925231220316945-gr3](https://user-images.githubusercontent.com/59663734/142723211-05e51b72-8794-442e-b1fa-ae9f5a6ed9bc.jpg)
+<p align="center">
+  <img src= "https://user-images.githubusercontent.com/59663734/142723211-05e51b72-8794-442e-b1fa-ae9f5a6ed9bc.jpg" />
+</p>
 
 ### 3.2 Resnet Network
 <p align="center">
@@ -665,6 +684,57 @@ We have ```9``` of the inception block concatanate to each other with some addit
 ![image](https://user-images.githubusercontent.com/59663734/142763781-1a990187-307c-45db-9f61-01bf89b1c861.png)
 
 
+ ### 3.5 Training 1
+ 
+ 
+ 
+ 
+ 
+ 
+ ### 3.6 Data Augmentation
+ 
+ 
+ 
+ <p align="center">
+  <img src= "https://user-images.githubusercontent.com/59663734/143091509-8ba772f6-3cb1-46a7-806c-cb786976af14.png" />
+</p>
+
+ 
+ 
+ 
+ 
+ 
+ ### 3.7 Training 2
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ ### 3.8 Evaluation
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ ### 3.9 Real-time Face Recognition
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
  
 
 
