@@ -445,7 +445,7 @@ We use the pretrained weights of Inception Resnet V1 trained on VGGFace dataset 
                             shutil.move(path,save_path)
 ```
 
-We run the file and check the folders. We got ```3981``` folders which had wrong images. In the folders, we see that our algorithm correctly identified the wrong person in Linda Hamilton's folder and in Bill Murray's folder we had moer than one mislabelled images. However, we see that the algorithm also remove the images of the correct label. Mainly because the images were blurred or fuzzy, or the subjet had sunglasses in them or there were pictures when the person was too young or too old. 
+We run the file and check the folders. We got ```3981``` folders which had ```20079```wrong images in total. In the folders, we see that our algorithm correctly identified the wrong person in Linda Hamilton's folder and in Bill Murray's folder we had more than one mislabelled images. However, we see that the algorithm also removed the images of the correct label. Mainly because the images were blurred or fuzzy, or the subjet had sunglasses in them or there were pictures when the person was too young or too old. Nevertheless, data cleaning will now allow our NN to train on a more accurate dataset to make better predictions.
 
 ![image](https://user-images.githubusercontent.com/59663734/142937113-3235d10a-9a9b-47fe-b4d8-c5d4c6e776de.png)
 
