@@ -510,7 +510,7 @@ We declare the coordinates of our Region of Interest(ROI) from the mouth detecti
 
 We then add the two images: face mask and face:
 
-``
+```
                             # ----addition of mouth and face mask
                             dst = cv2.add(roi, img_item)
                             img[y_min: y_min + size[1], x_min:x_min + size[0]] = dst
