@@ -685,13 +685,13 @@ We have ```9``` of the inception block concatanate to each other with some addit
 
 
  ### 3.5 First Training(No Mask Dataset)
- We now train our model on the CASIA dataset with ```No Masks``` and the custome CASIA Dataset we made with ```Masks```. We will evaluate the performance of our model on the Lfw dataset which contains images with ```No Masks```. The hyperparamets which we will need to tune are as follows:
+ We now train our model on the CASIA dataset with ```No Masks``` and the custom CASIA Dataset we made with ```Masks```. We will evaluate the performance of our model on the ```Lfw``` dataset which contains images with ```No Masks```. The hyperparamers which we will need to tune are as follows:
  
  - model_shape :  [None, 112, 112, 3] or [None, 160, 160, 3]
  - infer_method :  inception_resnet_v1 or inception_resnet_v1_reduction
  - loss_method :  cross_entropy or arcface
  - opti_method :  adam
- - learning_rate :  0.0005 or 0.0001
+ - learning_rate :  0.0001 or 0.0005
  - embed_length :  128 or 256
  - epochs :  40 or above
  - GPU_ratio :  [0.1, 1]
@@ -801,18 +801,7 @@ Since our data has now been doubled we divide the batch size by 2 in order to ha
  
  
  ### 3.7 Second Training(Mask Dataset with Data Augmentation)
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- ### 3.8 Evaluation
-What we have been doing till now is train our images on the CASIA dataset with masks and without masks and then test it onto our without mask Lfw dataset. The accuracy we gotbefore was for face recognition **without** masks. We need to propose another method for evaluation of faces with masks. Out steps are as follows:
+What we have been doing till now is train our images on the ```CASIA``` dataset with masks and without masks and then test it onto our **without** mask ```Lfw``` dataset. The accuracy we got before was for face recognition **without** masks. We need to propose another method for evaluation of faces with masks. Out steps are as follows:
 
 1. Use a new dataset which has never used in our FaceNet training.
 2. Select 1000 different class images(1000 persons) - they are regarded as our face database(reference data: ref_data): No Mask Folder
@@ -917,9 +906,45 @@ For the example below we assume am image as a 3-dimentional embedding. We calcul
             print("prediction:{}, answer:{}, distance:{}".format(prediction,answer,dis))
 
 ```
- 
+
+We test our model with the following hyperparameters on both the ```1000``` images and the ```lfw``` dataset:
+
+ - model_shape :  [None, 160, 160, 3]
+ - infer_method :  inception_resnet_v1
+ - loss_method :  arcface
+ - opti_method :  adam
+ - learning_rate :  0.0005
+ - embed_length :  128
+ - epochs :  90
+ - GPU_ratio :  None
+ - batch_size :  128
+ - ratio :  1.0
+
+The updated schema is as follows:
+
+<p align="center">
+  <img src= "https://user-images.githubusercontent.com/59663734/143300318-c6c17cb9-1bdc-4d6e-bac7-140953651eea.png" />
+</p>
+
+We can already see a dramatic increase in the accuracy of the ```lfw``` dataset from ```93.21%``` to ```98.20%``` accuracy. Shockingly on the 1000 images with face masks, we got a near 100% accuracy - ```99.92%```. While the values may seem promising, I suspect we may still be overfitting the data and this is due to the unbalanced CASIA dataset which we have. I propose we do a more fair sampling of our data for training as explained below. 
 
  ### 3.8 Third Training(Mask Dataset with Stratified Sampling)
+ In the previous training, we introduced a ```sampling bias```. For example, if our first class in our CASIA dataset has 100 images and the second class has 10 images then when using  a ratio of 0.4, we are taking 40 from the first folder and only 4 from the second folder. This disparity of the number of images in the folders create this sampling bias. A better approach would be to ensure the test set is representative of the various classes  in the whole dataset. So we introduce ```stratified sampling``` whereby the classes are divided into homogeneous subgroups called ```strata``` and the correct number of images is sampled from each stratum to guarantee the test set is representative of the whole dataset.
+
+
+<p align="center">
+  <img src= "https://user-images.githubusercontent.com/59663734/143298683-e2e4d92b-8e64-4e7a-a8ed-b3969f1adef7.png" />
+</p>
+
+
+
+
+
+
+
+
+
+
 
 
  
@@ -948,3 +973,4 @@ For the example below we assume am image as a 3-dimentional embedding. We calcul
 7. https://www.aiuai.cn/aifarm465.html
 8. https://jonathan-hui.medium.com/ssd-object-detection-single-shot-multibox-detector-for-real-time-processing-9bd8deac0e06
 9. https://medium.com/inveterate-learner/real-time-object-detection-part-1-understanding-ssd-65797a5e675b
+10. Aurelien Geron(2017): Hands-On Machine Learning with Scikit-Learn and TensorFlow
