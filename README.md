@@ -931,6 +931,24 @@ We can already see a dramatic increase in the accuracy of the ```lfw``` dataset 
  ### 3.8 Third Training(Mask Dataset with Stratified Sampling)
  In the previous training, we introduced a ```sampling bias```. For example, if our first class in our CASIA dataset has 100 images and the second class has 10 images then when using  a ratio of 0.4, we are taking 40 from the first folder and only 4 from the second folder. This disparity of the number of images in the folders create this sampling bias. A better approach would be to ensure the test set is representative of the various classes  in the whole dataset. So we introduce ```stratified sampling``` whereby the classes are divided into homogeneous subgroups called ```strata``` and the correct number of images is sampled from each stratum to guarantee the test set is representative of the whole dataset.
 
+We begin by exploring how much classes have less than ```10``` images and how much have greater than ```100``` images. We got ```195``` for the first condition and ```859``` for the second condition. While it is difficult to remove classes with less than 10 images, we cannot remove both set of classes as we will lose about 1000 classes. What we can do is randomly select a constant x number of images from all the different classes. By doing so we reduve the number of images we are training on but we also gain in the time to train the model. To increase our training acuracy we will do more data augmentation. We will have a set of 4 images for ebery image:
+
+1. Original image without mask
+2. Original image without mask with Data augmentation
+3. Original image with random mask with Data Augmentation
+4. Original image with random mask with Data Augmentation
+
+<p align="center">
+  <img src= "https://user-images.githubusercontent.com/59663734/143308233-fe6010d8-cc79-4661-8040-43bed3b6135a.png" />
+</p>
+
+
+
+
+
+
+
+
 
 <p align="center">
   <img src= "https://user-images.githubusercontent.com/59663734/143298683-e2e4d92b-8e64-4e7a-a8ed-b3969f1adef7.png" />
@@ -974,3 +992,4 @@ We can already see a dramatic increase in the accuracy of the ```lfw``` dataset 
 8. https://jonathan-hui.medium.com/ssd-object-detection-single-shot-multibox-detector-for-real-time-processing-9bd8deac0e06
 9. https://medium.com/inveterate-learner/real-time-object-detection-part-1-understanding-ssd-65797a5e675b
 10. Aurelien Geron(2017): Hands-On Machine Learning with Scikit-Learn and TensorFlow
+11. https://docs.opencv.org/3.4/d4/d13/tutorial_py_filtering.html
