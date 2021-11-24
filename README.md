@@ -692,7 +692,7 @@ We have ```9``` of the inception block concatanate to each other with some addit
  
  
  ### 3.6 Data Augmentation
- With a first initial training, the accuracy of the moedl was moderate. One possible way to increase the accuracy would be to have more data. But how much? Instead of finding new images, I would "create" these images uaing Data Augmentation techniques. I would use five data augmentation techniques namely: 
+With a first initial training, the accuracy of the model was moderate. One possible way to increase the accuracy would be to have more data. But how much? Instead of finding new images, I would "create" these images using Data Augmentation techniques. I would use five data augmentation techniques namely: 
  
  1. Random Crop
  2. Random Noise
@@ -708,6 +708,7 @@ Instead of using Tensorflow's Data Augmentation API, I would create the scripts 
 
 
 **1. Random Crop**
+
 We want to create a script to crop randomly our images to become ```150x150```. We create the frame of this size and in a small 10x10 square on the top left we generate random points and use this as our first x-y values of the frame. We position the frame and then we crop the image:
 
 ```
@@ -727,6 +728,7 @@ We want to create a script to crop randomly our images to become ```150x150```. 
 ```
  
  **2. Random Noise**
+ 
 For the random noise, we create a mask which is a numpy array of the same size of the image with only one channel. We then create a uniformly-distributed array of random numbers. If the pixel value is greater than a threshold(240) then it is set to 255 else it becomes 0. If the mask pixel value is 255, we use ```cv2.bitwise_and()``` operation else we pass.
  
  ```
@@ -739,6 +741,7 @@ For the random noise, we create a mask which is a numpy array of the same size o
  ```
  
 **3. Random Rotation**
+
 We set our angle range from -60 to 60 degrees. We define our center point of rotation and use ```cv2.warpAffine``` to get the reuslt:
 
 ```
@@ -751,6 +754,7 @@ We set our angle range from -60 to 60 degrees. We define our center point of rot
 ```
 
 **4. Random Horizontal Flip**
+
 We don't want to flip our image vertically as we do not expect to see someone upside down when doing inference. So we use only ```Flip_type = 1``` for the horizontal flip. 
 
 ```
@@ -762,7 +766,8 @@ We don't want to flip our image vertically as we do not expect to see someone up
 ```
 
 
-**5. Random Brifhtness Augmentation**
+**5. Random Brightness Augmentation**
+
  We calculate the mean brightness and set a 30% variation range: ```0.3xnp.mean(img)```. We find a number in the range as the new brightness and normalize the image by dividing by the average value. We use ```np.clip()``` to apply the brightness:
 
 ```
