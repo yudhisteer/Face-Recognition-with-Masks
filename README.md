@@ -798,7 +798,12 @@ Since our data has now been doubled we divide the batch size by 2 in order to ha
  
  
  ### 3.8 Evaluation
- 
+What we have been doing till now is train our images on the CASIA dataset with masks and without masks and then test it onto our without mask Lfw dataset. The accuracy we gotbefore was for face recognition **without** masks. We need to propose another method for evaluation of faces with masks. Out steps are as follows:
+
+1. Use a new dataset which has never used in our FaceNet training.
+2. Select 1000 different class images(1000 persons) - they are regarded as our face database(reference data: ref_data): No Mask Folder
+3. In these 1000 class images make them wear masks - these images will be used as test images(target data: tar_data): Mask Folder
+4. We caculate the embeddings of both images(masks and without masks) and use them to do face matching.
  
  
  
