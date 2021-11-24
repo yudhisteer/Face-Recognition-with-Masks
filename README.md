@@ -692,13 +692,90 @@ We have ```9``` of the inception block concatanate to each other with some addit
  
  
  ### 3.6 Data Augmentation
+ With a first initial training, the accuracy of the moedl was moderate. One possible way to increase the accuracy would be to have more data. But how much? Instead of finding new images, I would "create" these images uaing Data Augmentation techniques. I would use five data augmentation techniques namely: 
  
- 
+ 1. Random Crop
+ 2. Random Noise
+ 3. Random Rotation
+ 4. Random Horizontal Flip
+ 5. Random Brifhtness Augmentation
+
+Instead of using Tensorflow's Data Augmentation API, I would create the scripts and generate the images using OpenCV packages and numpy. 
  
  <p align="center">
   <img src= "https://user-images.githubusercontent.com/59663734/143091509-8ba772f6-3cb1-46a7-806c-cb786976af14.png" />
 </p>
 
+
+**1. Random Crop**
+We want to create a script to crop randomly our images to become ```150x150```. We create the frame of this size and in a small 10x10 square on the top left we generate random points and use this as our first x-y values of the frame. We position the frame and then we crop the image:
+
+```
+                # ----random crop
+                if random_crop is True:
+                    # ----resize the image 1.15 times
+                    img = cv2.resize(img, None, fx=1.15, fy=1.15)
+
+                    # ----Find a random point
+                    y_range = img.shape[0] - img_shape[0]
+                    x_range = img.shape[1] - img_shape[1]
+                    x_start = np.random.randint(x_range)
+                    y_start = np.random.randint(y_range)
+
+                    # ----From the random point, crop the image
+                    img = img[y_start:y_start + img_shape[0], x_start:x_start + img_shape[1], :]
+```
+ 
+ **2. Random Noise**
+For the random noise, we create a mask which is a numpy array of the same size of the image with only one channel. We then create a uniformly-distributed array of random numbers. If the pixel value is greater than a threshold(240) then it is set to 255 else it becomes 0. If the mask pixel value is 255, we use ```cv2.bitwise_and()``` operation else we pass.
+ 
+ ```
+                 # ----random noise
+                if random_noise is True:
+                    uniform_noise = np.empty((img.shape[0], img.shape[1]), dtype=np.uint8)
+                    cv2.randu(uniform_noise, 0, 255)
+                    ret, impulse_noise = cv2.threshold(uniform_noise, 240, 255, cv2.THRESH_BINARY_INV)
+                    img = cv2.bitwise_and(img, img, mask=impulse_noise)
+ ```
+ 
+**3. Random Rotation**
+We set our angle range from -60 to 60 degrees. We define our center point of rotation and use ```cv2.warpAffine``` to get the reuslt:
+
+```
+               # ----random angle
+                if random_angle is True:
+                    angle = np.random.randint(-60, 60)
+                    height, width = img.shape[:2]
+                    M = cv2.getRotationMatrix2D((width // 2, height // 2), angle, 1.0)
+                    img = cv2.warpAffine(img, M, (width, height))
+```
+
+**4. Random Horizontal Flip**
+We don't want to flip our image vertically as we do not expect to see someone upside down when doing inference. So we use only ```Flip_type = 1``` for the horizontal flip. 
+
+```
+                # ----random flip
+                if random_flip is True:
+                    flip_type = np.random.choice(flip_list)
+                    if flip_type == 1:
+                        img = cv2.flip(img, flip_type)
+```
+
+
+**5. Random Brifhtness Augmentation**
+ We calculate the mean brightness and set a 30% variation range: ```0.3xnp.mean(img)```. We find a number in the range as the new brightness and normalize the image by dividing by the average value. We use ```np.clip()``` to apply the brightness:
+
+```
+                # ----random brightness
+                if random_brightness is True:
+                    mean_br = np.mean(img)
+                    br_factor = np.random.randint(mean_br * 0.7, mean_br * 1.3)
+                    img = np.clip(img / mean_br * br_factor, 0, 255)
+                    img = img.astype(np.uint8)****
+```
+ 
+ 
+Since our data has now been doubled we divide the batch size by 2 in order to have the same number of data in one batch as before. We also reverse the paths of the sub-folders in the directories of CASIA mask and without mask such that in half a batch we have the original images and in the other half we have the data augmented images. We then re-train the model.
  
  
  
