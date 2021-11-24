@@ -684,10 +684,24 @@ We have ```9``` of the inception block concatanate to each other with some addit
 ![image](https://user-images.githubusercontent.com/59663734/142763781-1a990187-307c-45db-9f61-01bf89b1c861.png)
 
 
- ### 3.5 Training 1
+ ### 3.5 First Training(No Mask Dataset)
+ We now train our model on the CASIA dataset with ```No Masks``` and the custome CASIA Dataset we made with ```Masks```. We will evaluate the performance of our model on the Lfw dataset which contains images with ```No Masks```. The hyperparamets which we will need to tune are as follows:
  
+ - model_shape :  [None, 112, 112, 3] or [None, 160, 160, 3]
+ - infer_method :  inception_resnet_v1 or inception_resnet_v1_reduction
+ - loss_method :  cross_entropy or arcface
+ - opti_method :  adam
+ - learning_rate :  0.0005 or 0.0001
+ - embed_length :  128 or 256
+ - epochs :  40 or above
+ - GPU_ratio :  [0.1, 1]
+ - batch_size :  32 or 48 or 96 or 128
+ - ratio :  [0.1, 1.0]
  
- 
+<p align="center">
+  <img src= "https://user-images.githubusercontent.com/59663734/143297865-4d4610ec-45c0-4015-82f8-cc343ce40f7e.png" />
+</p>
+
  
  
  
@@ -786,7 +800,7 @@ Since our data has now been doubled we divide the batch size by 2 in order to ha
  
  
  
- ### 3.7 Training 2
+ ### 3.7 Second Training(Mask Dataset with Data Augmentation)
  
  
  
@@ -811,12 +825,103 @@ For the example below we assume am image as a 3-dimentional embedding. We calcul
   <img src= "https://user-images.githubusercontent.com/59663734/143234725-6b87b1dd-151a-48ff-a178-f1abaa6f10e3.png" />
 </p>
 
+ We start by creating an ```evaluation``` function which will:
  
+**1. Get our test images(images with masks):**
+
+```
+    #----get test images
+    for dir_name, subdir_names, filenames in os.walk(test_dir):
+        if len(filenames):
+            for file in filenames:
+                if file[-3:] in img_format:
+                    paths_test.append(os.path.join(dir_name,file))
+
+    if len(paths_test) == 0:
+        print("No images in ",test_dir)
+        raise ValueError
+```
  
+**2. Get our face images(images without masks):**
+
+```
+    #----get images of face_databse_dir
+    paths_ref = [file.path for file in os.scandir(face_databse_dir) if file.name[-3:] in img_format]
+    len_path_ref = len(paths_ref)
+    if len_path_ref == 0:
+        print("No images in ", face_databse_dir)
+        raise ValueError
+```
  
+ **3. Initialize our model by restoring the pb file to get the embeddings:**
+
+```
+    #----model init
+    sess, tf_dict = model_restore_from_pb(pb_path, node_dict, GPU_ratio=GPU_ratio)
+    tf_embeddings = tf_dict['embeddings']
+```
+
+**4. Create the formula to calculate the euclidean distance:**
+
+```
+    #----tf setting for calculating distance
+    with tf.Graph().as_default():
+        tf_tar = tf.placeholder(dtype=tf.float32, shape=tf_embeddings.shape[-1]) #shape = [128]
+        tf_ref = tf.placeholder(dtype=tf.float32, shape=tf_embeddings.shape) #shape = [N,128]
+        tf_dis = tf.sqrt(tf.reduce_sum(tf.square(tf.subtract(tf_ref, tf_tar)), axis=1))
+```
  
+**5. Get embeddings:**
+
+```
+    #----get embeddings
+    embed_ref = get_embeddings(sess, paths_ref, tf_dict, batch_size=batch_size) #use get_embeddings fucntion
+    embed_tar = get_embeddings(sess, paths_test, tf_dict, batch_size=batch_size)
+    print("embed_ref shape: ", embed_ref.shape)
+    print("embed_tar shape: ", embed_tar.shape)
+```
+
+**6. Calculate the distance and check if it is less than the threshold(0.8):**
+
+```
+    #----calculate distance and get the minimum index
+    feed_dict_2 = {tf_ref: embed_ref}
+    for idx, embedding in enumerate(embed_tar): #we do face matching one by one
+        feed_dict_2[tf_tar] = embedding
+        distance = sess_cal.run(tf_dis, feed_dict=feed_dict_2)
+        arg_temp = np.argsort(distance)[0] #get index of minimum value
+        arg_dis.append(arg_temp)
+        dis_list.append(distance[arg_temp])
+```
+
+**7. We then check if we have the correct predictions. We do a first check with the threshold and a second check with the indexes.**
+
+```
+    for idx, path in enumerate(paths_test):
+        answer = path.split("\\")[-1].split("_")[0] #index of target image
+
+        arg = arg_dis[idx]
+        prediction = paths_ref[arg].split("\\")[-1].split("_")[0] #index of reference image
+
+        dis = dis_list[idx]
+
+        if dis < threshold: #check for threshold
+            if prediction == answer: #check if both index are same
+                count_o += 1
+            else:
+                print("\nIncorrect:",path)
+                print("prediction:{}, answer:{}".format(prediction,answer))
+        else:
+            count_unknown += 1
+            print("\nunknown:", path)
+            print("prediction:{}, answer:{}, distance:{}".format(prediction,answer,dis))
+
+```
  
- 
+
+ ### 3.8 Third Training(Mask Dataset with Stratified Sampling)
+
+
  
  ### 3.9 Real-time Face Recognition
  
