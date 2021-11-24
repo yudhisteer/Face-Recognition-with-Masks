@@ -805,6 +805,12 @@ What we have been doing till now is train our images on the CASIA dataset with m
 3. In these 1000 class images make them wear masks - these images will be used as test images(target data: tar_data): Mask Folder
 4. We caculate the embeddings of both images(masks and without masks) and use them to do face matching.
  
+For the example below we assume am image as a 3-dimentional embedding. We calculate the euclidean distance using the ```d``` function explained before for the target image(image with masks) and the images in our No Mask folder. If the indexes of both images match and the distance is below a threshold(0.3) then we conclude we have a correct matching.
+ 
+<p align="center">
+  <img src= "https://user-images.githubusercontent.com/59663734/143234725-6b87b1dd-151a-48ff-a178-f1abaa6f10e3.png" />
+</p>
+
  
  
  
