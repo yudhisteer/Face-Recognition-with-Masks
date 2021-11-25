@@ -1025,6 +1025,8 @@ We then create another variable ```select_num``` where we will input the number 
 
 ```
 
+We begin to train the model with a high epoch number of ```100```. We reduce our batch size to ```96``` to avoid our GPU to run out of memory. We have a ```select_num = 2``` for faster training and we keep all the other parameters unchanged. After ```33h``` of training, we managed to get a decent accuracy of ```0.9693```. Now we can be sure we are not overfitting as much when solving the bias sampling issue.
+
 <p align="center">
   <img src= "https://user-images.githubusercontent.com/59663734/143495406-beda56e4-0c7d-46a6-8cb7-b65e312a12a2.png",
   <img src= "https://user-images.githubusercontent.com/59663734/143495421-019f0c5c-c6f4-492e-a708-44a9a54c24d0.png" />
