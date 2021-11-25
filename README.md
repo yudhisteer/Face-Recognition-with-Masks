@@ -684,7 +684,7 @@ We have ```9``` of the inception block concatanate to each other with some addit
 ![image](https://user-images.githubusercontent.com/59663734/142763781-1a990187-307c-45db-9f61-01bf89b1c861.png)
 
 
- ### 3.5 First Training(No Mask Dataset)
+ ### 3.5 First Training(Evaluation: No Mask Dataset)
  We now train our model on the CASIA dataset with ```No Masks``` and the custom CASIA Dataset we made with ```Masks```. We will evaluate the performance of our model on the ```Lfw``` dataset which contains images with ```No Masks```. The hyperparamers which we will need to tune are as follows:
  
  - model_shape :  [None, 112, 112, 3] or [None, 160, 160, 3]
@@ -800,7 +800,7 @@ Since our data has now been doubled we divide the batch size by 2 in order to ha
  
  
  
- ### 3.7 Second Training(Mask Dataset with Data Augmentation)
+ ### 3.7 Second Training(Evaluation: Mask Dataset with Data Augmentation)
 What we have been doing till now is train our images on the ```CASIA``` dataset with masks and without masks and then test it onto our **without** mask ```Lfw``` dataset. The accuracy we got before was for face recognition **without** masks. We need to propose another method for evaluation of faces with masks. Out steps are as follows:
 
 1. Use a new dataset which has never used in our FaceNet training.
@@ -928,7 +928,7 @@ The updated schema is as follows:
 
 We can already see a dramatic increase in the accuracy of the ```lfw``` dataset from ```93.21%``` to ```98.20%``` accuracy. Shockingly on the 1000 images with face masks, we got a near 100% accuracy - ```99.92%```. While the values may seem promising, I suspect we may still be overfitting the data and this is due to the unbalanced CASIA dataset which we have. I propose we do a more fair sampling of our data for training as explained below. 
 
- ### 3.8 Third Training(Mask Dataset with Stratified Sampling)
+ ### 3.8 Third Training(Evaluation: Mask Dataset with Stratified Sampling)
  In the previous training, we introduced a ```sampling bias```. For example, if our first class in our CASIA dataset has 100 images and the second class has 10 images then when using  a ratio of 0.4, we are taking 40 from the first folder and only 4 from the second folder. This disparity of the number of images in the folders create this sampling bias. A better approach would be to ensure the test set is representative of the various classes  in the whole dataset. So we introduce ```stratified sampling``` whereby the classes are divided into homogeneous subgroups called ```strata``` and the correct number of images is sampled from each stratum to guarantee the test set is representative of the whole dataset.
 
 We begin by exploring how much classes have less than ```10``` images and how much have greater than ```100``` images. We got ```195``` for the first condition and ```859``` for the second condition. While it is difficult to remove classes with less than 10 images, we cannot remove both set of classes as we will lose about 1000 classes. What we can do is randomly select a constant x number of images from all the different classes. By doing so we reduve the number of images we are training on but we also gain in the time to train the model. To increase our training acuracy we will do more data augmentation. We will have a set of 4 images for ebery image:
