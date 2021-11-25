@@ -699,33 +699,19 @@ We have ```9``` of the inception block concatanate to each other with some addit
  - ratio :  [0.1, 1.0]
  
  
-I tested it with only ```0.2%``` of the dataset for testing purposes and we got low values for the training and testing accuracy and some weird looking graphs as expected. I increased the ratio(ratio of images of the whole dataset) to ```0.01``` but reducing the batch to ```32``` size as my GPU would run out of memory and the results started to be promising with the test accuracy at nearly ```72.9%```. However, we see our training accuracy at ```100%``` which would be ideal but I suspect ```overfitting``` of data. In order to avoid this, we need to feed the model more data so I increased the ration to ```0.1```. The training accuracy increased slightly but the testing accuracy increased by nearly ```20%```. We see that the testing accuracy never exceeded the training accuracy. Having more variation in the data could boost the accuracy even more.
- 
- 
+I tested it with only ```0.2%``` of the dataset for testing purposes and we got low values for the training and testing accuracy and some weird looking graphs as expected. I increased the ratio(ratio of images of the whole dataset) to ```0.01``` but reducing the batch to ```32``` size as my GPU would run out of memory and the results started to be promising with the test accuracy at nearly ```72.9%```. However, we see our training accuracy at ```100%``` which would be ideal but I suspect ```overfitting``` of data. In order to avoid this, we need to feed the model more data so I increased the ration to ```0.1```. The training accuracy increased slightly but the testing accuracy increased by nearly ```20%```. We see that the testing accuracy never exceeded the training accuracy. With only a testing accuracy of ```86.93%``` the model would work but it will not be a reliable one. We need to have an accuracy nearing ```98%``` or ```99%``` in order to be used in an industry setting. However, my GPU(RTX 3060-6GB memory) ran out of memory so I had to stop the training for the time being till I find another way of training the model.
  
 
 <p align="center">
   <img src= "https://user-images.githubusercontent.com/59663734/143400671-b8a25fe3-366a-4016-96fc-d7d07d198162.png" />
 </P>
 
-
-
-
-
-
-
-
-Below is the schema for the training and testing process on the different datasets we have. With only a testing accuracy of ```0.9321``` the model would work but it will not be a reliable one. We need to have an accuracy nearing ```98%``` or ```99%``` in order to be used in an industry setting. Giving more data to the model was a good idea and I again increased the ratio to ```0.4``` and increased the batch size to ```196``` for less training time. My GPU(RTX 3060-6GB memory) ran out of memory so I had to train it on a friend's laptop(GTX 1080 Ti-11GB memory). With an average epoch time of ```27``` min and after training for ```11h```, we got a better testing accuracy of ```93.2%```
-
-
+Below is the schema for the training and testing process on the different datasets we have:
 
 <p align="center">
   <img src= "https://user-images.githubusercontent.com/59663734/143473743-3fb9b740-8380-420c-8127-43b6fd82857f.png" />
 </p>
 
-
- 
- 
  ### 3.6 Data Augmentation
 With a first initial training, the accuracy of the model was moderate. One possible way to increase the accuracy would be to have more data. But how much? Instead of finding new images, I would "create" these images using Data Augmentation techniques. I would use five data augmentation techniques namely: 
  
@@ -961,7 +947,7 @@ Below are the test results:
   <img src= "https://user-images.githubusercontent.com/59663734/143469476-ec8e6064-3b18-4f53-b074-1ec8fd6578eb.png" />
 </p>
 
-When evaluating the pre-trained weights of the model ```0.163207955``` on our mask dataset, we got only an accuracy of ```16.3%``` at a threshold of ```0.7``` and nearly thrice that at a threshold of ```0.8```. The same is seen for the model ```20180402-114759``` with slightly better accuracy. This clearly shows that we would not have used the model for face recognition with masks. Our model before data augmentation has a shockingly low accuracy on both thresholds. However, since we achieved only an accuracy of ```0.8693``` of the lfw dataset then we canconclude the model was not that robust. After data augmentation, our model accuracy increased sharply on both the lfw dataset and the masks dataset with a maximum accuracy of ```99.98%``` at a threshold of 0.8. Our model surpassed the accuracy of the pre-trained weights of the original Inception ResNet V1 model and has been optimized to perform better at recognizing faces with masks.
+When evaluating the pre-trained weights of the model ```20180408-102900``` on our mask dataset, we got only an accuracy of ```16.3%``` at a threshold of ```0.7``` and nearly thrice that at a threshold of ```0.8```. The same is seen for the model ```20180402-114759``` with slightly better accuracy. This clearly shows that we would not have used the model for face recognition with masks. Our model before data augmentation has a shockingly low accuracy on both thresholds. However, since we achieved only an accuracy of ```0.8693``` of the lfw dataset then we canconclude the model was not that robust. After data augmentation, our model accuracy increased sharply on both the lfw dataset and the masks dataset with a maximum accuracy of ```99.98%``` at a threshold of 0.8. Our model surpassed the accuracy of the pre-trained weights of the original Inception ResNet V1 model and has been optimized to perform better at recognizing faces with masks.
 
 After performing data augmentation and evaluating our model on both the lfw dataset and the masks dataset, we update our schema:
 
@@ -969,7 +955,7 @@ After performing data augmentation and evaluating our model on both the lfw data
   <img src= "https://user-images.githubusercontent.com/59663734/143473665-ac07f435-7d89-4443-b43c-d9ad05425af5.png" />
 </p>
 
-We can already see a dramatic increase in the accuracy of the ```lfw``` dataset from ```93.21%``` to ```98.20%``` accuracy. Shockingly on the 1000 images with face masks, we got a near 100% accuracy - ```99.92%```. While the values may seem promising, I suspect we may still be overfitting the data and this is due to the unbalanced CASIA dataset which we have. I propose we do a more fair sampling of our data for training as explained below. 
+While the accuracy values may seem promising, I suspect we may still be overfitting the data and this is due to the **unbalanced** CASIA dataset which we have. I propose we do a more fair **sampling** of our data for training as explained below. 
 
  ### 3.8 Third Training(Evaluation: Mask Dataset with Stratified Sampling)
  In the previous training, we introduced a ```sampling bias```. For example, if our first class in our CASIA dataset has 100 images and the second class has 10 images then when using  a ratio of 0.4, we are taking 40 from the first folder and only 4 from the second folder. This disparity of the number of images in the folders create this sampling bias. A better approach would be to ensure the test set is representative of the various classes  in the whole dataset. So we introduce ```stratified sampling``` whereby the classes are divided into homogeneous subgroups called ```strata``` and the correct number of images is sampled from each stratum to guarantee the test set is representative of the whole dataset.
