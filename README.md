@@ -720,7 +720,7 @@ Below is the schema for the training and testing process on the different datase
 
 
 <p align="center">
-  <img src= "https://user-images.githubusercontent.com/59663734/143297865-4d4610ec-45c0-4015-82f8-cc343ce40f7e.png" />
+  <img src= "https://user-images.githubusercontent.com/59663734/143473743-3fb9b740-8380-420c-8127-43b6fd82857f.png" />
 </p>
 
 
@@ -966,7 +966,7 @@ When evaluating the pre-trained weights of the model ```0.163207955``` on our ma
 After performing data augmentation and evaluating our model on both the lfw dataset and the masks dataset, we update our schema:
 
 <p align="center">
-  <img src= "https://user-images.githubusercontent.com/59663734/143300318-c6c17cb9-1bdc-4d6e-bac7-140953651eea.png" />
+  <img src= "https://user-images.githubusercontent.com/59663734/143473665-ac07f435-7d89-4443-b43c-d9ad05425af5.png" />
 </p>
 
 We can already see a dramatic increase in the accuracy of the ```lfw``` dataset from ```93.21%``` to ```98.20%``` accuracy. Shockingly on the 1000 images with face masks, we got a near 100% accuracy - ```99.92%```. While the values may seem promising, I suspect we may still be overfitting the data and this is due to the unbalanced CASIA dataset which we have. I propose we do a more fair sampling of our data for training as explained below. 
