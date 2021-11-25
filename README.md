@@ -1096,7 +1096,49 @@ We now come to the time for the real test - real-time face recognition. Our obje
                     #             cv2.FONT_HERSHEY_SIMPLEX, 0.8, color)
 ```
 
-4. Initialize our face recognition model by getting the weights from our pb file. 
+I tested the model to see if the face detection works:
+
+.
+.
+.
+.
+
+
+After validating the face edtection test, we add the face recognition model to our code:
+
+**4. Initialize our face recognition model by getting the weights from our pb file. From the face coordinates of face detection perform face recognition: **
+
+```
+                    # ----face recognition
+                    name = ""
+                    if len_ref_path > 0:
+                        img_fr = img_rgb[bbox[1]:bbox[1] + bbox[3], bbox[0]:bbox[0] + bbox[2], :]  # crop
+                        img_fr = cv2.resize(img_fr, (model_shape[2], model_shape[1]))  # resize
+                        img_fr = np.expand_dims(img_fr, axis=0)  # make 4 dimensions
+
+                        feed_dict[tf_input] = img_fr
+                        embeddings_tar = sess.run(tf_embeddings, feed_dict=feed_dict) #embeddings of target image
+                        feed_dict_2[tf_tar] = embeddings_tar[0]
+                        distance = sess_cal.run(tf_dis, feed_dict=feed_dict_2)
+                        arg = np.argmin(distance)  # index of the smallest distance
+
+                        if distance[arg] < threshold: #we have a match
+                            name = paths[arg].split("\\")[-1].split(".")[0]
+
+                    cv2.putText(img, "{},{}".format(id2class[class_id], name), (bbox[0] + 2, bbox[1] - 2),
+                                cv2.FONT_HERSHEY_SIMPLEX, 0.8, color)
+```
+
+We use the Microsoft Celeberity dataset to test our model. I took a selfie and pasted it in the folder with my name. It took approximately ```111.5``` seconds for the model to get the embeddings of all the ```85,742``` persons' face including mine. I run the script and check:
+
+
+.
+.
+.
+.
+
+
+
 
 
 ## Conclusion
