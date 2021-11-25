@@ -823,7 +823,7 @@ After performing data augmentation on our pictures, we train the model and fine 
 I set the ratio to ```0.4``` and the batch size to ```196```, and the accuracy increased from ```86.93%``` from our last training to a whopping ```92.07%``` - an increase of nearly ```6%```. Using the same settings, I only decreased the learning rate to ```0.0002``` and the testing accuracy increased slightly to ```0.9618```. 
 
 ![image](https://user-images.githubusercontent.com/59663734/143456873-2170f8de-1b22-4d98-a063-2ed1d923966b.png)
-![image](https://user-images.githubusercontent.com/59663734/143456618-a7a75e8d-ad95-4f52-8697-014718aad381.png)
+![image](https://user-images.githubusercontent.com/59663734/143496027-d14a7b6b-8549-4b5a-b7ef-4efe4088169a.png)
 
 We clearly see a great improvement in our testing accuracy but we need to do more tests to ensure the robustness of the model.
 
@@ -1025,32 +1025,25 @@ We then create another variable ```select_num``` where we will input the number 
 
 ```
 
-
-
-
-
-
-
-
-
-
-
-
 <p align="center">
-  <img src= "https://user-images.githubusercontent.com/59663734/143476131-90b54525-caff-4ce4-9bd2-a0d8bf9e6aff.png" />
+  <img src= "https://user-images.githubusercontent.com/59663734/143495406-beda56e4-0c7d-46a6-8cb7-b65e312a12a2.png",
+  <img src= "https://user-images.githubusercontent.com/59663734/143495421-019f0c5c-c6f4-492e-a708-44a9a54c24d0.png" />
+</p>
+<p align="center">
+  <img src= "https://user-images.githubusercontent.com/59663734/143495785-7ed4435c-27f7-4262-9bf3-2eff20e578de.png" />
 </p>
 
+Below are the test results for our whole training process rtill the beginning. We observe that the difference when selected 2 or 5 images from each class and 15 images from each class is very little. However, the average time of one epoch was 65 min with a GPU of RTX 2080 Ti. We see that when we selected only 2 images from each folder and perform data augmentation then our accuracy was nearly the same and our average time for one epoch was only around 10 min. Since now we solved the data imbalance problem, even when our selected number is small we can still reach a high accuracy. 
 
+![image](https://user-images.githubusercontent.com/59663734/143497574-364ba31f-784a-419a-a7ee-3480a60fb0f5.png)
 
+We update for the lat time our schema which resume our whole training process and testing accuracies:
 
+<p align="center">
+  <img src= "https://user-images.githubusercontent.com/59663734/143497506-cda11a9f-bfa2-410d-9d1f-a2faa6f6295e.png" />
+</p>
 
-
-
-
-
-
-
-
+Now after being confident that we got a robust model, it is time for real-time face recognition with masks.
  
  ### 3.9 Real-time Face Recognition
 We now come to the time for the real test - real-time face recognition. Our objective is to recognize a person who is wearing a mask. We start by reading the image from a camera input. We need to process the image from BGR to RGB. Using our pre-trained face mask SSD model we had, we perform the face detection and crop the face. We send this image to our face recognition model for face matching. If a face is detected, our face mask detection model will draw a rectangle showing if the person is wearing a mask or not. We use the face coordinates from the face detection model to crop the image and our face recogniton model will perform the embedding and assign name to the image with the least distance. A schema of the process is shown below:
@@ -1104,9 +1097,8 @@ I tested the model to see if the face detection works:
 .
 
 
-After validating the face edtection test, we add the face recognition model to our code:
-
-**4. Initialize our face recognition model by getting the weights from our pb file. From the face coordinates of face detection perform face recognition: **
+After validating the face detection test, we add the face recognition model to our code:
+**4. Initialize our face recognition model by getting the weights from our pb file. From the face coordinates of face detection perform face recognition:**
 
 ```
                     # ----face recognition
