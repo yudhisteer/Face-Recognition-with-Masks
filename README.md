@@ -820,14 +820,29 @@ Since our data has now been doubled we divide the batch size by 2 in order to ha
  
  
 ### 3.7 Second Training with Data Augmentation
-
 #### 3.7.1 Evaluation: No Mask Dataset
+After performing data augmentation on our pictuers, we train the model and fine tune the hyperparameters as before. We are still using the ``lfw``` as our validation set when training the model. Below are some accuracy graphs when training:
+
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+
+
 
  
  
  
 #### 3.7.2 Evaluation: Mask Dataset
-What we have been doing till now is train our images on the ```CASIA``` dataset with masks and without masks and then test it onto our **without** mask ```Lfw``` dataset. The accuracy we got before was for face recognition **without** masks. We need to propose another method for evaluation of faces with masks. Out steps are as follows:
+What we have been doing till now is train our images on the ```CASIA``` dataset with masks and without masks and then test it onto our **without** mask ```Lfw``` dataset. The accuracy we got before was for face recognition **without** masks. We need to propose another method for evaluation of faces **with** masks. Out steps are as follows:
 
 1. Use a new dataset which has never used in our FaceNet training.
 2. Select 1000 different class images(1000 persons) - they are regarded as our face database(reference data: ref_data): No Mask Folder
@@ -967,6 +982,41 @@ We begin by exploring how much classes have less than ```10``` images and how mu
 <p align="center">
   <img src= "https://user-images.githubusercontent.com/59663734/143391065-01892c94-7cb6-498c-b703-8f2420b58754.png" />
 </p>
+
+
+We change our ```get_4D_data``` function to accomodate for the changes describe above. We create a variable ```aug_times``` and assign it the value ```4``` since each image will be augmented to 4 pictures. We have a dictionary ```p_dict_1``` where we input the type of data augmentation we will do. We enumerate in the variable to apply those data augmentation.
+
+```
+aug_times = 4
+path = [np.random.choice(paths)]
+
+img_shape = [112,112,3]
+batch_data_shape = [aug_times]
+batch_data_shape.extend(img_shape)
+batch_data = np.zeros(batch_data_shape,dtype=np.float32)
+
+p_dict_1 = {'rdm_mask':False,'rdm_crop':True,'rdm_br':True,'rdm_blur':True,'rdm_flip':True,'rdm_noise':False,'rdm_angle':True}
+p_dict_2 = {'rdm_mask':True,'rdm_crop':True,'rdm_br':True,'rdm_blur':True,'rdm_flip':True,'rdm_noise':False,'rdm_angle':True}
+p_dict_3 = {'rdm_mask':True,'rdm_crop':True,'rdm_br':True,'rdm_blur':True,'rdm_flip':True,'rdm_noise':False,'rdm_angle':True}
+
+for i in range(aug_times):
+    if i == 0:
+        temp = get_4D_data(path,img_shape,process_dict=None)
+        
+    elif i == 1:
+        temp = get_4D_data(path,img_shape,process_dict=p_dict_1)
+    elif i == 2:
+        temp = get_4D_data(path,img_shape,process_dict=p_dict_2)
+    elif i == 3:
+        temp = get_4D_data(path,img_shape,process_dict=p_dict_3)
+    batch_data[i] = temp[0]
+```
+![image](https://user-images.githubusercontent.com/59663734/143422735-0b5cff2e-bc30-46ec-88a7-694da8d3a8ff.png)
+
+
+
+
+
 
 
 
