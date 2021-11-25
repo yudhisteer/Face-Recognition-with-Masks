@@ -1014,6 +1014,28 @@ for i in range(aug_times):
 ![image](https://user-images.githubusercontent.com/59663734/143422735-0b5cff2e-bc30-46ec-88a7-694da8d3a8ff.png)
 
 
+We then create another variable ```select_num``` where we will input the number of image we want to select from each class. We check if it is an integer and greater than 1. If so, we reset out training paths and labels. ```paths``` is a list because we use ```append``` to collect images from each folder. We shuffle that list and using ```np.min()`` we select the minimum between ```select_num``` or ```len(paths)```,i.e, we take all pictures in the latter condition. We transform the list to a numpy array and shuffle.
+
+```
+                    if select_num >= 1:
+                        #----reset paths and lables
+                        train_paths_ori = list()
+                        train_labels_ori = list()
+                        #----select images from each folder
+                        for paths,labels in zip(self.train_paths,self.train_labels):
+                            np.random.shuffle(paths)
+                            num = np.minimum(len(paths), select_num)
+                            train_paths_ori.extend(paths[:num])
+                            train_labels_ori.extend(labels[:num])
+                        #----list to np array
+                        train_paths_ori = np.array(train_paths_ori)
+                        train_labels_ori = np.array(train_labels_ori)
+                        #----shuffle
+                        indice = np.random.permutation(train_paths_ori.shape[0])
+                        train_paths_ori = train_paths_ori[indice]
+                        train_labels_ori = train_labels_ori[indice]
+
+```
 
 
 
