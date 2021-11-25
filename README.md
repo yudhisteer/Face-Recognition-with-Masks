@@ -1037,7 +1037,7 @@ We then create another variable ```select_num``` where we will input the number 
 
 
 <p align="center">
-  <img src= "https://user-images.githubusercontent.com/59663734/143298683-e2e4d92b-8e64-4e7a-a8ed-b3969f1adef7.png" />
+  <img src= "https://user-images.githubusercontent.com/59663734/143476131-90b54525-caff-4ce4-9bd2-a0d8bf9e6aff.png" />
 </p>
 
 
