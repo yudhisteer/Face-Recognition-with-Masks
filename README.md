@@ -1102,6 +1102,7 @@ I tested the model to see if the face detection works:
 
 
 After validating the face detection test, we add the face recognition model to our code:
+
 **4. Initialize our face recognition model by getting the weights from our pb file. From the face coordinates of face detection perform face recognition:**
 
 ```
