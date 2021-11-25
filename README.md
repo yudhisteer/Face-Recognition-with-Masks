@@ -699,14 +699,13 @@ We have ```9``` of the inception block concatanate to each other with some addit
  - ratio :  [0.1, 1.0]
  
  
-I tested it with only ```0.2%``` of the dataset for testing purposes and we got low values for the training and testing accuracy and some weird looking graphs as expected. I increased the ratio(ratio of images of the whole dataset) to ```0.01``` but reducing the batch to ```32``` size as my GPU would run out of memory and the results started to be promising with the test accuracy at nearly ```72.9%```. However, we see our training accuracy at ```100%``` which would be ideal but I suspect ```overfitting``` of data. In order to avoid this, we need to feed the model more data so I increased the ration to ```0.1```. The training accuracy increased slightly but the testing accuracy increased by nearly ```20%```. Giving more data to the model was a good idea and I again increased the ratio to ```0.4``` and increased the batch size to ```196``` for less training time. My GPU(RTX 3060-6GB memory) ran out of memory so I had to train it on a friend's laptop(GTX 1080 Ti-11GB memory). With an average epoch time of ```27``` min and after training for ```11h```, we got a better testing accuracy of ```93.2%```. We see that the testing accuracy never exceeded the training accuracy. Having more variation in the data could boost the accuracy even more.
+I tested it with only ```0.2%``` of the dataset for testing purposes and we got low values for the training and testing accuracy and some weird looking graphs as expected. I increased the ratio(ratio of images of the whole dataset) to ```0.01``` but reducing the batch to ```32``` size as my GPU would run out of memory and the results started to be promising with the test accuracy at nearly ```72.9%```. However, we see our training accuracy at ```100%``` which would be ideal but I suspect ```overfitting``` of data. In order to avoid this, we need to feed the model more data so I increased the ration to ```0.1```. The training accuracy increased slightly but the testing accuracy increased by nearly ```20%```. We see that the testing accuracy never exceeded the training accuracy. Having more variation in the data could boost the accuracy even more.
  
  
  
 
 <p align="center">
   <img src= "https://user-images.githubusercontent.com/59663734/143400671-b8a25fe3-366a-4016-96fc-d7d07d198162.png" />
-  <img src= "https://user-images.githubusercontent.com/59663734/143407340-cc100d5d-7034-41e5-82b3-8b064b5d5d75.png" />
 </P>
 
 
@@ -716,7 +715,7 @@ I tested it with only ```0.2%``` of the dataset for testing purposes and we got 
 
 
 
-Below is the schema for the training and testing process on the different datasets we have. With only a testing accuracy of ```0.9321``` the model would work but it will not be a reliable one. We need to have an accuracy nearing ```98%``` or ```99%``` in order to be used in an industry setting. 
+Below is the schema for the training and testing process on the different datasets we have. With only a testing accuracy of ```0.9321``` the model would work but it will not be a reliable one. We need to have an accuracy nearing ```98%``` or ```99%``` in order to be used in an industry setting. Giving more data to the model was a good idea and I again increased the ratio to ```0.4``` and increased the batch size to ```196``` for less training time. My GPU(RTX 3060-6GB memory) ran out of memory so I had to train it on a friend's laptop(GTX 1080 Ti-11GB memory). With an average epoch time of ```27``` min and after training for ```11h```, we got a better testing accuracy of ```93.2%```
 
 
 
@@ -821,14 +820,27 @@ Since our data has now been doubled we divide the batch size by 2 in order to ha
  
 ### 3.7 Second Training with Data Augmentation
 #### 3.7.1 Evaluation: No Mask Dataset
-After performing data augmentation on our pictuers, we train the model and fine tune the hyperparameters as before. We are still using the ``lfw``` as our validation set when training the model. Below are some accuracy graphs when training:
+After performing data augmentation on our pictures, we train the model and fine tune the hyperparameters as before. We are still using the ``lfw``` as our validation set when training the model. Below are the parameters to be tuned: 
+
+- model_shape :  [None, 112, 112, 3] or [None, 160, 160, 3]
+- infer_method :  inception_resnet_v1
+- loss_method :  cross_entropy or arcface
+- opti_method :  adam
+- learning_rate :  0.0002 or 0.0005
+- embed_length :  128 or 256
+- epochs :  40 or 60 or 100 
+- GPU_ratio :  None
+- batch_size :  32 or 96 or 196
+- ratio :  0.1 or 0.4
+- process_dict :  {'rdm_flip': True, 'rdm_br': True, 'rdm_crop': True, 'rdm_angle': True, 'rdm_noise': True}
+
+I set the ratio to ```0.4``` and the batch size to ```196```, and the accuracy increased from ```86.93%``` from our last training to a whopping ```92.07%``` - an increase of nearly ```6%```. Using the same settings, I only decreased the learning rate to ```0.0002``` and the testing accuracy increased slightly to ```0.9618```. 
 
 ![image](https://user-images.githubusercontent.com/59663734/143456873-2170f8de-1b22-4d98-a063-2ed1d923966b.png)
 ![image](https://user-images.githubusercontent.com/59663734/143456618-a7a75e8d-ad95-4f52-8697-014718aad381.png)
 
- 
- 
- 
+We clearly see a great improvement in our testing accuracy but we need to do more tests to ensure the robustness of the model.
+
 #### 3.7.2 Evaluation: Mask Dataset
 What we have been doing till now is train our images on the ```CASIA``` dataset with masks and without masks and then test it onto our **without** mask ```Lfw``` dataset. The accuracy we got before was for face recognition **without** masks. We need to propose another method for evaluation of faces **with** masks. Out steps are as follows:
 
@@ -936,20 +948,22 @@ For the example below we assume am image as a 3-dimentional embedding. We calcul
 
 ```
 
-We test our model with the following hyperparameters on both the ```1000``` images and the ```lfw``` dataset:
+We use the evaluation function and test:
 
- - model_shape :  [None, 160, 160, 3]
- - infer_method :  inception_resnet_v1
- - loss_method :  arcface
- - opti_method :  adam
- - learning_rate :  0.0005
- - embed_length :  128
- - epochs :  90
- - GPU_ratio :  None
- - batch_size :  128
- - ratio :  1.0
+1. The pre-trained Inception ResNet V1 model trained on CASIA-Webface dataset
+2. The pre-trained Inception ResNet V1 model trained on VGGFace2 dataset
+3. Our model **before** Data Augmentation
+4. Our model **after** Data Augmentation
 
-The updated schema is as follows:
+Below are the test results:
+
+<p align="center">
+  <img src= "https://user-images.githubusercontent.com/59663734/143469476-ec8e6064-3b18-4f53-b074-1ec8fd6578eb.png" />
+</p>
+
+When evaluating the pre-trained weights of the model ```0.163207955``` on our mask dataset, we got only an accuracy of ```16.3%``` at a threshold of ```0.7``` and nearly thrice that at a threshold of ```0.8```. The same is seen for the model ```20180402-114759``` with slightly better accuracy. This clearly shows that we would not have used the model for face recognition with masks. Our model before data augmentation has a shockingly low accuracy on both thresholds. However, since we achieved only an accuracy of ```0.8693``` of the lfw dataset then we canconclude the model was not that robust. After data augmentation, our model accuracy increased sharply on both the lfw dataset and the masks dataset with a maximum accuracy of ```99.98%``` at a threshold of 0.8. Our model surpassed the accuracy of the pre-trained weights of the original Inception ResNet V1 model and has been optimized to perform better at recognizing faces with masks.
+
+After performing data augmentation and evaluating our model on both the lfw dataset and the masks dataset, we update our schema:
 
 <p align="center">
   <img src= "https://user-images.githubusercontent.com/59663734/143300318-c6c17cb9-1bdc-4d6e-bac7-140953651eea.png" />
