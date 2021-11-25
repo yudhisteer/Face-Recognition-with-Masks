@@ -819,13 +819,14 @@ We don't want to flip our image vertically as we do not expect to see someone up
 Since our data has now been doubled we divide the batch size by 2 in order to have the same number of data in one batch as before. We also reverse the paths of the sub-folders in the directories of CASIA mask and without mask such that in half a batch we have the original images and in the other half we have the data augmented images. We then re-train the model.
  
  
-### 3.7 Second Training(Evaluation: Mask Dataset with Data Augmentation)
+### 3.7 Second Training with Data Augmentation
 
+#### 3.7.1 Evaluation: No Mask Dataset
 
  
  
  
- ### 3.7 Second Training(Evaluation: Mask Dataset with Data Augmentation)
+#### 3.7.2 Evaluation: Mask Dataset
 What we have been doing till now is train our images on the ```CASIA``` dataset with masks and without masks and then test it onto our **without** mask ```Lfw``` dataset. The accuracy we got before was for face recognition **without** masks. We need to propose another method for evaluation of faces with masks. Out steps are as follows:
 
 1. Use a new dataset which has never used in our FaceNet training.
