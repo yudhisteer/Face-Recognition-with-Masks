@@ -698,11 +698,33 @@ We have ```9``` of the inception block concatanate to each other with some addit
  - batch_size :  32 or 48 or 96 or 128
  - ratio :  [0.1, 1.0]
  
+ 
+I tested it with only ```0.2%``` of the dataset for testing purposes and we got low values for the training and testing accuracy and some weird looking graphs as expected. I increased the ratio(ratio of images of the whole dataset) to ```0.01``` but reducing the batch to ```32``` size as my GPU would run out of memory and the results started to be promising with the test accuracy at nearly ```72.9%```. However, we see our training accuracy at ```100%``` which would be ideal but I suspect ```overfitting``` of data. In order to avoid this, we need to feed the model more data so I increased the ration to ```0.1```. The training accuracy increased slightly but the testing accuracy increased by nearly ```20%```. Giving more data to the model was a good idea and I again increased the ratio to ```0.4``` and increased the batch size to ```196``` for less training time. My GPU(RTX 3060-6GB memory) ran out of memory so I had to train it on a friend's laptop(GTX 1080 Ti-11GB memory). With an average epoch time of ```27``` min and after training for ```11h```, we got a better testing accuracy of ```93.2%```. We see that the testing accuracy never exceeded the training accuracy. Having more variation in the data could boost the accuracy even more.
+ 
+ 
+ 
+
+<p align="center">
+  <img src= "https://user-images.githubusercontent.com/59663734/143400671-b8a25fe3-366a-4016-96fc-d7d07d198162.png" />
+  <img src= "https://user-images.githubusercontent.com/59663734/143407340-cc100d5d-7034-41e5-82b3-8b064b5d5d75.png" />
+</P>
+
+
+
+
+
+
+
+
+Below is the schema for the training and testing process on the different datasets we have. With only a testing accuracy of ```0.9321``` the model would work but it will not be a reliable one. We need to have an accuracy nearing ```98%``` or ```99%``` in order to be used in an industry setting. 
+
+
+
 <p align="center">
   <img src= "https://user-images.githubusercontent.com/59663734/143297865-4d4610ec-45c0-4015-82f8-cc343ce40f7e.png" />
 </p>
 
- 
+
  
  
  ### 3.6 Data Augmentation
@@ -797,6 +819,9 @@ We don't want to flip our image vertically as we do not expect to see someone up
 Since our data has now been doubled we divide the batch size by 2 in order to have the same number of data in one batch as before. We also reverse the paths of the sub-folders in the directories of CASIA mask and without mask such that in half a batch we have the original images and in the other half we have the data augmented images. We then re-train the model.
  
  
+### 3.7 Second Training(Evaluation: Mask Dataset with Data Augmentation)
+
+
  
  
  
@@ -939,7 +964,7 @@ We begin by exploring how much classes have less than ```10``` images and how mu
 4. Original image with random mask with Data Augmentation
 
 <p align="center">
-  <img src= "https://user-images.githubusercontent.com/59663734/143308233-fe6010d8-cc79-4661-8040-43bed3b6135a.png" />
+  <img src= "https://user-images.githubusercontent.com/59663734/143391065-01892c94-7cb6-498c-b703-8f2420b58754.png" />
 </p>
 
 
