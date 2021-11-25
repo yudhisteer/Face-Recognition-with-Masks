@@ -999,7 +999,9 @@ for i in range(aug_times):
         temp = get_4D_data(path,img_shape,process_dict=p_dict_3)
     batch_data[i] = temp[0]
 ```
-![image](https://user-images.githubusercontent.com/59663734/143422735-0b5cff2e-bc30-46ec-88a7-694da8d3a8ff.png)
+<p align="center">
+  <img src= "https://user-images.githubusercontent.com/59663734/143499077-b0a8a568-0e9e-404e-906f-3439a80284b5.png" />
+</p>
 
 
 We then create another variable ```select_num``` where we will input the number of image we want to select from each class. We check if it is an integer and greater than 1. If so, we reset out training paths and labels. ```paths``` is a list because we use ```append``` to collect images from each folder. We shuffle that list and using ```np.min()``` we select the minimum between ```select_num``` or ```len(paths)```,i.e, we take all pictures in the latter condition. We transform the list to a numpy array and shuffle.
