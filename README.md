@@ -823,20 +823,8 @@ Since our data has now been doubled we divide the batch size by 2 in order to ha
 #### 3.7.1 Evaluation: No Mask Dataset
 After performing data augmentation on our pictuers, we train the model and fine tune the hyperparameters as before. We are still using the ``lfw``` as our validation set when training the model. Below are some accuracy graphs when training:
 
-.
-.
-.
-.
-.
-.
-.
-.
-.
-.
-.
-.
-
-
+![image](https://user-images.githubusercontent.com/59663734/143456873-2170f8de-1b22-4d98-a063-2ed1d923966b.png)
+![image](https://user-images.githubusercontent.com/59663734/143456618-a7a75e8d-ad95-4f52-8697-014718aad381.png)
 
  
  
@@ -1065,16 +1053,50 @@ We then create another variable ```select_num``` where we will input the number 
 
  
  ### 3.9 Real-time Face Recognition
+We now come to the time for the real test - real-time face recognition. Our objective is to recognize a person who is wearing a mask. We start by reading the image from a camera input. We need to process the image from BGR to RGB. Using our pre-trained face mask SSD model we had, we perform the face detection and crop the face. We send this image to our face recognition model for face matching. If a face is detected, our face mask detection model will draw a rectangle showing if the person is wearing a mask or not. We use the face coordinates from the face detection model to crop the image and our face recogniton model will perform the embedding and assign name to the image with the least distance. A schema of the process is shown below:
  
  
+<p align="center">
+  <img src= "https://user-images.githubusercontent.com/59663734/143441698-3032a8ce-a397-4488-9788-332ce6b106b9.png" />
+</p>
  
- 
- 
- 
- 
- 
- 
- 
+**1. Get our original image:**
+
+ ```
+     #----Get an image
+    while(cap.isOpened()):
+        ret, img = cap.read()#img is the original image with BGR format. It's used to be shown by opencv
+ ```
+ **2. Process the image from BGR to RGB:**
+
+```
+            #----image processing
+            img_rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+            img_rgb = img_rgb.astype(np.float32)
+            img_rgb /= 255
+
+```
+
+**3. Perform face detection and draw rectangle on the original image:**
+```
+    #----face detection
+            img_fd = cv2.resize(img_rgb, fmd.img_size)
+            img_fd = np.expand_dims(img_fd, axis=0)
+
+            bboxes, re_confidence, re_classes, re_mask_id = fmd.inference(img_fd, height, width)
+            if len(bboxes) > 0:
+                for num, bbox in enumerate(bboxes):
+                    class_id = re_mask_id[num]
+                    if class_id == 0: #Mask
+                        color = (0, 255, 0)  # (B,G,R) --> Green(with masks)
+                    else: #No mask
+                        color = (0, 0, 255)  # (B,G,R) --> Red(without masks)
+                    cv2.rectangle(img, (bbox[0], bbox[1]), (bbox[0] + bbox[2], bbox[1] + bbox[3]), color, 2)
+                    # cv2.putText(img, "%s: %.2f" % (id2class[class_id], re_confidence[num]), (bbox[0] + 2, bbox[1] - 2),
+                    #             cv2.FONT_HERSHEY_SIMPLEX, 0.8, color)
+```
+
+4. Initialize our face recognition model by getting the weights from our pb file. 
 
 
 ## Conclusion
