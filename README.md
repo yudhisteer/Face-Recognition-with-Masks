@@ -1033,7 +1033,7 @@ We then create another variable ```select_num``` where we will input the number 
   <img src= "https://user-images.githubusercontent.com/59663734/143495785-7ed4435c-27f7-4262-9bf3-2eff20e578de.png" />
 </p>
 
-Below are the test results for our whole training process rtill the beginning. We observe that the difference when selected 2 or 5 images from each class and 15 images from each class is very little. However, the average time of one epoch was 65 min with a GPU of RTX 2080 Ti. We see that when we selected only 2 images from each folder and perform data augmentation then our accuracy was nearly the same and our average time for one epoch was only around 10 min. Since now we solved the data imbalance problem, even when our selected number is small we can still reach a high accuracy. 
+Below are the test results for our whole training process till the beginning. We observe that the difference when selecting ```2``` or ```5``` images from each class and ```15``` images from each class is very little(```0.9947``` compared to ```0.9941```). However, the average time of one epoch was ```65``` min with a GPU of RTX 2080 Ti. We see that when we selected only 2 images from each folder and perform data augmentation then our accuracy was nearly the same and our average time for one epoch was only around ```10``` min. Since now we solved the data imbalance problem, even when our selected number is small we can still reach a high accuracy. 
 
 ![image](https://user-images.githubusercontent.com/59663734/143497574-364ba31f-784a-419a-a7ee-3480a60fb0f5.png)
 
@@ -1043,7 +1043,7 @@ We update for the lat time our schema which resume our whole training process an
   <img src= "https://user-images.githubusercontent.com/59663734/143497506-cda11a9f-bfa2-410d-9d1f-a2faa6f6295e.png" />
 </p>
 
-Now after being confident that we got a robust model, it is time for real-time face recognition with masks.
+Now after being confident that we got a robust model, it is time for ```real-time face recognition with masks```.
  
  ### 3.9 Real-time Face Recognition
 We now come to the time for the real test - real-time face recognition. Our objective is to recognize a person who is wearing a mask. We start by reading the image from a camera input. We need to process the image from BGR to RGB. Using our pre-trained face mask SSD model we had, we perform the face detection and crop the face. We send this image to our face recognition model for face matching. If a face is detected, our face mask detection model will draw a rectangle showing if the person is wearing a mask or not. We use the face coordinates from the face detection model to crop the image and our face recogniton model will perform the embedding and assign name to the image with the least distance. A schema of the process is shown below:
