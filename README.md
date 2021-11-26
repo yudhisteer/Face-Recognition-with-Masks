@@ -546,7 +546,9 @@ The face masks have successfully been added to the images. Although we have some
 ## Phase 3: Implementation
 
 ### 3.1 FaceNet
-FaceNet is a deep neural network used for extracting features from an image of a person’s face. It was developed in 2015 by three researchers at Google: Florian Schroff, Dmitry Kalenichenko, and James Philbin.
+FaceNet is a deep neural network used for extracting features from an image of a person’s face. It was proposed  in 2015 by three Google Researchers, Florian Schroff, Dmitry Kalenichenko, and James Philbin, in the paper titled _FaceNet: A Unified Embedding for Face Recognition and Clustering._ It achieved state-of-the-art results in the many benchmark face recognition dataset such as **Labeled Faces in the Wild (LFW)** and Youtube Face Database.
+
+They proposed an approach in which it generates a high-quality face mapping from the images using deep learning architectures such as ZF-Net and Inception. Then it used a method called triplet loss as a loss function to train this architecture. 
 
 <p align="center">
   <img src= "https://user-images.githubusercontent.com/59663734/142723211-05e51b72-8794-442e-b1fa-ae9f5a6ed9bc.jpg" />
@@ -1289,5 +1291,9 @@ The ```Data-Centric``` approach - holding the model fix and iteratively improvin
 10. https://github.com/davidsandberg/facenet
 11. https://www.forbes.com/sites/gilpress/2021/06/16/andrew-ng-launches-a-campaign-for-data-centric-ai/?sh=5538affd74f5
 12. https://docs.opencv.org/3.4/d4/d13/tutorial_py_filtering.html
-13. Aurelien Geron(2017): Hands-On Machine Learning with Scikit-Learn and TensorFlow
+13. https://www.geeksforgeeks.org/facenet-using-facial-recognition-system/
+14. https://medium.com/analytics-vidhya/facenet-architecture-part-1-a062d5d918a1
+15. https://towardsdatascience.com/a-simple-guide-to-the-versions-of-the-inception-network-7fc52b863202
+16. https://www.geeksforgeeks.org/inception-v4-and-inception-resnets/
+17. Aurelien Geron(2017): Hands-On Machine Learning with Scikit-Learn and TensorFlow
 
