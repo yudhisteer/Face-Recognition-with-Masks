@@ -1104,7 +1104,9 @@ def stream(camera_source=0,resolution="480",to_write=False,save_dir=None):
 
 We test it:
 
-https://user-images.githubusercontent.com/59663734/143538699-a92a0b30-1742-49e5-9e27-a7103585d399.mp4
+<p align="center">
+  <img src= "https://user-images.githubusercontent.com/59663734/143538699-a92a0b30-1742-49e5-9e27-a7103585d399.mp4" />
+</p>
 
 #### 3.9.2 Add Face Mask Detection
 We upload our face mask model from our pb file and create two variables: ```margin``` and ```i2dclass```:
@@ -1150,12 +1152,19 @@ We test it:
 
 
 
-https://user-images.githubusercontent.com/59663734/143541830-d27a53d7-f267-4108-ae35-811f97ee663e.mp4
+<p align="center">
+  <img src= "https://user-images.githubusercontent.com/59663734/143541830-d27a53d7-f267-4108-ae35-811f97ee663e.mp4" />
+</p>
 
 
 
 #### 3.9.1 Add Face Recognition
 For the third phase, we have the Microsoft Celeberity dataset to test our model which contains ```85,742``` persons' face. I will insert my image in the database and check if the model can recognize me among all these people.
+
+<p align="center">
+  <img src= "https://user-images.githubusercontent.com/59663734/143551710-01c61845-6534-4d6d-a04b-35f45b638d34.png" />
+</p>
+
 
 We restore our face recognition model from our ```pb_model_select_num=15.pb``` file and initialize our face recognition model:
 
@@ -1239,9 +1248,11 @@ If the distance of this particular index is also smaller than our threshold(```0
                                 cv2.FONT_HERSHEY_SIMPLEX, 0.8, color)
 ```
 
-We execute the program:
+We execute the program and it took 
 
-https://user-images.githubusercontent.com/59663734/143551087-1b99ce2c-f2f3-44a4-ace9-19206e20c27c.mp4
+<p align="center">
+  <img src= "https://user-images.githubusercontent.com/59663734/143551087-1b99ce2c-f2f3-44a4-ace9-19206e20c27c.mp4" />
+</p>
 
 
 
