@@ -1,4 +1,4 @@
-# Automating Attendance System using Face-Recognition-with-Masks
+# Automating Attendance System using Face Recognition with Masks
 Due to Covid-19 and its variants, a lot of people have been contaminated and died in Mauritius. While the financial sector of the island is fragile after a 3 months lockdown, another lockdown can result in an economic crisis. With the risk of contamination higher in environments such as offices, I decided to find a solution that will help as prevention against Covid-19. 
 
 The attendance system at RT Knits is archaic and requires a person to swipe his card on an electronic device. Seeing that we can automate the system in order to avoid contact with potentially contaminated persons, I propose a face recognition system. While this system already exists and is an old system, I realized we will need a ```Face Recognition with Masks```.
