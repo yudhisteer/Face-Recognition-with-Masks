@@ -656,6 +656,9 @@ We can start by understanding the Naive version of the Inception model where we 
 
 ![image](https://user-images.githubusercontent.com/59663734/142761227-875b8713-1edb-4058-a6c6-7f396d8cce1e.png)
 
+![image](https://user-images.githubusercontent.com/59663734/143535196-c4b047d6-1576-4242-bbdb-48be792b90e7.png)
+
+
 #### 3.3.1 Network in Network
 
 If we look at the computational cost of the ```5x5``` filters of the ```28x28x192``` input volume, we have a whopping ```120M``` multiplies to perform. It is important to remember that this is only for the ```5x5``` filter and we still need to computer for the other 2 filters and pooling layer. A soltution to this is to implement a ```1x1``` convolution before the ```5x5``` filter that will output the same ```28x28x32``` volume but will reduce the number of multiplies by one tenth.
@@ -1056,6 +1059,57 @@ We now come to the time for the real test - real-time face recognition. Our obje
 <p align="center">
   <img src= "https://user-images.githubusercontent.com/59663734/143441698-3032a8ce-a397-4488-9788-332ce6b106b9.png" />
 </p>
+
+For the real-time recognition, the process is divided into three phases:
+
+1. Real time streaming
+2. Add Face Detection
+3. Add Face Recognition
+
+#### 3.9.1 Real Time Streaming
+
+In a function called ```stream``` we have a while loop which will stream video directly from our webcam:
+
+```
+def stream(camera_source=0,resolution="480",to_write=False,save_dir=None):
+    
+    #----Video streaming initialization
+    cap,height,width,writer = video_init(camera_source=camera_source, resolution=resolution, to_write=to_write, save_dir=save_dir)
+
+    #----Get an image
+    while(cap.isOpened()):
+        ret, img = cap.read()#img is the original image with BGR format. It's used to be shown by opencv
+
+        if ret is True:
+            #----image display
+            cv2.imshow("demo by Yudhisteer", img)
+
+            #----image writing
+            if writer is not None:
+                writer.write(img)
+
+            #----keys handle
+            key = cv2.waitKey(1) & 0xFF
+            if key == ord('q'):
+                break
+        else:
+            print("get images failed")
+            break
+
+    #----release
+    cap.release()
+    cv2.destroyAllWindows()
+    if writer is not None:
+        writer.release()
+```
+
+We test it:
+
+
+
+https://user-images.githubusercontent.com/59663734/143538189-5ec43d2b-7b51-48f4-8ff3-b7fe5ed505c4.mp4
+
+
  
 **1. Get our original image:**
 
@@ -1150,5 +1204,6 @@ We use the Microsoft Celeberity dataset to test our model. I took a selfie and p
 7. https://www.aiuai.cn/aifarm465.html
 8. https://jonathan-hui.medium.com/ssd-object-detection-single-shot-multibox-detector-for-real-time-processing-9bd8deac0e06
 9. https://medium.com/inveterate-learner/real-time-object-detection-part-1-understanding-ssd-65797a5e675b
-10. Aurelien Geron(2017): Hands-On Machine Learning with Scikit-Learn and TensorFlow
-11. https://docs.opencv.org/3.4/d4/d13/tutorial_py_filtering.html
+10. https://github.com/davidsandberg/facenet
+11. Aurelien Geron(2017): Hands-On Machine Learning with Scikit-Learn and TensorFlow
+12. https://docs.opencv.org/3.4/d4/d13/tutorial_py_filtering.html
