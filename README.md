@@ -1046,7 +1046,7 @@ Below are the test results for our whole training process till the beginning. We
 
 ![image](https://user-images.githubusercontent.com/59663734/143497574-364ba31f-784a-419a-a7ee-3480a60fb0f5.png)
 
-We update for the lat time our schema which resume our whole training process and testing accuracies:
+We update for the final time our schema which resumes our whole training and testing accuracies:
 
 <p align="center">
   <img src= "https://user-images.githubusercontent.com/59663734/143497506-cda11a9f-bfa2-410d-9d1f-a2faa6f6295e.png" />
