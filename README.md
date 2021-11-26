@@ -1260,7 +1260,7 @@ The model was successful at recognizing people with masks however after several 
 One better solution is similar to what we did when training our model to recognize faces with masks: recognize faces with glasses. But where will we get a database with people with glasses? Just as we fabricated our own dataset with masks we will need to create our own dataset with glasses. Using PNG images of glasses, we use our face detection model to detect the eyes of the person and using masking of images with add the glasses on the target image. Our goal is still to recognize people with face masks so similar to what we did in phase three of training: 1 picture is replicated to 4 times with data augmentation, our script will include to randomly choose a glass and a mask as shown below such that for each picture we now create  6 pictures:
 
 <p align="center">
-  <img src= "https://user-images.githubusercontent.com/59663734/143572441-5db310f5-c830-4679-b3d7-40522d83d2e4.png" />
+  <img src= "https://user-images.githubusercontent.com/59663734/143584263-46d97471-a69f-4e4b-b668-e77fb59bf6a6.png" />
 </p>
 
 ### 4.2 Face Mask Recognition with Sunglasses
