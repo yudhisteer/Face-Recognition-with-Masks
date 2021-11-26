@@ -16,6 +16,9 @@ Being a long and complex project I divided it into three phases:
  - Phase 3: We will train our model from scratch to perform face mask recognition.
 
 The most important part of this whole project remains the data collection and data cleaning process. Using a ```data-centric``` approach, we will systematically enhance our dataset to increase our accuracy and prevent overfitting. By performing ```Data Augmentation``` and ```Stratified Sampling``` and keeping our model constant, we will focus on the underlying data to train and evaluate our system.
+
+Many of the concepts explained below have been inspired by ```Andrew Ng's``` Deep Learning Specialization course. I did a lot of research in order to explain AI concepts in the simplest way possible and Andrew Ng's material is by far the most insightful I encountered. 
+
 ## Phase 1: Face Recognition Concept
 
 ### 1.1 Face Verification vs Face Recognition
