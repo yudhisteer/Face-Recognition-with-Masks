@@ -1241,12 +1241,14 @@ If the distance of this particular index is also smaller than our threshold(```0
 
 We execute the program:
 
-https://user-images.githubusercontent.com/59663734/143550251-a78b37af-2730-4745-a151-d7eb371ae6a6.mp4
+https://user-images.githubusercontent.com/59663734/143551087-1b99ce2c-f2f3-44a4-ace9-19206e20c27c.mp4
 
 
 
+The test was successful!
 
 ## Conclusion
+
 
 ## References
 1. https://arsfutura.com/magazine/face-recognition-with-facenet-and-mtcnn/
