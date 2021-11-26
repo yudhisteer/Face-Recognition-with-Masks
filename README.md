@@ -1104,9 +1104,7 @@ def stream(camera_source=0,resolution="480",to_write=False,save_dir=None):
 
 We test it:
 
-<p align="center">
-  <img src= "https://user-images.githubusercontent.com/59663734/143538699-a92a0b30-1742-49e5-9e27-a7103585d399.mp4" />
-</p>
+https://user-images.githubusercontent.com/59663734/143538699-a92a0b30-1742-49e5-9e27-a7103585d399.mp4
 
 #### 3.9.2 Add Face Mask Detection
 We upload our face mask model from our pb file and create two variables: ```margin``` and ```i2dclass```:
@@ -1150,12 +1148,7 @@ We perform the inference and check if we detect a mask. We draw a green rectangl
 
 We test it:
 
-
-
-<p align="center">
-  <img src= "https://user-images.githubusercontent.com/59663734/143541830-d27a53d7-f267-4108-ae35-811f97ee663e.mp4" />
-</p>
-
+https://user-images.githubusercontent.com/59663734/143541830-d27a53d7-f267-4108-ae35-811f97ee663e.mp4
 
 
 #### 3.9.1 Add Face Recognition
@@ -1250,9 +1243,7 @@ If the distance of this particular index is also smaller than our threshold(```0
 
 We execute the program and it took 
 
-<p align="center">
-  <img src= "https://user-images.githubusercontent.com/59663734/143551087-1b99ce2c-f2f3-44a4-ace9-19206e20c27c.mp4" />
-</p>
+https://user-images.githubusercontent.com/59663734/143551087-1b99ce2c-f2f3-44a4-ace9-19206e20c27c.mp4
 
 
 
