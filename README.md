@@ -4,8 +4,6 @@
 
 ## Action Plan
 
-## Phase 1: Face Recognition
-
 ### 1.1 Face Verification vs Face Recognition
 
 ### 1.1.1 Verification - Is this the same person?
@@ -154,9 +152,7 @@ The output <img src="https://latex.codecogs.com/svg.image?\hat{y}" title="\hat{y
 
 In summary, we just need to create a training set of pairs of images where ```target label = 1``` of **same** person and ```target label = 0``` of **different** person.
 
-## Phase 2: Mask Detection
-
-## Phase 3: Face Recognition with Mask
+## Face Recognition with Mask
 ![2-Figure1-1](https://user-images.githubusercontent.com/59663734/142723133-243c6b53-47ea-43e7-809b-c4dd790aa98f.png)
 
 ### 3.5 Face Detection
@@ -1241,7 +1237,7 @@ If the distance of this particular index is also smaller than our threshold(```0
                                 cv2.FONT_HERSHEY_SIMPLEX, 0.8, color)
 ```
 
-We execute the program and it took 
+We execute the program and it took ```307.093s(about 5 min)``` to get the embeddings of ```85743``` people.
 
 https://user-images.githubusercontent.com/59663734/143551087-1b99ce2c-f2f3-44a4-ace9-19206e20c27c.mp4
 
@@ -1249,8 +1245,26 @@ https://user-images.githubusercontent.com/59663734/143551087-1b99ce2c-f2f3-44a4-
 
 The test was successful!
 
+## Further Improvement
+The model was successful at recognizing people with masks however after several tests we see that there are still some shortcomings of the model whereby if in the target image the person had glasses then the model fail to recognise the person in real-time without glasses and vice versa. One possible solution would be to increase the threshold from ```0.7``` to ```1.0``` but that can also allow incorrect predictions by the model.
+
+One better solution is similar to what we did when training our model to recognize faces with masks: recognise faces with glasses. But where will be get a databse with people with glasses? Just as we fabricated our own dataset with masks we will need to create our own dataset with glasses. Using PNG images of glasses, we use our face detection model to detect the eyes of the person and using masking of images with add the glasses on the target image. Our goal is still to recognize people with face masks so similar to what we did in phase three of training: 1 picture is replicated to 4 times with data augmentation, our script will include to randomly choose a glass and a mask as shown below such that for each picture we now create  6 pictures:
+
+<p align="center">
+  <img src= "https://user-images.githubusercontent.com/59663734/143572441-5db310f5-c830-4679-b3d7-40522d83d2e4.png" />
+</p>
+
+No model exist on the market able to recognise someone with sunglasses **and** mask. My next step will be to perform more data augmentation on my image to include sunglasses and masks to train the model to perform ```face mask sunglasses recognition```:
+
+<p align="center">
+  <img src= "https://user-images.githubusercontent.com/59663734/143573017-ec72abf9-09c0-4231-ad35-7097a70875c7.png" />
+</p>
+
 ## Conclusion
 
+The model was successful at recognizing people with masks. With an accuracy of ```99.84%``` after performing data augmentation and stratified sampling, the model is ready to be deployed in the office. As discussed above, we observe some limits of the model. Training the model on images with and without glasses will be a way to improve our predicitons accuracy. 
+
+We started with a simple face detection algorithm and use SSD to make a face mask detection model. From there, using the Inception ResNet V1 architecture, we trained our model from scratch and tested the accuracy. Due to overfitting, we performed Data Augmentation techniques and we saw the accuracy increased to ```96.18%```. Due to imbalance of our data, we performed a startified sampling of our data coupled with data augmentation so as not to decrease our training dataset. Our accuracy on a Mask dataset reach ```99.84%``` after ```33``` hours of training. The real-time face recognition was a success and it is time to test the model with other people in the office at RT Knits.
 
 ## References
 1. https://arsfutura.com/magazine/face-recognition-with-facenet-and-mtcnn/
