@@ -48,12 +48,12 @@ Face recognition is a ```1:K``` problem where K is the number of persons in our 
 ### 1.2 The One Shot Learning Dilemma
 The problem with the face recognition for automating the attendance system at RT Knits is to be able for the neural network to recognize a particular person from only **one** image. Since we are going to have only one picture of the employees, the system should be able to recognize the person again. 
 
-Suppose we have 100 employees then one simple solution would be to take this one image and feed it into a CNN and and output a softmax unit with 101 outputs(100 outputs is for the employees and the one left is to indicate none). However, this would not work well for two reasons:
+Suppose we have 100 employees then one simple solution would be to take this one image and feed it into a CNN and output a softmax unit with 101 outputs(100 outputs is for the employees and the one left is to indicate none). However, this would not work well for two reasons:
 
 1. We will have a very little training set hence, we will not be able to train a robust neural network.
 2. Suppose we have another employee joining in then we would have to increment our outputs and re-train our Conv-Net. 
 
-Instead we would want our neural network to learn a ```similarity function.```
+Instead, we would want our neural network to learn a ```similarity function.```
 
 ### 1.3 Similarity Function
 
@@ -69,7 +69,7 @@ So how do we address the face verification problem?
 
 where <img src="https://latex.codecogs.com/svg.image?\tau&space;" title="\tau " /> is a threshold.
 
-Given a new image, we use that function d to compare against the images in our database. If the image pairs are different then we would have a large number and if they are the same then we would have a small enough number that will be less than our ```threshold``` <img src="https://latex.codecogs.com/svg.image?\tau&space;" title="\tau " />.
+Given a new image, we use that function ```d``` to compare against the images in our database. If the image pairs are different then we would have a large number and if they are the same then we would have a small enough number that will be less than our ```threshold``` <img src="https://latex.codecogs.com/svg.image?\tau&space;" title="\tau " />.
 
 ![image](https://user-images.githubusercontent.com/59663734/142725497-32e644cd-0562-40ab-a569-46e57108918e.png)
 
@@ -106,7 +106,7 @@ We can also write the equation above as :
 
 <img src="https://latex.codecogs.com/png.image?\dpi{100}&space;\left\|f(A)-f(P)&space;\right\|^2&space;-&space;&space;\left\|f(A)-f(N)&space;\right\|^2\leq&space;0" title="\left\|f(A)-f(P) \right\|^2 - \left\|f(A)-f(N) \right\|^2\leq 0" />
 
-To make sure the neural network does not output zero for all the encodings, i.e, it does not set all the encodings equal to each other, we modify the above equation such that the differenve between ```d(A,P)``` and ```d(A,N)``` should be <img src="https://latex.codecogs.com/png.image?\dpi{100}&space;0-\alpha&space;" title="0-\alpha " /> where <img src="https://latex.codecogs.com/png.image?\dpi{100}&space;\alpha&space;" title="\alpha " /> is called a ```margin```
+To make sure the neural network does not output zero for all the encodings, i.e, it does not set all the encodings equal to each other, we modify the above equation such that the difference between ```d(A,P)``` and ```d(A,N)``` should be <img src="https://latex.codecogs.com/png.image?\dpi{100}&space;0-\alpha&space;" title="0-\alpha " /> where <img src="https://latex.codecogs.com/png.image?\dpi{100}&space;\alpha&space;" title="\alpha " /> is called a ```margin```
 
 Finally, the equation becomes:
 
@@ -170,7 +170,7 @@ In summary, we just need to create a training set of pairs of images where ```ta
 ![2-Figure1-1](https://user-images.githubusercontent.com/59663734/142723133-243c6b53-47ea-43e7-809b-c4dd790aa98f.png)
 
 ### 2.1 Face Detection with SSD
-Object detection refers to the task of identifying various objects within an image and drawing a bounding box around each of them. Initially researchers developed R-CNN for object detection, localization and classification. The output is a bounding box surrounding the object detected with the classification result of the object. With time, we improved the R-CNN network and came up with Fast R-CNN and Faster R-CNN. However, one major drawback of the network was that the inference time was too long for real-time object detection. New architectures such as ```YOLO``` and the ones describe below are better suited for real-time object detection.
+Object detection refers to the task of identifying various objects within an image and drawing a bounding box around each of them. Initially, researchers developed R-CNN for object detection, localization, and classification. The output is a bounding box surrounding the object detected with the classification result of the object. With time, we improved the R-CNN network and came up with Fast R-CNN and Faster R-CNN. However, one major drawback of the network was that the inference time was too long for real-time object detection. New architectures such as ```YOLO``` and the ones described below are better suited for real-time object detection.
 
 There are several methods for face detection:
 - SSD
@@ -212,7 +212,7 @@ If we have a picture as shown below we may divide it into a ```5x5``` grid cells
 
 ![image](https://user-images.githubusercontent.com/59663734/142837554-05605efa-da36-480f-a710-f013153da318.png)
 
-For the first grid cell which does not contain an object, we have p = 0 as the first parameter in out y value and for the rest we don't care so we use ? to represent as placeholder. For the thrid grid cell, we detect an object and a face so out p = 1 and c1 = 1 and the x,y,w and h represents values for the bounding box. During training we will try to make our network output similar vectors. 
+For the first grid cell which does not contain an object, we have p = 0 as the first parameter in our ```y``` value and for the rest, we don't care so we use ```?``` to represent them. For the third grid cell, we detect an object and a face so out p = 1 and c1 = 1, and the x,y,w and h represent values for the bounding box. During training, we will try to make our network output similar vectors. 
 
 SSD does not use a pre-defined region proposal network. Instead, it computes both the location and class scores using small convolution filters. After extracting the feature maps, SSD applies 3 × 3 convolution filters for each cell to make predictions.
 
@@ -227,20 +227,19 @@ SSD does not use a pre-defined region proposal network. Instead, it computes bot
 Normally if our IoU is greater than or equal to 0.5 we deem it to be a correct prediction. But we can be more stringent and increase the threshold where 1 is the maximum value.
 
 **3. Anchor Boxes**
-
-1. It is not possible for one object to be strictly within one grid cell. And when it is not, how do we determine which cell do we asscoiate to the object.  
+1. It is not possible for one object to be strictly within one grid cell. And when it is not, how do we determine which cell do we associate to the object.  
 - The solution for this is to associate the cell which contains the **center point** of the bounding box of the object. 
 
-2. Each of the grid cell can detect only one object. But we may have one grid cell containing more than one object. How do we handle multiple center points?
-- We can use a bigger grid - 19x19 - instead of a 5x5 which reduces this problem. Also, we need to do is predefined anchor boxes and associate perdiction with the anchor boxes. 
+2. Each of the grid cells can detect only one object. But we may have one grid cell containing more than one object. How do we handle multiple center points?
+- We can use a bigger grid - 19x19 - instead of a 5x5 which reduces this problem. Also, we need to do is predefined anchor boxes and associate prediction with the anchor boxes. 
 
-Previously, each obejct is assigned to a grid cell which contains that object's midpoint. Now, each obejct is assigned to a grid cell which contains that object's midpoint **and** anchor box for the grid cell with the highest IoU(similar shape).  
+Previously, each object is assigned to a grid cell that contains that object's midpoint. Now, each object is assigned to a grid cell which contains that object's midpoint **and** anchor box for the grid cell with the highest IoU(similar shape).  
 
 <p align="center">
   <img src= "https://user-images.githubusercontent.com/59663734/142845336-85efa649-4611-47d9-8885-f8660a13ad8f.png" />
 </p>
 
-For the image above, both objects have their ceneterpoint in the same cell. So we set a tall anchor box which can be used to predict a standing person and a wide anchor box can be used to predict a car. We use these anchor boxes in each of the grid cell and output one vector y for every anchor box. 
+For the image above, both objects have their counterpoint in the same cell. So we set a tall anchor box that can be used to predict a standing person and a wide anchor box can be used to predict a car. We use these anchor boxes in each of the grid cell and output one vector y for every anchor box. 
 
 **4. Non-Maximal Suppression (NMS)**
 
@@ -255,7 +254,7 @@ SSD contains 8732 default boxes. During inference, we have 8732 boxes for each c
 
 To sum up:
 - The network is very sensitive to default boxes and it is important to choose the default boxes based on the dataset that it is being used on.
-- SSD does not work well with small objects: earlier layers which have smaller receptive field and are responsible for small object detection, are too shallow. 
+- SSD does not work well with small objects: earlier layers which have smaller receptive fields and are responsible for small object detection, are too shallow. 
 
 **5. Implementation**
 
@@ -334,7 +333,7 @@ In order to draw the bounding box we need to get the (xmin,ymin) and (xmax,ymax)
         return re_boxes, re_confidence, re_classes, re_mask_id
 ```
 
-Our original image is 250x250 so we want our cropped face image to be over 100x100. This enable us to detect faces which is well aligned(the main person in the image). We use two thresholds for the width and height:
+Our original image is 250x250 so we want our cropped face image to be over 100x100. This enables us to detect faces which is well aligned(the main person in the image). We use two thresholds for the width and height:
 
 ```
     width_threshold = 100 + margin // 2 #allow us to get a full face and not cropped ones
@@ -366,14 +365,14 @@ We can set a process of removing mislabelled images using the distance function 
 
 1. In a subfolder in the main directory, we select one image one by one as the **target image** and the other images become the **reference images**.
 2. We calculate the average distances between the target image and the reference image. 
-3. We see that the average distance, when a correct image is selected as the target image, is not much as compared when the mislabelled image is selected as the target image. Also we might have more than one mislabelled image in a folder. That is the reason why we make each image the target image and calculate the average distance.
+3. We see that the average distance, when a correct image is selected as the target image, is not much as compared to when the mislabelled image is selected as the target image. Also, we might have more than one mislabelled image in a folder. That is the reason why we make each image the target image and calculate the average distance.
 **Note:** The distance between a target image and itself is zero. 
 5. We compare the average distances to a threshold.
 6. We remove the target image(mislabelled image) when its average distance exceeds the threshold.
 
 ![image](https://user-images.githubusercontent.com/59663734/142935906-405ce329-48d7-43ab-8230-341271216ccc.png)
 
-We use the pretrained weights of Inception Resnet V1 trained on VGGFace dataset and has an accuracy of 0.9965 on LFW dataset. We start by restoring the ```.pb``` file and create a fucntion ```img_removal_by_embed``` to do the following processes:
+We use the pre-trained weights of Inception Resnet V1 trained on the VGGFace dataset and have an accuracy of 0.9965 on the LFW dataset. We start by restoring the ```.pb``` file and creating a function ```img_removal_by_embed``` to do the following processes:
 
 **1. Collect all folders:**
 
@@ -468,18 +467,16 @@ We use the pretrained weights of Inception Resnet V1 trained on VGGFace dataset 
                             shutil.move(path,save_path)
 ```
 
-We run the file and check the folders. We got ```3981``` folders which had ```20079```wrong images in total. In the folders, we see that our algorithm correctly identified the wrong person in Linda Hamilton's folder and in Bill Murray's folder we had more than one mislabelled images. However, we see that the algorithm also removed the images of the correct label. Mainly because the images were blurred or fuzzy, or the subjet had sunglasses in them or there were pictures when the person was too young or too old. Nevertheless, data cleaning will now allow our NN to train on a more accurate dataset to make better predictions.
+We run the file and check the folders. We got ```3981``` folders which had ```20079```wrong images in total. In the folders, we see that our algorithm correctly identified the wrong person in Linda Hamilton's folder, and in Bill Murray's folder, we had more than one mislabelled image. However, we see that the algorithm also removed the images of the correct label. Mainly because the images were blurred or fuzzy, or the subject had sunglasses in them or there were pictures when the person was too young or too old. Nevertheless, data cleaning will now allow our NN to train on a more accurate dataset to make better predictions.
 
 ![image](https://user-images.githubusercontent.com/59663734/142937113-3235d10a-9a9b-47fe-b4d8-c5d4c6e776de.png)
 
-
-
 ### 2.3 Custom Face Mask Dataset
-Our end goal is to be able to recognize faces with mask. The CASIA dataset already have half a million of pictures of faces and we know that by using the Inception Resnet V1 model we can create a face recognition model. What we want to do now is have the same CASIA dataset with the same folders and same pictures but with the persons wearing a mask. We don't have such as dataset so we need to ceate one. What we want to do is to show our AI the picture of a person **without** a mask, then a picture of the same person **with** a mask and tell him that it is the same person. 
+Our end goal is to be able to recognize faces with masks. The CASIA dataset already has half a million pictures of faces and we know that by using the Inception Resnet V1 model we can create a face recognition model. What we want to do now is have the same CASIA dataset with the same folders and same pictures but with the persons wearing a mask. We don't have such as dataset so we need to create one. What we want to do is to show our AI the picture of a person **without** a mask, then a picture of the same person **with** a mask and tell him that it is the same person. 
 
 ![image](https://user-images.githubusercontent.com/59663734/142997230-bc4e6fb0-4122-4cdd-8e2f-8a7eb61b3a4b.png)
 
-In order to achieve the process above, we need to have our mask in ```png``` format. PNG formats had 4 channels. The fourth channel is used to describe the transparency. I will use the Dlib library which is a pre-trained to recognize 68 landmark points that cover the jaw, chin, eyebrows, nose, eyes, and lips of a face. The numbers 48 to 68 are those for the mouth as shown below.
+In order to achieve the process above, we need to have our mask in ```png``` format. PNG formats had 4 channels. The fourth channel is used to describe transparency. I will use the Dlib library which is pre-trained to recognize 68 landmark points that cover the jaw, chin, eyebrows, nose, eyes, and lips of a face. The numbers 48 to 68 are those for the mouth as shown below.
 
 ![image](https://user-images.githubusercontent.com/59663734/143016227-3df5cba5-8a75-4c4f-8556-28ebc819e8ad.png)
 
@@ -544,7 +541,7 @@ We then add the two images: face mask and face:
   <img src= "https://user-images.githubusercontent.com/59663734/143057055-327f0114-8370-493c-8c72-5d55bff2fbab.png" />
 </p>
 
-The face masks have successfully been added to the images. Although we have some side face image, we cannot really modify the mask to fit in each image correspondingly so we can say it is a satisfying result. 
+The face masks have successfully been added to the images. Although we have some side face images, we cannot really modify the mask to fit in each image correspondingly so we can say it is a satisfying result. 
 
 ## Phase 3: Implementation
 
@@ -654,32 +651,32 @@ We feed into into a fully connected layer with dropout and units = ```128``` whi
 ```
 
 ### 3.3 Inception Network
-When designing a layer for a convNet, we need to pick the type of filters we want: ```1x1```, ```3x3``` or ```5x5``` or even the type of pooling. To get rid of this conundrum, the inception layer allowsus to implement them all. So why do we use filters of different size? For our example, our image will be of the same dimension but the **target** in the image may be of different size, i.e, a person may stand far from the camera or one may be close to it. Having different kernel size allow us to extract features of different size. 
+When designing a layer for a convNet, we need to pick the type of filters we want: ```1x1```, ```3x3``` or ```5x5``` or even the type of pooling. To get rid of this conundrum, the inception layer allows us to implement them all. So why do we use filters of different sizes? For our example, our image will be of the same dimension but the **target** in the image may be of different sizes, i.e, a person may stand far from the camera or one may be close to it. Having different kernel size allow us to extract features of different size. 
 
-We can start by understanding the Naive version of the Inception model where we apply different types of kernel on an input and concatenate the output as shown below. The idea is instead of us selecting the filter sizes, we use them all and concatanate their output and let the NN learn whichever combination of filter sizes it wants. However, the problem with this method is the **computational cost**. 
+We can start by understanding the Naive version of the Inception model where we apply different types of kernel on an input and concatenate the output as shown below. The idea is instead of us selecting the filter sizes, we use them all and concatenate their output and let the NN learn whichever combination of filter sizes it wants. However, the problem with this method is the **computational cost**. 
 
 ![image](https://user-images.githubusercontent.com/59663734/142761227-875b8713-1edb-4058-a6c6-7f396d8cce1e.png)
 
 #### 3.3.1 Network in Network
 
-If we look at the computational cost of the ```5x5``` filters of the ```28x28x192``` input volume, we have a whopping ```120M``` multiplies to perform. It is important to remember that this is only for the ```5x5``` filter and we still need to computer for the other 2 filters and pooling layer. A soltution to this is to implement a ```1x1``` convolution before the ```5x5``` filter that will output the same ```28x28x32``` volume but will reduce the number of multiplies by one tenth.
+If we look at the computational cost of the ```5x5``` filters of the ```28x28x192``` input volume, we have a whopping ```120M``` multiplies to perform. It is important to remember that this is only for the ```5x5``` filter and we still need to compute for the other 2 filters and pooling layer. A solution to this is to implement a ```1x1``` convolution before the ```5x5``` filter that will output the same ```28x28x32``` volume but will reduce the number of multiplies by one-tenth.
 
 ![image](https://user-images.githubusercontent.com/59663734/142761522-9a60199a-2044-4e26-b975-aff7e6da3a81.png)
 
 How does this work?
 A ```1x1``` convolution also called a ```Network in network``` will take the element-wise product between the 192 numbers(example above) in the input and the 192 numbers in the filter and apply a relu activation function and output a single number. We will have a number of filters so the output will be ```HxWx#filters```.
 
-If we want to reduce the height and width of an input then we can use pooling to do so, however, if we want to reduce the number of channels of an input(192) then we use a ```1x1x#channels``` filter with the numbers of filters equal to the number of channels we want to output. In the example above in the middle sectiom, we want the channel to be 16 so we use 16 filters. 
+If we want to reduce the height and width of an input then we can use pooling to do so, however, if we want to reduce the number of channels of an input(192) then we use a ```1x1x#channels``` filter with the numbers of filters equal to the number of channels we want to output. In the example above in the middle section, we want the channel to be 16 so we use 16 filters. 
 
-We create a bottle neck by shrinking the number of channels from 192 to 16 and then increasing it again to 32. This allow us to diminish dramatically the computational cost which is now about ```12.4M``` multiplies.  The ```1x1``` convolution is an important building block in the inception network which allow us to go deeper into the network by maintaining the computational cost and learn more features.
+We create a bottleneck by shrinking the number of channels from 192 to 16 and then increasing it again to 32. This allows us to diminish dramatically the computational cost which is now about ```12.4 M ``` multiplies.  The ```1x1``` convolution is an important building block in the inception network which allows us to go deeper into the network by maintaining the computational cost and learning more features.
 
 
 #### 3.3.2 Inception with Dimension Reduction
-To reduce our computational cost we should modify out architecture in fig 3.1 and add 1x1 convoltution to it. As shown above, the 1x1 filters will allow us to have fewer weights therefore fewer calculations and therefore faster inference. The figure below shows one Inception module. The Inception network just puts a lot of these modules together.
+To reduce our computational cost we should modify our architecture in fig 3.1 and add 1x1 convolution to it. As shown above, the 1x1 filters will allow us to have fewer weights therefore fewer calculations and therefore faster inference. The figure below shows one Inception module. The Inception network just puts a lot of these modules together.
 
 ![image](https://user-images.githubusercontent.com/59663734/142762642-b684146a-28c7-4c16-b7ea-26d6a67d8b18.png)
 
-We have ```9``` of the inception block concatanate to each other with some additional max pooling to change the dimension. We should note that the last layer is a fully connected layer followed by a softmax layer to make prediction but we also have two side branches comming from the hidden layers trying to make prediction with a softmax output. This help ensure that the features computed in the hidden layers are also good to make accurate predictions and this help the network from overfitting. 
+We have ```9``` of the inception block concatenate to each other with some additional max pooling to change the dimension. We should note that the last layer is a fully-connected layer followed by a softmax layer to make predictions but we also have two side branches coming from the hidden layers trying to make predictions with a softmax output. This helps ensure that the features computed in the hidden layers are also good to make accurate predictions and this helps the network from overfitting. 
 
 ![image](https://user-images.githubusercontent.com/59663734/142762952-90a602b5-5fb7-43c7-8589-e41c02f22647.png)
 
@@ -687,11 +684,13 @@ We have ```9``` of the inception block concatanate to each other with some addit
 
 ![image](https://user-images.githubusercontent.com/59663734/142763781-1a990187-307c-45db-9f61-01bf89b1c861.png)
 
-![image](https://user-images.githubusercontent.com/59663734/143538914-da809328-f8ca-4393-b465-df1251fa6e06.png)
+<p align="center">
+  <img src= "https://user-images.githubusercontent.com/59663734/143538914-da809328-f8ca-4393-b465-df1251fa6e06.png" />
+</p>
 
 
  ### 3.5 First Training(Evaluation: No Mask Dataset)
- We now train our model on the CASIA dataset with ```No Masks``` and the custom CASIA Dataset we made with ```Masks```. We will evaluate the performance of our model on the ```Lfw``` dataset which contains images with ```No Masks```. The hyperparamers which we will need to tune are as follows:
+ We now train our model on the CASIA dataset with ```No Masks``` and the custom CASIA Dataset we made with ```Masks```. We will evaluate the performance of our model on the ```Lfw``` dataset which contains images with ```No Masks```. The hyperparameters which we will need to tune are as follows:
  
  - model_shape :  [None, 112, 112, 3] or [None, 160, 160, 3]
  - infer_method :  inception_resnet_v1 or inception_resnet_v1_reduction
@@ -705,7 +704,7 @@ We have ```9``` of the inception block concatanate to each other with some addit
  - ratio :  [0.1, 1.0]
  
  
-I tested it with only ```0.2%``` of the dataset for testing purposes and we got low values for the training and testing accuracy and some weird looking graphs as expected. I increased the ratio(ratio of images of the whole dataset) to ```0.01``` but reducing the batch to ```32``` size as my GPU would run out of memory and the results started to be promising with the test accuracy at nearly ```72.9%```. However, we see our training accuracy at ```100%``` which would be ideal but I suspect ```overfitting``` of data. In order to avoid this, we need to feed the model more data so I increased the ration to ```0.1```. The training accuracy increased slightly but the testing accuracy increased by nearly ```20%```. We see that the testing accuracy never exceeded the training accuracy. With only a testing accuracy of ```86.93%``` the model would work but it will not be a reliable one. We need to have an accuracy nearing ```98%``` or ```99%``` in order to be used in an industry setting. However, my GPU(RTX 3060-6GB memory) ran out of memory so I had to stop the training for the time being till I find another way of training the model.
+I tested it with only ```0.2%``` of the dataset for testing purposes and we got low values for the training and testing accuracy and some weird-looking graphs as expected. I increased the ratio(ratio of images of the whole dataset) to ```0.01``` but reduced the batch to ```32``` size as my GPU would run out of memory and the results started to be promising with the test accuracy at nearly ```72.9%```. However, we see our training accuracy at ```100%``` which would be ideal but I suspect ```overfitting``` of data. In order to avoid this, we need to feed the model more data so I increased the ratio to ```0.1```. The training accuracy increased slightly but the testing accuracy increased by nearly ```20%```. We see that the testing accuracy never exceeded the training accuracy. With only a testing accuracy of ```86.93%``` the model would work but it will not be a reliable one. We need to have an accuracy nearing ```98%``` or ```99%``` in order to be used in an industry setting. However, my GPU(RTX 3060-6GB memory) ran out of memory so I had to stop the training for the time being till I find another way of training the model.
  
 
 <p align="center">
@@ -736,7 +735,7 @@ Instead of using Tensorflow's Data Augmentation API, I would create the scripts 
 
 **1. Random Crop**
 
-We want to create a script to crop randomly our images to become ```150x150```. We create the frame of this size and in a small 10x10 square on the top left we generate random points and use this as our first x-y values of the frame. We position the frame and then we crop the image:
+We want to create a script to crop randomly our images to become ```150x150```. We create a frame of this size and in a small 10x10 square on the top left, we generate random points and use this as our first x-y values of the frame. We position the frame and then we crop the image:
 
 ```
                 # ----random crop
@@ -756,7 +755,7 @@ We want to create a script to crop randomly our images to become ```150x150```. 
  
  **2. Random Noise**
  
-For the random noise, we create a mask which is a numpy array of the same size of the image with only one channel. We then create a uniformly-distributed array of random numbers. If the pixel value is greater than a threshold(240) then it is set to 255 else it becomes 0. If the mask pixel value is 255, we use ```cv2.bitwise_and()``` operation else we pass.
+For the random noise, we create a mask which is a NumPy array of the same size of the image with only one channel. We then create a uniformly-distributed array of random numbers. If the pixel value is greater than a threshold(```240```) then it is set to ```255``` else it becomes ```0```. If the mask pixel value is ```255```, we use ```cv2.bitwise_and()``` operation else we pass.
  
  ```
                  # ----random noise
@@ -769,7 +768,7 @@ For the random noise, we create a mask which is a numpy array of the same size o
  
 **3. Random Rotation**
 
-We set our angle range from -60 to 60 degrees. We define our center point of rotation and use ```cv2.warpAffine``` to get the reuslt:
+We set our angle range from ```-60 to 60``` degrees. We define our center point of rotation and use ```cv2.warpAffine``` to get the reuslt:
 
 ```
                # ----random angle
@@ -807,12 +806,12 @@ We don't want to flip our image vertically as we do not expect to see someone up
 ```
  
  
-Since our data has now been doubled we divide the batch size by 2 in order to have the same number of data in one batch as before. We also reverse the paths of the sub-folders in the directories of CASIA mask and without mask such that in half a batch we have the original images and in the other half we have the data augmented images. We then re-train the model.
+Since our data has now been doubled we divide the batch size by 2 in order to have the same number of data in one batch as before. We also reverse the paths of the sub-folders in the directories of the CASIA mask and without mask such that in half a batch we have the original images and in the other half we have the data augmented images. We then re-train the model.
  
  
 ### 3.7 Second Training with Data Augmentation
 #### 3.7.1 Evaluation: No Mask Dataset
-After performing data augmentation on our pictures, we train the model and fine tune the hyperparameters as before. We are still using the ``lfw``` as our validation set when training the model. Below are the parameters to be tuned: 
+After performing data augmentation on our pictures, we train the model and fine tune the hyperparameters as before. We are still using the ``LFW``` as our validation set when training the model. Below are the parameters to be tuned: 
 
 - model_shape :  [None, 112, 112, 3] or [None, 160, 160, 3]
 - infer_method :  inception_resnet_v1
@@ -834,14 +833,14 @@ I set the ratio to ```0.4``` and the batch size to ```196```, and the accuracy i
 We clearly see a great improvement in our testing accuracy but we need to do more tests to ensure the robustness of the model.
 
 #### 3.7.2 Evaluation: Mask Dataset
-What we have been doing till now is train our images on the ```CASIA``` dataset with masks and without masks and then test it onto our **without** mask ```Lfw``` dataset. The accuracy we got before was for face recognition **without** masks. We need to propose another method for evaluation of faces **with** masks. Out steps are as follows:
+What we have been doing till now is train our images on the ```CASIA``` dataset with masks and without masks and then test it onto our **without** mask ```Lfw``` dataset. The accuracy we got before was for face recognition **without** masks. We need to propose another method for the evaluation of faces **with** masks. Out steps are as follows:
 
-1. Use a new dataset which has never used in our FaceNet training.
+1. Use a new dataset that has never been used in our FaceNet training.
 2. Select 1000 different class images(1000 persons) - they are regarded as our face database(reference data: ref_data): No Mask Folder
 3. In these 1000 class images make them wear masks - these images will be used as test images(target data: tar_data): Mask Folder
-4. We caculate the embeddings of both images(masks and without masks) and use them to do face matching.
+4. We calculate the embeddings of both images(masks and without masks) and use them to do face matching.
  
-For the example below we assume am image as a 3-dimentional embedding. We calculate the euclidean distance using the ```d``` function explained before for the target image(image with masks) and the images in our No Mask folder. If the indexes of both images match and the distance is below a threshold(0.3) then we conclude we have a correct matching.
+For the example, below we assume an image as a 3-dimensional embedding. We calculate the euclidean distance using the ```d``` function explained before for the target image(image with masks) and the images in our No Mask folder. If the indexes of both images match and the distance is below a threshold(0.3) then we conclude we have a correct matching.
  
 <p align="center">
   <img src= "https://user-images.githubusercontent.com/59663734/143234725-6b87b1dd-151a-48ff-a178-f1abaa6f10e3.png" />
@@ -953,9 +952,9 @@ Below are the test results:
   <img src= "https://user-images.githubusercontent.com/59663734/143469476-ec8e6064-3b18-4f53-b074-1ec8fd6578eb.png" />
 </p>
 
-When evaluating the pre-trained weights of the model ```20180408-102900``` on our mask dataset, we got only an accuracy of ```16.3%``` at a threshold of ```0.7``` and nearly thrice that at a threshold of ```0.8```. The same is seen for the model ```20180402-114759``` with slightly better accuracy. This clearly shows that we would not have used the model for face recognition with masks. Our model before data augmentation has a shockingly low accuracy on both thresholds. However, since we achieved only an accuracy of ```0.8693``` of the lfw dataset then we canconclude the model was not that robust. After data augmentation, our model accuracy increased sharply on both the lfw dataset and the masks dataset with a maximum accuracy of ```99.98%``` at a threshold of 0.8. Our model surpassed the accuracy of the pre-trained weights of the original Inception ResNet V1 model and has been optimized to perform better at recognizing faces with masks.
+When evaluating the pre-trained weights of the model ```20180408-102900``` on our mask dataset, we got only an accuracy of ```16.3%``` at a threshold of ```0.7``` and nearly thrice that at a threshold of ```0.8```. The same is seen for the model ```20180402-114759``` with slightly better accuracy. This clearly shows that we would not have used the model for face recognition with masks. Our model before data augmentation has a shockingly low accuracy on both thresholds. However, since we reached only an accuracy of ```0.8693``` of the LFW dataset then we can conclude the model was not that robust. After data augmentation, our model accuracy increased sharply on both the LFW dataset and the masks dataset with a maximum accuracy of ```99.98%``` at a threshold of 0.8. Our model surpassed the accuracy of the pre-trained weights of the original Inception ResNet V1 model and has been optimized to perform better at recognizing faces with masks.
 
-After performing data augmentation and evaluating our model on both the lfw dataset and the masks dataset, we update our schema:
+After performing data augmentation and evaluating our model on both the LFW dataset and the masks dataset, we update our schema:
 
 <p align="center">
   <img src= "https://user-images.githubusercontent.com/59663734/143473665-ac07f435-7d89-4443-b43c-d9ad05425af5.png" />
@@ -964,9 +963,9 @@ After performing data augmentation and evaluating our model on both the lfw data
 While the accuracy values may seem promising, I suspect we may still be overfitting the data and this is due to the **unbalanced** CASIA dataset which we have. I propose we do a more fair **sampling** of our data for training as explained below. 
 
  ### 3.8 Third Training(Evaluation: Mask Dataset with Stratified Sampling)
- In the previous training, we introduced a ```sampling bias```. For example, if our first class in our CASIA dataset has 100 images and the second class has 10 images then when using  a ratio of 0.4, we are taking 40 from the first folder and only 4 from the second folder. This disparity of the number of images in the folders create this sampling bias. A better approach would be to ensure the test set is representative of the various classes  in the whole dataset. So we introduce ```stratified sampling``` whereby the classes are divided into homogeneous subgroups called ```strata``` and the correct number of images is sampled from each stratum to guarantee the test set is representative of the whole dataset.
+ In the previous training, we introduced a ```sampling bias```. For example, if our first class in our CASIA dataset has 100 images and the second class has 10 images then when using a ratio of 0.4, we are taking 40 from the first folder and only 4 from the second folder. This disparity of the number of images in the folders creates this sampling bias. A better approach would be to ensure the test set is representative of the various classes in the whole dataset. So we introduce ```stratified sampling``` whereby the classes are divided into homogeneous subgroups called ```strata``` and the correct number of images is sampled from each stratum to guarantee the test set is representative of the whole dataset.
 
-We begin by exploring how much classes have less than ```10``` images and how much have greater than ```100``` images. We got ```195``` for the first condition and ```859``` for the second condition. While it is difficult to remove classes with less than 10 images, we cannot remove both set of classes as we will lose about 1000 classes. What we can do is randomly select a constant x(2 or 5 or 15) number of images from all the different classes. By doing so we reduce the number of images we are training on but we also gain in the time to train the model. To increase our data(since we are selecting only (2 or 5 or 15) images from all the classes), we perform more data augmentation. For each image we have selected we create a copy of ```4``` images on which we do data augmentation. For example, if from a folder of 10 images we selected only 5 images then we see that we have reduce by 50% the number of images on which the AI will train. However, we will now perform data augmentation on each of the 5 images such that the 5 images will multiply by 4 to become 20 images. The images will be as followed:
+We begin by exploring how many classes have less than ```10``` images and how much have greater than ```100``` images. We got ```195``` for the first condition and ```859``` for the second condition. While it is difficult to remove classes with less than 10 images, we cannot remove both sets of classes as we will lose about 1000 classes. What we can do is randomly select a constant x(2 or 5 or 15) number of images from all the different classes. By doing so we reduce the number of images we are training on but we also gain in the time to train the model. To increase our data(since we are selecting only (2 or 5 or 15) images from all the classes), we perform more data augmentation. For each image, we have selected we create a copy of ```4``` images on which we do data augmentation. For example, if from a folder of 10 images we selected only 5 images then we see that we have reduced by 50% the number of images on which the AI will train. However, we will now perform data augmentation on each of the 5 images such that the 5 images will multiply by 4 to become 20 images. The images will be as followed:
 
 1. Original image without mask
 2. Original image without mask with Data augmentation
@@ -978,7 +977,7 @@ We begin by exploring how much classes have less than ```10``` images and how mu
 </p>
 
 
-We change our ```get_4D_data``` function to accomodate for the changes describe above. We create a variable ```aug_times``` and assign it the value ```4``` since each image will be augmented to 4 pictures. We have a dictionary ```p_dict_1``` where we input the type of data augmentation we will do. We enumerate in the variable to apply those data augmentation.
+We change our ```get_4D_data``` function to accommodate for the changes described above. We create a variable ```aug_times``` and assign it the value ```4``` since each image will be augmented to 4 pictures. We have a dictionary ```p_dict_1``` where we input the type of data augmentation we will do. We enumerate in the variable to apply those data augmentation.
 
 ```
 aug_times = 4
@@ -1010,7 +1009,7 @@ for i in range(aug_times):
 </p>
 
 
-We then create another variable ```select_num``` where we will input the number of image we want to select from each class. We check if it is an integer and greater than 1. If so, we reset out training paths and labels. ```paths``` is a list because we use ```append``` to collect images from each folder. We shuffle that list and using ```np.min()``` we select the minimum between ```select_num``` or ```len(paths)```,i.e, we take all pictures in the latter condition. We transform the list to a numpy array and shuffle.
+We then create another variable ```select_num``` where we will input the number of images we want to select from each class. We check if it is an integer and greater than 1. If so, we reset our training paths and labels. ```paths``` is a list because we use ```append``` to collect images from each folder. We shuffle that list and using ```np.min()``` we select the minimum between ```select_num``` or ```len(paths)```,i.e, we take all pictures in the latter condition. We transform the list to a NumPy array and shuffle.
 
 ```
                     if select_num >= 1:
@@ -1033,7 +1032,7 @@ We then create another variable ```select_num``` where we will input the number 
 
 ```
 
-We begin to train the model with a high epoch number of ```100```. We reduce our batch size to ```96``` to avoid our GPU to run out of memory. We have a ```select_num = 2``` for faster training and we keep all the other parameters unchanged. After ```33h``` of training, we managed to get a decent accuracy of ```0.9693```. Now we can be sure we are not overfitting as much when solving the bias sampling issue.
+We begin to train the model with a high epoch number of ```100```. We reduce our batch size to ```96``` to avoid our GPU to run out of memory. We have a ```select_num = 2``` for faster training and we keep all the other parameters unchanged. After ```33 hours``` of training, we managed to get a decent accuracy of ```0.9693```. Now we can be sure we are not overfitting as much when solving the bias sampling issue.
 
 <p align="center">
   <img src= "https://user-images.githubusercontent.com/59663734/143495406-beda56e4-0c7d-46a6-8cb7-b65e312a12a2.png",
@@ -1056,7 +1055,7 @@ We update for the lat time our schema which resume our whole training process an
 Now after being confident that we got a robust model, it is time for ```real-time face recognition with masks```.
  
  ### 3.9 Real-time Face Recognition
-We now come to the time for the real test - real-time face recognition. Our objective is to recognize a person who is wearing a mask. We start by reading the image from a camera input. We need to process the image from BGR to RGB. Using our pre-trained face mask SSD model we had, we perform the face detection and crop the face. We send this image to our face recognition model for face matching. If a face is detected, our face mask detection model will draw a rectangle showing if the person is wearing a mask or not. We use the face coordinates from the face detection model to crop the image and our face recogniton model will perform the embedding and assign name to the image with the least distance. A schema of the process is shown below:
+We now come to the time for the real test - real-time face recognition. Our objective is to recognize a person who is wearing a mask. We start by reading the image from a camera input. We need to process the image from BGR to RGB. Using our pre-trained face mask SSD model we had, we perform the face detection and crop the face. We send this image to our face recognition model for face matching. If a face is detected, our face mask detection model will draw a rectangle showing if the person is wearing a mask or not. We use the face coordinates from the face detection model to crop the image and our face recognition model will perform the embedding and assign name to the image with the least distance. A schema of the process is shown below:
  
  
 <p align="center">
@@ -1156,7 +1155,7 @@ https://user-images.githubusercontent.com/59663734/143541830-d27a53d7-f267-4108-
 
 
 #### 3.9.3 Add Face Recognition
-For the third phase, we have the Microsoft Celeberity dataset to test our model which contains ```85,742``` persons' face. I will insert my image in the database and check if the model can recognize me among all these people.
+For the third phase, we have the Microsoft Celebrity dataset to test our model which contains ```85,742``` persons' faces. I will insert my image in the database and check if the model can recognize me among all these people.
 
 <p align="center">
   <img src= "https://user-images.githubusercontent.com/59663734/143551710-01c61845-6534-4d6d-a04b-35f45b638d34.png" />
@@ -1257,7 +1256,7 @@ The test was successful!
 ### 4.1 Face Mask Recognition with Glasses
 The model was successful at recognizing people with masks however after several tests we see that there are still some shortcomings of the model whereby if in the target image the person had glasses then the model fails to recognize the person in real-time without glasses and vice versa. One possible solution would be to increase the threshold from ```0.7``` to ```1.0``` but that can also allow incorrect predictions by the model.
 
-One better solution is similar to what we did when training our model to recognize faces with masks: recognize faces with glasses. But where will we get a database with people with glasses? Just as we fabricated our own dataset with masks we will need to create our own dataset with glasses. Using PNG images of glasses, we use our face detection model to detect the eyes of the person and using masking of images with add the glasses on the target image. Our goal is still to recognize people with face masks so similar to what we did in phase three of training: 1 picture is replicated to 4 times with data augmentation, our script will include to randomly choose a glass and a mask as shown below such that for each picture we now create  6 pictures:
+One better solution is similar to what we did when training our model to recognize faces with masks: recognize faces with glasses. But where will we get a database with people with glasses? Just as we fabricated our own dataset with masks we will need to create our own dataset with glasses. Using PNG images of glasses, we use our face detection model to detect the eyes of the person and using masking of images we add the glasses to the target image. Our goal is still to recognize people with face masks so similar to what we did in phase three of training: 1 picture is replicated to 4 times with data augmentation, our script will include to randomly choose a glass and a mask as shown below such that for each picture we now create  6 pictures:
 
 <p align="center">
   <img src= "https://user-images.githubusercontent.com/59663734/143584263-46d97471-a69f-4e4b-b668-e77fb59bf6a6.png" />
