@@ -1,16 +1,21 @@
 # Automating Attendance System using Face-Recognition-with-Masks
+Due to Covid-19 and its variants, a lot of people have been contaminated and died in Mauritius. While the financial sector of the island is fragile after a 3 months lockdown, another lockdown can result in an economic crisis. With the risk of contamination higher in environments such as offices, I decided to find a solution that will help as prevention against Covid-19. 
+
+The attendance system at RT Knits is archaic and requires a person to swipe his card on an electronic device. Seeing that we can automate the system in order to avoid contact with potentially contaminated persons, I propose a face recognition system. While this system already exists and is an old system, I realized we will need a ```Face Recognition with Masks```.
+
+A mask on the face significantly increases the possibility of a solution. After months of failing, I successfully designed the automated attendance system using face recognition with masks. With the number of deaths due to Covid-19 increasing each day, any precautionary measure not taken can be a question of life and death.
 
 ## Abstract
+```Face detection``` is an old concept, ```face verification``` can be done by a 9-year old and ```face recognition``` now requires only a dozen lines of code. In this project, I want to explore the possibility of ```Face recognition``` while a person is wearing a ```mask```. When wearing a mask, the face of a person is hidden by 60-70%. Using only 30-40% of a person's face, I designed a ```face mask recognition``` model with an accuracy of ```99.84%```. Trained on a modified CASIA dataset containing images with and without masks, the model could successfully get the embeddings of ```85743``` people within 5 min and perform perfect face recognition with and without masks.
 
 ## Action Plan
 Being a long and complex project I divided it into three phases:
 
- - Phase 1: We will discuss about the theoretical and mathematical concept that lies behind face detection, verification and recognition.
- - Phase 2: Using the concepts discussed, we will perform various image processing technique on our dataset to clean our data for better acccuracy.
+ - Phase 1: We will discuss the theoretical and mathematical concept that lies behind face detection, verification, and recognition.
+ - Phase 2: Using the concepts discussed, we will perform various image processing techniques on our dataset to clean our data for better accuracy.
  - Phase 3: We will train our model from scratch to perform face mask recognition.
 
-The most imortant part of this whole project remain the data collection and data cleaning process. Using a ```data-centric``` approach, we will systematically enhance our dataset to increase our accuracy and prevent overfitting. By performing ```Data Augmentation``` and ```Startified Sampling``` and keeping our model constant, we will focus on the underlying data to train and evaluate our system.
-
+The most important part of this whole project remains the data collection and data cleaning process. Using a ```data-centric``` approach, we will systematically enhance our dataset to increase our accuracy and prevent overfitting. By performing ```Data Augmentation``` and ```Stratified Sampling``` and keeping our model constant, we will focus on the underlying data to train and evaluate our system.
 ## Phase 1: Face Recognition Concept
 
 ### 1.1 Face Verification vs Face Recognition
@@ -1250,28 +1255,29 @@ The test was successful!
 
 ## Phase 4: Further Improvement
 ### 4.1 Face Mask Recognition with Glasses
-The model was successful at recognizing people with masks however after several tests we see that there are still some shortcomings of the model whereby if in the target image the person had glasses then the model fail to recognise the person in real-time without glasses and vice versa. One possible solution would be to increase the threshold from ```0.7``` to ```1.0``` but that can also allow incorrect predictions by the model.
+The model was successful at recognizing people with masks however after several tests we see that there are still some shortcomings of the model whereby if in the target image the person had glasses then the model fails to recognize the person in real-time without glasses and vice versa. One possible solution would be to increase the threshold from ```0.7``` to ```1.0``` but that can also allow incorrect predictions by the model.
 
-One better solution is similar to what we did when training our model to recognize faces with masks: recognise faces with glasses. But where will be get a databse with people with glasses? Just as we fabricated our own dataset with masks we will need to create our own dataset with glasses. Using PNG images of glasses, we use our face detection model to detect the eyes of the person and using masking of images with add the glasses on the target image. Our goal is still to recognize people with face masks so similar to what we did in phase three of training: 1 picture is replicated to 4 times with data augmentation, our script will include to randomly choose a glass and a mask as shown below such that for each picture we now create  6 pictures:
+One better solution is similar to what we did when training our model to recognize faces with masks: recognize faces with glasses. But where will we get a database with people with glasses? Just as we fabricated our own dataset with masks we will need to create our own dataset with glasses. Using PNG images of glasses, we use our face detection model to detect the eyes of the person and using masking of images with add the glasses on the target image. Our goal is still to recognize people with face masks so similar to what we did in phase three of training: 1 picture is replicated to 4 times with data augmentation, our script will include to randomly choose a glass and a mask as shown below such that for each picture we now create  6 pictures:
 
 <p align="center">
   <img src= "https://user-images.githubusercontent.com/59663734/143572441-5db310f5-c830-4679-b3d7-40522d83d2e4.png" />
 </p>
 
 ### 4.2 Face Mask Recognition with Sunglasses
-No model exist on the market able to recognise someone with sunglasses **and** mask. My next step will be to perform more data augmentation on my image to include sunglasses and masks to train the model to perform ```face mask sunglasses recognition```:
+No model exists on the market able to recognize someone with sunglasses **and** mask. My next step will be to perform more data augmentation on my image to include sunglasses and masks to train the model to perform ```face mask sunglasses recognition```:
 
 <p align="center">
   <img src= "https://user-images.githubusercontent.com/59663734/143573017-ec72abf9-09c0-4231-ad35-7097a70875c7.png" />
 </p>
 
 ## Conclusion
+The model was successful at recognizing people with masks. With an accuracy of ```99.84%``` after performing data augmentation and stratified sampling, the model is ready to be deployed in the office. As discussed above, we observe some limits of the model. Training the model on images with and without glasses will be a way to improve the accuracy of our prediction. 
 
-The model was successful at recognizing people with masks. With an accuracy of ```99.84%``` after performing data augmentation and stratified sampling, the model is ready to be deployed in the office. As discussed above, we observe some limits of the model. Training the model on images with and without glasses will be a way to improve our predicitons accuracy. 
+We started with a simple face detection algorithm and use SSD to make a face mask detection model. From there, using the Inception ResNet V1 architecture, we trained our model from scratch and tested the accuracy. Due to overfitting, we performed Data Augmentation techniques and we saw the accuracy increase to ```96.18%``` from ```86.93%```. Due to the imbalance of our data, we performed a stratified sampling of our data coupled with data augmentation so as not to decrease our training dataset. Our accuracy on a Mask dataset reaches ```99.84%``` after ```33``` hours of training. The real-time face recognition was a success and it is time to test the model with other people in the office at RT Knits.
 
-We started with a simple face detection algorithm and use SSD to make a face mask detection model. From there, using the Inception ResNet V1 architecture, we trained our model from scratch and tested the accuracy. Due to overfitting, we performed Data Augmentation techniques and we saw the accuracy increased to ```96.18%```. Due to imbalance of our data, we performed a startified sampling of our data coupled with data augmentation so as not to decrease our training dataset. Our accuracy on a Mask dataset reach ```99.84%``` after ```33``` hours of training. The real-time face recognition was a success and it is time to test the model with other people in the office at RT Knits.
-
+The ```Data-Centric``` approach - holding the model fix and iteratively improving the quality of the data - seemed to be fruitful in the end. By constantly enhancing our dataset with data augmentation and a more fair sampling technique, it was possible to build a robust scalable model. About 80% of my time has been spent on ```data preparation```. Injecting more and more data to our model with a proper cleaning process or sampling technique or data augmentation would never create a good performing AI model. The Data-centric AI model was the key to building this face mask recognition model and more data processing will definitely improve our prediction accuracy. 
 ## References
+
 1. https://arsfutura.com/magazine/face-recognition-with-facenet-and-mtcnn/
 2. https://www.youtube.com/watch?v=0NSLgoEtdnw&list=PLkDaE6sCZn6Gl29AoE31iwdVwSG-KnDzF&index=36
 3. https://www.youtube.com/watch?v=-FfMVnwXrZ0&list=PLkDaE6sCZn6Gl29AoE31iwdVwSG-KnDzF&index=32
@@ -1282,5 +1288,7 @@ We started with a simple face detection algorithm and use SSD to make a face mas
 8. https://jonathan-hui.medium.com/ssd-object-detection-single-shot-multibox-detector-for-real-time-processing-9bd8deac0e06
 9. https://medium.com/inveterate-learner/real-time-object-detection-part-1-understanding-ssd-65797a5e675b
 10. https://github.com/davidsandberg/facenet
-11. Aurelien Geron(2017): Hands-On Machine Learning with Scikit-Learn and TensorFlow
+11. https://www.forbes.com/sites/gilpress/2021/06/16/andrew-ng-launches-a-campaign-for-data-centric-ai/?sh=5538affd74f5
 12. https://docs.opencv.org/3.4/d4/d13/tutorial_py_filtering.html
+13. Aurelien Geron(2017): Hands-On Machine Learning with Scikit-Learn and TensorFlow
+
