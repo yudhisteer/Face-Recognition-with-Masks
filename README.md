@@ -656,9 +656,6 @@ We can start by understanding the Naive version of the Inception model where we 
 
 ![image](https://user-images.githubusercontent.com/59663734/142761227-875b8713-1edb-4058-a6c6-7f396d8cce1e.png)
 
-![image](https://user-images.githubusercontent.com/59663734/143535196-c4b047d6-1576-4242-bbdb-48be792b90e7.png)
-
-
 #### 3.3.1 Network in Network
 
 If we look at the computational cost of the ```5x5``` filters of the ```28x28x192``` input volume, we have a whopping ```120M``` multiplies to perform. It is important to remember that this is only for the ```5x5``` filter and we still need to computer for the other 2 filters and pooling layer. A soltution to this is to implement a ```1x1``` convolution before the ```5x5``` filter that will output the same ```28x28x32``` volume but will reduce the number of multiplies by one tenth.
@@ -685,6 +682,8 @@ We have ```9``` of the inception block concatanate to each other with some addit
 ### 3.4 Inception-Resnet V1 Network
 
 ![image](https://user-images.githubusercontent.com/59663734/142763781-1a990187-307c-45db-9f61-01bf89b1c861.png)
+
+![image](https://user-images.githubusercontent.com/59663734/143538914-da809328-f8ca-4393-b465-df1251fa6e06.png)
 
 
  ### 3.5 First Training(Evaluation: No Mask Dataset)
@@ -1062,8 +1061,8 @@ We now come to the time for the real test - real-time face recognition. Our obje
 
 For the real-time recognition, the process is divided into three phases:
 
-1. Real time streaming
-2. Add Face Detection
+1. Real Time streaming
+2. Add Face Mask Detection
 3. Add Face Recognition
 
 #### 3.9.1 Real Time Streaming
@@ -1105,80 +1104,62 @@ def stream(camera_source=0,resolution="480",to_write=False,save_dir=None):
 
 We test it:
 
+https://user-images.githubusercontent.com/59663734/143538699-a92a0b30-1742-49e5-9e27-a7103585d399.mp4
 
-
-https://user-images.githubusercontent.com/59663734/143538189-5ec43d2b-7b51-48f4-8ff3-b7fe5ed505c4.mp4
-
-
- 
-**1. Get our original image:**
-
- ```
-     #----Get an image
-    while(cap.isOpened()):
-        ret, img = cap.read()#img is the original image with BGR format. It's used to be shown by opencv
- ```
- **2. Process the image from BGR to RGB:**
-
+#### 3.9.2 Add Face Mask Detection
+We upload our face mask model from our pb file and create two variables: ```margin``` and ```i2dclass```:
 ```
-            #----image processing
-            img_rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-            img_rgb = img_rgb.astype(np.float32)
-            img_rgb /= 255
-
+    face_mask_model_path = r'face_mask_detection.pb'
+    margin = 40
+    id2class = {0: 'Mask', 1: 'NoMask'}
 ```
 
-**3. Perform face detection and draw rectangle on the original image:**
+We initialize our face detection model:
+
 ```
-    #----face detection
+    # ----face detection init
+    fmd = FaceMaskDetection(face_mask_model_path, margin, GPU_ratio=None)
+```
+
+We now need to convert our image from BGR to RGB and do normalization. We resize our image and increase the dimension by 1:
+
+```
+            # ----face detection
             img_fd = cv2.resize(img_rgb, fmd.img_size)
             img_fd = np.expand_dims(img_fd, axis=0)
+```
 
+We perform the inference and check if we detect a mask. We draw a green rectangle if we detect one and if not a red rectangle. We display the information just above the rectangle:
+
+```
+            # ----draw rectangle
             bboxes, re_confidence, re_classes, re_mask_id = fmd.inference(img_fd, height, width)
             if len(bboxes) > 0:
                 for num, bbox in enumerate(bboxes):
                     class_id = re_mask_id[num]
-                    if class_id == 0: #Mask
+                    if class_id == 0:
                         color = (0, 255, 0)  # (B,G,R) --> Green(with masks)
-                    else: #No mask
+                    else:
                         color = (0, 0, 255)  # (B,G,R) --> Red(without masks)
                     cv2.rectangle(img, (bbox[0], bbox[1]), (bbox[0] + bbox[2], bbox[1] + bbox[3]), color, 2)
-                    # cv2.putText(img, "%s: %.2f" % (id2class[class_id], re_confidence[num]), (bbox[0] + 2, bbox[1] - 2),
-                    #             cv2.FONT_HERSHEY_SIMPLEX, 0.8, color)
+                    cv2.putText(img, "%s: %.2f" % (id2class[class_id], re_confidence[num]), (bbox[0] + 2, bbox[1] - 2),
+                                 cv2.FONT_HERSHEY_SIMPLEX, 0.8, color)
 ```
 
-I tested the model to see if the face detection works:
-
-.
-.
-.
-.
+We test it:
 
 
-After validating the face detection test, we add the face recognition model to our code:
 
-**4. Initialize our face recognition model by getting the weights from our pb file. From the face coordinates of face detection perform face recognition:**
+https://user-images.githubusercontent.com/59663734/143541830-d27a53d7-f267-4108-ae35-811f97ee663e.mp4
 
-```
-                    # ----face recognition
-                    name = ""
-                    if len_ref_path > 0:
-                        img_fr = img_rgb[bbox[1]:bbox[1] + bbox[3], bbox[0]:bbox[0] + bbox[2], :]  # crop
-                        img_fr = cv2.resize(img_fr, (model_shape[2], model_shape[1]))  # resize
-                        img_fr = np.expand_dims(img_fr, axis=0)  # make 4 dimensions
 
-                        feed_dict[tf_input] = img_fr
-                        embeddings_tar = sess.run(tf_embeddings, feed_dict=feed_dict) #embeddings of target image
-                        feed_dict_2[tf_tar] = embeddings_tar[0]
-                        distance = sess_cal.run(tf_dis, feed_dict=feed_dict_2)
-                        arg = np.argmin(distance)  # index of the smallest distance
 
-                        if distance[arg] < threshold: #we have a match
-                            name = paths[arg].split("\\")[-1].split(".")[0]
+#### 3.9.1 Add Face Recognition
 
-                    cv2.putText(img, "{},{}".format(id2class[class_id], name), (bbox[0] + 2, bbox[1] - 2),
-                                cv2.FONT_HERSHEY_SIMPLEX, 0.8, color)
-```
+
+
+
+
 
 We use the Microsoft Celeberity dataset to test our model. I took a selfie and pasted it in the folder with my name. It took approximately ```111.5``` seconds for the model to get the embeddings of all the ```85,742``` persons' face including mine. I run the script and check:
 
