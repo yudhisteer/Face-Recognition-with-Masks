@@ -1155,20 +1155,93 @@ https://user-images.githubusercontent.com/59663734/143541830-d27a53d7-f267-4108-
 
 
 #### 3.9.1 Add Face Recognition
+For the third phase, we have the Microsoft Celeberity dataset to test our model which contains ```85,742``` persons' face. I will insert my image in the database and check if the model can recognize me among all these people.
 
+We restore our face recognition model from our ```pb_model_select_num=15.pb``` file and initialize our face recognition model:
 
+```
+    # ----face recognition init
+    sess, tf_dict = model_restore_from_pb(pb_path, node_dict, GPU_ratio=None)
+    tf_input = tf_dict['input']
+    tf_embeddings = tf_dict['embeddings']
+```
 
+We now read the images from the database: We then a batch data of ```32``` to read our images, normalize the data and get the embeddings:
 
+```
+    #----read images from the database
+    d_t = time.time()
+    paths = [file.path for file in os.scandir(ref_dir) if file.name[-3:] in img_format]
+    len_ref_path = len(paths)
+    if len_ref_path == 0:
+        print("No images in ", ref_dir)
+    else:
+        ites = math.ceil(len_ref_path / batch_size)
+        embeddings_ref = np.zeros([len_ref_path, tf_embeddings.shape[-1]], dtype=np.float32)
+```
 
+Using a batch data of ```32``` to read our images, we normalize the data and get the embeddings:
+```
+        for i in range(ites):
+            num_start = i * batch_size
+            num_end = np.minimum(num_start + batch_size, len_ref_path)
 
-We use the Microsoft Celeberity dataset to test our model. I took a selfie and pasted it in the folder with my name. It took approximately ```111.5``` seconds for the model to get the embeddings of all the ```85,742``` persons' face including mine. I run the script and check:
+            batch_data_dim =[num_end - num_start]
+            batch_data_dim.extend(model_shape[1:])
+            batch_data = np.zeros(batch_data_dim,dtype=np.float32)
 
+            for idx,path in enumerate(paths[num_start:num_end]):
+                # img = cv2.imread(path)
+                img = cv2.imdecode(np.fromfile(path, dtype=np.uint8), 1)
+                if img is None:
+                    print("read failed:",path)
+                else:
+                    #print("model_shape:",model_shape[1:3])
+                    img = cv2.resize(img,(model_shape[2],model_shape[1]))
+                    img = img[:,:,::-1]#change the color format
+                    batch_data[idx] = img
+            batch_data /= 255
+            feed_dict[tf_input] = batch_data
+            embeddings_ref[num_start:num_end] = sess.run(tf_embeddings,feed_dict=feed_dict)
+```
 
-.
-.
-.
-.
+We set our euclidean distance equation to calculate the distance:
 
+```
+            tf_dis = tf.sqrt(tf.reduce_sum(tf.square(tf.subtract(tf_ref, tf_tar)), axis=1))
+```
+
+After the face detection step, if a face is detected we get the face coordinates to crop the image, resize and change the dimension to ```4```:
+
+```
+                    if len_ref_path > 0:
+                        img_fr = img_rgb[bbox[1]:bbox[1] + bbox[3], bbox[0]:bbox[0] + bbox[2], :]  # crop
+                        img_fr = cv2.resize(img_fr, (model_shape[2], model_shape[1]))  # resize
+                        img_fr = np.expand_dims(img_fr, axis=0)  # make 4 dimensions
+```
+
+We get the embeddings and calculate the distance and get the **index** of the image of the smaller distance:
+
+```
+                        embeddings_tar = sess.run(tf_embeddings, feed_dict=feed_dict) #embeddings of target
+                        feed_dict_2[tf_tar] = embeddings_tar[0]
+                        distance = sess_cal.run(tf_dis, feed_dict=feed_dict_2)
+                        arg = np.argmin(distance)  # index of the smallest distance
+```
+
+If the distance of this particular index is also smaller than our threshold(```0.8```), we conclude we have a **match**. We get the name of our image file which is initially an empty variable and display it on top of our rectangle:
+
+```
+                        if distance[arg] < threshold: #we have a match
+                            name = paths[arg].split("\\")[-1].split(".")[0]
+
+                    cv2.putText(img, "{},{}".format(id2class[class_id], name), (bbox[0] + 2, bbox[1] - 2),
+                                cv2.FONT_HERSHEY_SIMPLEX, 0.8, color)
+```
+
+We execute the program:
+
+https://user-images.githubusercontent.com/59663734/143550251-a78b37af-2730-4745-a151-d7eb371ae6a6.mp4
 
 
 
