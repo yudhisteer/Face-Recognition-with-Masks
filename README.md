@@ -4,6 +4,8 @@
 
 ## Action Plan
 
+## Phase 1: Face Recognition Concept
+
 ### 1.1 Face Verification vs Face Recognition
 
 ### 1.1.1 Verification - Is this the same person?
@@ -152,10 +154,10 @@ The output <img src="https://latex.codecogs.com/svg.image?\hat{y}" title="\hat{y
 
 In summary, we just need to create a training set of pairs of images where ```target label = 1``` of **same** person and ```target label = 0``` of **different** person.
 
-## Face Recognition with Mask
+## Phase 2: Data Processing
 ![2-Figure1-1](https://user-images.githubusercontent.com/59663734/142723133-243c6b53-47ea-43e7-809b-c4dd790aa98f.png)
 
-### 3.5 Face Detection
+### 2.1 Face Detection with SSD
 Object detection refers to the task of identifying various objects within an image and drawing a bounding box around each of them. Initially researchers developed R-CNN for object detection, localization and classification. The output is a bounding box surrounding the object detected with the classification result of the object. With time, we improved the R-CNN network and came up with Fast R-CNN and Faster R-CNN. However, one major drawback of the network was that the inference time was too long for real-time object detection. New architectures such as ```YOLO``` and the ones describe below are better suited for real-time object detection.
 
 There are several methods for face detection:
@@ -170,9 +172,7 @@ Our goal is to use a face detection algorithm to detect faces and crop it with m
   <img src= "https://user-images.githubusercontent.com/59663734/142823899-d1193e71-a01a-4844-9810-6185488384d5.png" />
 </p>
 
-#### 3.5.1 Face Detection with SSD
-
-In the first phase I used Dlib but now I will use SSD for face detection. While MTCNN is more widely used, SSD performs faster inference however has low accuracy. SSD uses lower resolution layers to detect larger scale objects. It speeds up the process by eliminating the need for the region proposal network.
+While MTCNN is more widely used, SSD performs faster inference however has low accuracy. SSD uses lower resolution layers to detect larger scale objects. It speeds up the process by eliminating the need for the region proposal network.
 
 The architecture of SSD consists of 3 main components:
 
@@ -345,7 +345,7 @@ We display the images:
 ![image](https://user-images.githubusercontent.com/59663734/142858127-52759a18-4b40-4447-9426-1cc8fe851f50.png)
 
 
-### 3.2 Data Cleaning
+### 2.2 Data Cleaning
 After cropping the pictures, we check the folders and we see that in folder ```0000157``` we got one mislabelled image as shown below. This signifies that the CASIA dataset is not a cleaned dataset and there may be other instances of mislabelled images. We cannot check each of the ```10,575``` folders individually so we need an algorithm that will do this for us. 
 
 ![image](https://user-images.githubusercontent.com/59663734/142935195-d12ee28e-7dc3-4f2f-8b91-538c3919e5fb.png)
@@ -462,7 +462,7 @@ We run the file and check the folders. We got ```3981``` folders which had ```20
 
 
 
-### 3.3 Custom Face Mask Dataset
+### 2.3 Custom Face Mask Dataset
 Our end goal is to be able to recognize faces with mask. The CASIA dataset already have half a million of pictures of faces and we know that by using the Inception Resnet V1 model we can create a face recognition model. What we want to do now is have the same CASIA dataset with the same folders and same pictures but with the persons wearing a mask. We don't have such as dataset so we need to ceate one. What we want to do is to show our AI the picture of a person **without** a mask, then a picture of the same person **with** a mask and tell him that it is the same person. 
 
 ![image](https://user-images.githubusercontent.com/59663734/142997230-bc4e6fb0-4122-4cdd-8e2f-8a7eb61b3a4b.png)
@@ -534,11 +534,7 @@ We then add the two images: face mask and face:
 
 The face masks have successfully been added to the images. Although we have some side face image, we cannot really modify the mask to fit in each image correspondingly so we can say it is a satisfying result. 
 
-
-
-
-
-
+## Phase 3: Implementation
 
 ### 3.1 FaceNet
 FaceNet is a deep neural network used for extracting features from an image of a person’s face. It was developed in 2015 by three researchers at Google: Florian Schroff, Dmitry Kalenichenko, and James Philbin.
@@ -1147,7 +1143,7 @@ We test it:
 https://user-images.githubusercontent.com/59663734/143541830-d27a53d7-f267-4108-ae35-811f97ee663e.mp4
 
 
-#### 3.9.1 Add Face Recognition
+#### 3.9.3 Add Face Recognition
 For the third phase, we have the Microsoft Celeberity dataset to test our model which contains ```85,742``` persons' face. I will insert my image in the database and check if the model can recognize me among all these people.
 
 <p align="center">
@@ -1245,7 +1241,7 @@ https://user-images.githubusercontent.com/59663734/143551087-1b99ce2c-f2f3-44a4-
 
 The test was successful!
 
-## Further Improvement
+## Phase 4: Further Improvement
 The model was successful at recognizing people with masks however after several tests we see that there are still some shortcomings of the model whereby if in the target image the person had glasses then the model fail to recognise the person in real-time without glasses and vice versa. One possible solution would be to increase the threshold from ```0.7``` to ```1.0``` but that can also allow incorrect predictions by the model.
 
 One better solution is similar to what we did when training our model to recognize faces with masks: recognise faces with glasses. But where will be get a databse with people with glasses? Just as we fabricated our own dataset with masks we will need to create our own dataset with glasses. Using PNG images of glasses, we use our face detection model to detect the eyes of the person and using masking of images with add the glasses on the target image. Our goal is still to recognize people with face masks so similar to what we did in phase three of training: 1 picture is replicated to 4 times with data augmentation, our script will include to randomly choose a glass and a mask as shown below such that for each picture we now create  6 pictures:
