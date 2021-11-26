@@ -3,6 +3,13 @@
 ## Abstract
 
 ## Action Plan
+Being a long and complex project I divided it into three phases:
+
+ - Phase 1: We will discuss about the theoretical and mathematical concept that lies behind face detection, verification and recognition.
+ - Phase 2: Using the concepts discussed, we will perform various image processing technique on our dataset to clean our data for better acccuracy.
+ - Phase 3: We will train our model from scratch to perform face mask recognition.
+
+The most imortant part of this whole project remain the data collection and data cleaning process. Using a ```data-centric``` approach, we will systematically enhance our dataset to increase our accuracy and prevent overfitting. By performing ```Data Augmentation``` and ```Startified Sampling``` and keeping our model constant, we will focus on the underlying data to train and evaluate our system.
 
 ## Phase 1: Face Recognition Concept
 
@@ -1242,6 +1249,7 @@ https://user-images.githubusercontent.com/59663734/143551087-1b99ce2c-f2f3-44a4-
 The test was successful!
 
 ## Phase 4: Further Improvement
+### 4.1 Face Mask Recognition with Glasses
 The model was successful at recognizing people with masks however after several tests we see that there are still some shortcomings of the model whereby if in the target image the person had glasses then the model fail to recognise the person in real-time without glasses and vice versa. One possible solution would be to increase the threshold from ```0.7``` to ```1.0``` but that can also allow incorrect predictions by the model.
 
 One better solution is similar to what we did when training our model to recognize faces with masks: recognise faces with glasses. But where will be get a databse with people with glasses? Just as we fabricated our own dataset with masks we will need to create our own dataset with glasses. Using PNG images of glasses, we use our face detection model to detect the eyes of the person and using masking of images with add the glasses on the target image. Our goal is still to recognize people with face masks so similar to what we did in phase three of training: 1 picture is replicated to 4 times with data augmentation, our script will include to randomly choose a glass and a mask as shown below such that for each picture we now create  6 pictures:
@@ -1250,6 +1258,7 @@ One better solution is similar to what we did when training our model to recogni
   <img src= "https://user-images.githubusercontent.com/59663734/143572441-5db310f5-c830-4679-b3d7-40522d83d2e4.png" />
 </p>
 
+### 4.2 Face Mask Recognition with Sunglasses
 No model exist on the market able to recognise someone with sunglasses **and** mask. My next step will be to perform more data augmentation on my image to include sunglasses and masks to train the model to perform ```face mask sunglasses recognition```:
 
 <p align="center">
