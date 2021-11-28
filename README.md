@@ -105,9 +105,11 @@ Using  a vector of 128 numbers, our AI will try to compress all the necessary fe
 So what do the numbers in the embedding vector mean? Size of the eyes? Distance between the nose and the eyes? Mouth width? The answer is simply: **we don't really know!** We don’t directly tell our NN what the numbers in the vector should represent during training, we only require that the embedding vectors of similar faces are also similar (i.e. close to each other). It’s up to our NN to figure out how to represent faces with vectors so that the vectors of the same people are similar and the vectors of different people are not. For this to be true, our NN needs to identify **key features** of a person’s face which separate it from different faces. Our NN is trying out many different combinations of these features during training until it finds the **ones** that work the best. Our neural network don’t represent features in an image the same way as we do (distance, size, etc.) and it is better this way as this enable it to do a far better job than us humans.
 
 <p align="center">
-  <img src= "https://user-images.githubusercontent.com/59663734/143774470-11f663db-8a01-436e-8fd8-1409f0d3b3b7.png" />
+  <img src= "(https://user-images.githubusercontent.com/59663734/143775596-261ee8dd-8ac2-4672-9458-efbe82ca56fe.png" />
 </p>
 <p align="center">   Fig. A function which takes an image as the input and outputs the face embedding (a summary of the face).</p>
+
+What we would want in our case is the NN to generate embeddings such that it is nearly the same for a person with and without masks. In this way our model will be able to predict the correct person even with a mask.
 
 This process of training a convolutional neural network to output face embeddings requires a lot of data and computer power. It took me about ```46 hours``` of continuous training to get good accuracy. But once the network has been trained, it can generate measurements for any face, even ones it has never seen before! So this step only needs to be done once.
 
