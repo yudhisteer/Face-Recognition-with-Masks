@@ -81,7 +81,7 @@ For someone not in our database, when we will do the pairwise comparison and com
 ### 1.4 Siamese Network
 The idea of running two identical convolutional neural networks on two different inputs and comparing them is called a Siamese Neural Network. 
 
-We feed in a picture of a person into a sequence of convolutions, pooling and fully connected layers and end up with a 128 feature vector. These 128 numbers is represented by <img src="https://latex.codecogs.com/png.image?\dpi{100}&space;f(x^{(i)})" title="f(x^{(i)})" /> and is called the ```encoding``` of the image where <img src="https://latex.codecogs.com/png.image?\dpi{100}&space;img_{(i)}&space;=&space;x^{(i)}" title="img_{(i)} = x^{(i)}" />.
+We feed in a picture of a person into a sequence of convolutions, pooling and fully connected layers and end up with a 128 feature vector. These 128 numbers is represented by <img src="https://latex.codecogs.com/png.image?\dpi{100}&space;f(x^{(i)})" title="f(x^{(i)})" /> and is called the ```encoding or embedding``` of the image where <img src="https://latex.codecogs.com/png.image?\dpi{100}&space;img_{(i)}&space;=&space;x^{(i)}" title="img_{(i)} = x^{(i)}" />.
 
 ![image](https://user-images.githubusercontent.com/59663734/142727867-2fa4f25e-3768-4c64-849b-6f4d5fe0e16d.png)
 
@@ -96,7 +96,30 @@ To sum up:
 
 When we vary the parameters of the different layers of our NN, we end up with different encodings. But we want to learn a specific set of parameters such that the above two conditions are met.
 
-### 1.5 Triplet Loss Function
+### 1.5 Embedding
+In order to understand what is a face ```embedding``` or ```encoding```, we should first ask ourselves how do we recognise a face? The method which requires the least mental effort would be to remember the distinct facial characteristics of an individual. Color of the eyes, long nose, large ears, color of the skin, scars, and so one are all distinct features which we look in a person if we want to remember them after looking at them only once. In this way, we expect our NN to do the same thing.
+
+Using  a vector of 128 numbers, our AI will try to compress all the necessary features of a face into this space.  Mapping high-dimensional data (like images) into this low-dimensional representations (embeddings) is what will allow us to give each face an ```ID```. As such, embeddings of similar faces are similar - a person can have only one ID.
+
+#### 1.5.1 Content of an Embedding
+So what do the numbers in the embedding vector mean? Size of the eyes? Distance between the nose and the eyes? Mouth width? The answer is simply: **we don't really know!** We don’t directly tell our NN what the numbers in the vector should represent during training, we only require that the embedding vectors of similar faces are also similar (i.e. close to each other). It’s up to our NN to figure out how to represent faces with vectors so that the vectors of the same people are similar and the vectors of different people are not. For this to be true, our NN needs to identify **key features** of a person’s face which separate it from different faces. Our NN is trying out many different combinations of these features during training until it finds the **ones** that work the best. Our neural network don’t represent features in an image the same way as we do (distance, size, etc.) and it is better this way as this enable it to do a far better job than us humans.
+
+<p align="center">
+  <img src= "https://user-images.githubusercontent.com/59663734/143774470-11f663db-8a01-436e-8fd8-1409f0d3b3b7.png" />
+</p>
+<p align="center">   Fig. A function which takes an image as the input and outputs the face embedding (a summary of the face).</p>
+
+This process of training a convolutional neural network to output face embeddings requires a lot of data and computer power. It took me about ```46 hours``` of continuous training to get good accuracy. But once the network has been trained, it can generate measurements for any face, even ones it has never seen before! So this step only needs to be done once.
+
+#### 1.5.2 How to know the correct embedding dimension?
+FaceNet experiemented experimented with different embedding dimensionalities and 128 remains the best performing one. In this project my embedding length will be a constant 128 feature vector.
+
+<p align="center">
+  <img src= "https://user-images.githubusercontent.com/59663734/143772903-f2fd2e46-cb15-423a-a48d-d506d093520a.png" />
+</p>
+
+
+### 1.6 Triplet Loss Function
 In Triplet Loss, we will be looking at three images at a time: an ```anchor```, a ```positive``` image(one who is similar to the anchor image) and a ```negative``` image(one who is different from the anchor image). We want the distance between the anchor and the positive to be minimum and the distance between the anchor and the negative image to be maximum. 
 
 We denote the ```anchor``` as ```A```, ```positive``` as ```P``` and ```negative``` as ```N```. 
@@ -163,7 +186,7 @@ At RT Knits we have 2000 employees and we assume we will have 20,000 images(10 p
   <img src= "https://user-images.githubusercontent.com/59663734/143081544-1d3ad257-328d-459d-bc03-b6c194bfc6af.png" />
 </p>
 
-### 1.6 Face Verification with Binary Classification
+### 1.7 Face Verification with Binary Classification
 Another option to the Triplet Loss Function is to to take the Siamese Network and have them compute the 128D embedding to be then fed to a logistic regression unit to make prediction.
 
 - Same person: <img src="https://latex.codecogs.com/svg.image?\hat{y}&space;=&space;1" title="\hat{y} = 1" />
@@ -563,13 +586,13 @@ FaceNet is a deep neural network used for extracting features from an image of a
 
 FaceNet learns a mapping from face images to a compact **Euclidean Space** where distances directly correspond to a measure of face similarity. Then it uses the **Triplet Loss function** to train this architecture. FaceNet can achieve state-of-the-art performance (record ```99.63%``` accuracy on ```LFW```, ```95.12%``` on Youtube Faces DB) using only ```128-bytes``` per face.
 
-FaceNet looks for an embedding f(x) from an image into feature space ℝd(where d is normally 128), such that the squared L2 distance between all face images of the same identity is small, whereas the distance between a pair of face images from different identities is large.
+FaceNet looks for an embedding f(x) from an image into feature space <a href="https://www.codecogs.com/eqnedit.php?latex=\mathbb{R}^{d}" target="_blank"><img src="https://latex.codecogs.com/gif.latex?\mathbb{R}^{d}" title="\mathbb{R}^{d}" /></a> (where d is normally 128), such that the squared L2 distance between all face images of the same identity is small, whereas the distance between a pair of face images from different identities is large.
 
 <p align="center">
   <img src= "https://user-images.githubusercontent.com/59663734/143772229-01d04a66-a215-435f-8d98-b28ce76f464c.png" />
 </p>
 
-Whereas previously used losses encourage all faces of the same identity onto a single point in ℝd, the triplet loss additionally tries to enforce a margin between each pair of faces from one person (anchor and positive) to all others’ faces. This margin enforces discriminability to other identities. 
+Whereas previously used losses encourage all faces of the same identity onto a single point in <a href="https://www.codecogs.com/eqnedit.php?latex=\mathbb{R}^{d}" target="_blank"><img src="https://latex.codecogs.com/gif.latex?\mathbb{R}^{d}" title="\mathbb{R}^{d}" /></a>, the triplet loss additionally tries to enforce a margin between each pair of faces from one person (anchor and positive) to all others’ faces. This margin enforces discriminability to other identities. 
 
 <p align="center">
   <img src= "https://user-images.githubusercontent.com/59663734/143772288-cb9ee80e-44dc-43b1-b817-73027c82cbe4.png" />
