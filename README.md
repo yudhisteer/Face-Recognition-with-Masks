@@ -147,11 +147,21 @@ The diagram above shows the steps described.
 **Note:** One of the problem when we choose A,P and N randomly is that the conditon <img src="https://latex.codecogs.com/svg.image?\left\|f(A)-f(P)&space;\right\|^2&space;-&space;\left\|f(A)-f(N)&space;\right\|^2&space;&plus;&space;\alpha&space;\leq&space;&space;0" title="\left\|f(A)-f(P) \right\|^2 - \left\|f(A)-f(N) \right\|^2 + \alpha \leq 0" /> is easily satisfied and the NN will not learn much from it. What we want is to choose triplets that are **hard** to train on. That is in order to satisfy this condition: <img src="https://latex.codecogs.com/png.image?\dpi{100}&space;d(A,P)&space;&plus;&space;\alpha&space;\leq&space;d(A,N)" title="d(A,P) + \alpha \leq d(A,N)" />, we want <img src="https://latex.codecogs.com/png.image?\dpi{100}&space;d(A,P)&space;\approx&space;d(A,N)" title="d(A,P) \approx d(A,N)" />. Now the NN will try hard to push d(A,N) and push d(A,P) up so that there is atleast a margin <img src="https://latex.codecogs.com/png.image?\dpi{100}&space;\alpha&space;" title="\alpha " /> between the two components. Thus, it is important to understand that it is only by choosing hard triplets that our gradient descent will really do some learning of the similarity and differences in the images. 
 
 <p align="center">
+  <img src= "https://user-images.githubusercontent.com/59663734/143772056-e2609c88-29e0-48ae-bfa8-100bf99e6061.png" />
+</p>
+<p align="center"> Fig. They are not twins. One of them is Will Ferrell and the other is Chad smith. </p>
+
+
+<p align="center">
   <img src= "https://user-images.githubusercontent.com/59663734/143081544-1d3ad257-328d-459d-bc03-b6c194bfc6af.png" />
 </p>
 
 
 At RT Knits we have 2000 employees and we assume we will have 20,000 images(10 pictures of each employee), then we need need to take these 20K pictures and generate triplets of ```(A,P,N)``` and then train our learning algorithm by using gradient descent to minimize the cost function defined above. This will have the effect of backpropagating to all the parameters in the NN in order to learn an encoding such that <img src="https://latex.codecogs.com/svg.image?d(x^{(i)},x^{(j)})" title="d(x^{(i)},x^{(j)})" /> is small for images of the same person and big for images of different person. 
+
+<p align="center">
+  <img src= "https://user-images.githubusercontent.com/59663734/143081544-1d3ad257-328d-459d-bc03-b6c194bfc6af.png" />
+</p>
 
 ### 1.6 Face Verification with Binary Classification
 Another option to the Triplet Loss Function is to to take the Siamese Network and have them compute the 128D embedding to be then fed to a logistic regression unit to make prediction.
@@ -551,11 +561,22 @@ The face masks have successfully been added to the images. Although we have some
 ### 3.1 FaceNet
 FaceNet is a deep neural network used for extracting features from an image of a person’s face. It was proposed  in 2015 by three Google Researchers, Florian Schroff, Dmitry Kalenichenko, and James Philbin, in the paper titled _FaceNet: A Unified Embedding for Face Recognition and Clustering._ It achieved state-of-the-art results in the many benchmark face recognition dataset such as **Labeled Faces in the Wild (LFW)** and Youtube Face Database.
 
-They proposed an approach in which it generates a high-quality face mapping from the images using deep learning architectures such as ZF-Net and Inception. Then it used a method called triplet loss as a loss function to train this architecture. 
+FaceNet learns a mapping from face images to a compact **Euclidean Space** where distances directly correspond to a measure of face similarity. Then it uses the **Triplet Loss function** to train this architecture. FaceNet can achieve state-of-the-art performance (record ```99.63%``` accuracy on ```LFW```, ```95.12%``` on Youtube Faces DB) using only ```128-bytes``` per face.
+
+FaceNet looks for an embedding f(x) from an image into feature space ℝd(where d is normally 128), such that the squared L2 distance between all face images of the same identity is small, whereas the distance between a pair of face images from different identities is large.
 
 <p align="center">
-  <img src= "https://user-images.githubusercontent.com/59663734/142723211-05e51b72-8794-442e-b1fa-ae9f5a6ed9bc.jpg" />
+  <img src= "https://user-images.githubusercontent.com/59663734/143772229-01d04a66-a215-435f-8d98-b28ce76f464c.png" />
 </p>
+
+Whereas previously used losses encourage all faces of the same identity onto a single point in ℝd, the triplet loss additionally tries to enforce a margin between each pair of faces from one person (anchor and positive) to all others’ faces. This margin enforces discriminability to other identities. 
+
+<p align="center">
+  <img src= "https://user-images.githubusercontent.com/59663734/143772288-cb9ee80e-44dc-43b1-b817-73027c82cbe4.png" />
+</p>
+
+
+
 
 ### 3.2 Resnet Network
 <p align="center">
@@ -691,6 +712,10 @@ We have ```9``` of the inception block concatenate to each other with some addit
 
 <p align="center">
   <img src= "https://user-images.githubusercontent.com/59663734/143538914-da809328-f8ca-4393-b465-df1251fa6e06.png" />
+</p>
+
+<p align="center">
+  <img src= "https://user-images.githubusercontent.com/59663734/142723211-05e51b72-8794-442e-b1fa-ae9f5a6ed9bc.jpg" />
 </p>
 
 
@@ -1300,5 +1325,7 @@ The ```Data-Centric``` approach - holding the model fix and iteratively improvin
 14. https://medium.com/analytics-vidhya/facenet-architecture-part-1-a062d5d918a1
 15. https://towardsdatascience.com/a-simple-guide-to-the-versions-of-the-inception-network-7fc52b863202
 16. https://www.geeksforgeeks.org/inception-v4-and-inception-resnets/
-17. Aurelien Geron(2017): Hands-On Machine Learning with Scikit-Learn and TensorFlow
+17. https://medium.com/@ageitgey/machine-learning-is-fun-part-4-modern-face-recognition-with-deep-learning-c3cffc121d78
+18. http://llcao.net/cu-deeplearning17/pp/class10_FaceNet.pdf
+19. Aurelien Geron(2017): Hands-On Machine Learning with Scikit-Learn and TensorFlow
 
