@@ -112,10 +112,10 @@ So what do the numbers in the embedding vector mean? Size of the eyes? Distance 
 This process of training a convolutional neural network to output face embeddings requires a lot of data and computer power. It took me about ```46 hours``` of continuous training to get good accuracy. But once the network has been trained, it can generate measurements for any face, even ones it has never seen before! So this step only needs to be done once.
 
 #### 1.5.2 How to know the correct embedding dimension?
-FaceNet experiemented experimented with different embedding dimensionalities and 128 remains the best performing one. In this project my embedding length will be a constant 128 feature vector.
+FaceNet experimented with different embedding dimensionalities and ```128``` remains the best performing one. In this project my embedding length will be a constant 128 feature vector.
 
 <p align="center">
-  <img src= "https://user-images.githubusercontent.com/59663734/143772903-f2fd2e46-cb15-423a-a48d-d506d093520a.png" />
+  <img src= "https://user-images.githubusercontent.com/59663734/143775364-7bdd3baf-bc5f-4b57-b3b5-040618d89bc2.png" />
 </p>
 
 
