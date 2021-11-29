@@ -176,12 +176,6 @@ The diagram above shows the steps described.
 </p>
 <p align="center"> Fig. They are not twins. One of them is Will Ferrell and the other is Chad smith. </p>
 
-
-<p align="center">
-  <img src= "https://user-images.githubusercontent.com/59663734/143081544-1d3ad257-328d-459d-bc03-b6c194bfc6af.png" />
-</p>
-
-
 At RT Knits we have 2000 employees and we assume we will have 20,000 images(10 pictures of each employee), then we need need to take these 20K pictures and generate triplets of ```(A,P,N)``` and then train our learning algorithm by using gradient descent to minimize the cost function defined above. This will have the effect of backpropagating to all the parameters in the NN in order to learn an encoding such that <img src="https://latex.codecogs.com/svg.image?d(x^{(i)},x^{(j)})" title="d(x^{(i)},x^{(j)})" /> is small for images of the same person and big for images of different person. 
 
 <p align="center">
