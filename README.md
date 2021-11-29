@@ -594,10 +594,10 @@ Whereas previously used losses encourage all faces of the same identity onto a s
   <img src= "https://user-images.githubusercontent.com/59663734/143772288-cb9ee80e-44dc-43b1-b817-73027c82cbe4.png" />
 </p>
 
-
-
-
 ### 3.2 Resnet Network
+FaceNet uses ```Zeiler & Fergus``` architecture and ```GoogLeNet``` style ```Inception``` model as its underlying architecture. Since we will be using the ```Inception ResNet V1``` Network, we will start by first understanding what is a ResNet Network.
+
+
 <p align="center">
   <img src= "https://user-images.githubusercontent.com/59663734/142753156-d5bb6d19-ab56-42f2-9522-d06ac374dd66.png" />
  </p>
