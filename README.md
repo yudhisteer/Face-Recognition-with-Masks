@@ -578,7 +578,7 @@ We then add the two images: face mask and face:
 The face masks have successfully been added to the images. Although we have some side face images, we cannot really modify the mask to fit in each image correspondingly so we can say it is a satisfying result. 
 
 ## Phase 3: Implementation
-We will use the FaceNet concept to implement our Face Recognition with Mask model. In Phase 2, we already did Face Detection to perrform Face Alignment whereby we cropped our image with a margin value of ```40```. We will not build an Anti-Spoofing or Face Liveness Detection for now. We will train our model for a first time and then use various Data Augmentation techniques to improve our training accuracy. 
+We will use the FaceNet concept to implement our Face Recognition with Mask model. In Phase 2, we already did Face Detection to perrform Face Alignment whereby we cropped our image with a margin value of ```40```. We will not build an Anti-Spoofing or Face Liveness Detection for now. We will train our model for a first time and then use various Data Augmentation techniques to improve our training accuracy. The process flow of a face recognition model is shown below:
 
 <p align="center">
   <img src= "https://user-images.githubusercontent.com/59663734/142723211-05e51b72-8794-442e-b1fa-ae9f5a6ed9bc.jpg" />
