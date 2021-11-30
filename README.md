@@ -1349,9 +1349,7 @@ One better solution will be similar to what we did when training our model to re
   <img src= "https://user-images.githubusercontent.com/59663734/143584263-46d97471-a69f-4e4b-b668-e77fb59bf6a6.png" />
 </p>
 
-### 4.2 Limits of the System
-
-### 4.3 Face Mask Recognition with Sunglasses
+### 4.2 Face Mask Recognition with Sunglasses
 No model exists on the market able to recognize someone with sunglasses **and** mask. My next step will be to perform more data augmentation on my image to include sunglasses and masks to train the model to perform ```face mask sunglasses recognition```:
 
 <p align="center">
