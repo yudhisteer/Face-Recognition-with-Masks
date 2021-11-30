@@ -8,6 +8,8 @@ A mask on the face significantly increases the possibility of a solution. After 
 ## Abstract
 ```Face detection``` is an old concept, ```face verification``` can be done by a 9-year old and ```face recognition``` now requires only a dozen lines of code. In this project, I want to explore the possibility of ```Face recognition``` while a person is wearing a ```mask```. When wearing a mask, the face of a person is hidden by 60-70%. Using only 30-40% of a person's face, I designed a ```face mask recognition``` model with an accuracy of ```99.84%```. Trained on a modified CASIA dataset containing images with and without masks, the model could successfully get the embeddings of ```85743``` people within 5 min and perform perfect face recognition with and without masks.
 
+## Dataset(s)
+
 ## Action Plan
 Being a long and complex project I divided it into three phases:
 
