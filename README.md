@@ -1343,7 +1343,7 @@ The test was successful!
 ### 4.1 Face Mask Recognition with Glasses
 The model was successful at recognizing people with masks however after several tests we see that there are still some shortcomings of the model whereby if in the target image the person had glasses then the model fails to recognize the person in real-time without glasses and vice versa. One possible solution would be to increase the threshold from ```0.7``` to ```1.0``` but that can also allow incorrect predictions by the model.
 
-One better solution is similar to what we did when training our model to recognize faces with masks: recognize faces with glasses. But where will we get a database with people with glasses? Just as we fabricated our own dataset with masks we will need to create our own dataset with glasses. Using PNG images of glasses, we use our face detection model to detect the eyes of the person and using masking of images we add the glasses to the target image. Our goal is still to recognize people with face masks so similar to what we did in phase three of training: 1 picture is replicated to 4 times with data augmentation, our script will include to randomly choose a glass and a mask as shown below such that for each picture we now create  6 pictures:
+One better solution will be similar to what we did when training our model to recognize faces with masks: **recognize faces with glasses**. But where will we get a database with people with glasses? Just as we fabricated our own dataset with masks we will need to create our own dataset with glasses. Using PNG images of glasses, we use our face detection model to detect the eyes of the person and using masking of images we add the glasses to the target image. Our goal is still to recognize people with face masks therefore, similar to what we did in phase three of training whereby 1 picture is replicated to 4 times with data augmentation, our script will now include to randomly choose a glass and a mask as shown below such that for each picture we now create  ```6``` pictures:
 
 <p align="center">
   <img src= "https://user-images.githubusercontent.com/59663734/143584263-46d97471-a69f-4e4b-b668-e77fb59bf6a6.png" />
@@ -1357,6 +1357,8 @@ No model exists on the market able to recognize someone with sunglasses **and** 
 <p align="center">
   <img src= "https://user-images.githubusercontent.com/59663734/143573017-ec72abf9-09c0-4231-ad35-7097a70875c7.png" />
 </p>
+
+If the model will be able to detect faces with mask and sunglasses then it can also be used as a **surveillance system**. It needs only one image of a person to be able to recognize that individual and if we could get the picture of each person entering the building then in the future we could predict if any of them is the culprit.
 
 ## Conclusion
 The model was successful at recognizing people with masks. With an accuracy of ```99.84%``` after performing data augmentation and stratified sampling, the model is ready to be deployed in the office. As discussed above, we observe some limits of the model. Training the model on images with and without glasses will be a way to improve the accuracy of our prediction. 
