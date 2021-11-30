@@ -1352,7 +1352,19 @@ One better solution will be similar to what we did when training our model to re
   <img src= "https://user-images.githubusercontent.com/59663734/143584263-46d97471-a69f-4e4b-b668-e77fb59bf6a6.png" />
 </p>
 
-### 4.2 Face Mask Recognition with Sunglasses
+### 4.2 Limits of the System
+One shortcoming of the system is recognizing faces from a side view perspective. As shown in the video below, the system fails to provide a prediction for the person when there is no frontal view of the face. The model still works when turning the head from an angle of -60 degrees to 60 degrees but a full 90 degrees head turn will produce no result.
+
+https://user-images.githubusercontent.com/59663734/144132768-a7704e8a-5ba6-41f3-80b5-1ba011f25375.mp4
+
+One possible solution would be to implement the ```One to Many``` face processing technique whereby we generate multiple images with different poses from a single image. Due to this, the network can learn **pose-invariant** representations. We could add it into our data augmentation phase along with the random mask technique.
+
+<p align="center">
+  <img src= "https://user-images.githubusercontent.com/59663734/144133862-358e4b20-e1db-4580-805f-21a67e38cb89.png" />
+</p>
+
+
+### 4.3 Face Mask Recognition with Sunglasses
 No model exists on the market able to recognize someone with sunglasses **and** mask. My next step will be to perform more data augmentation on my image to include sunglasses and masks to train the model to perform ```face mask sunglasses recognition```:
 
 <p align="center">
