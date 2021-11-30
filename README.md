@@ -176,7 +176,7 @@ The diagram above shows the steps described.
 </p>
 <p align="center"> Fig. They are not twins. One of them is Will Ferrell and the other is Chad smith. </p>
 
-After training our AI and able to calculate the embeddings of each individual, it will recognise a person on an unseen image by calculating its embedding, calculating the distances to images of known people and if the face embedding is close enough to embeddings of person A(Rowan Atkinson), we say that this image contains the face of person A.
+After training our AI, it will recognise a person on an unseen image by calculating its embedding and use this embedding to calculate the distances to images of known people. If the face embedding is close enough to embeddings of person A(Rowan Atkinson), we say that this image contains the face of person A.
 
 <p align="center">
   <img src= "https://user-images.githubusercontent.com/59663734/143081544-1d3ad257-328d-459d-bc03-b6c194bfc6af.png" />
