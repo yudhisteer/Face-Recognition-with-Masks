@@ -767,6 +767,8 @@ It was found that Inception-ResNet models were able to achieve higher accuracies
 
 ![image](https://user-images.githubusercontent.com/59663734/142763781-1a990187-307c-45db-9f61-01bf89b1c861.png)
 
+We will use the TensorFlow implementation of the Inception ResNet V1 architecture proposed by David Sandberg. He proposed two models, one trained on the CASIA-Webface dataset and the other on the VGGFace2 dataset. They achieved an accuracy of ```99.05%``` and ```99.65%``` respectively. 
+
 <p align="center">
   <img src= "https://user-images.githubusercontent.com/59663734/143538914-da809328-f8ca-4393-b465-df1251fa6e06.png" />
 </p>
@@ -775,7 +777,7 @@ It was found that Inception-ResNet models were able to achieve higher accuracies
 
 
  ### 3.5 First Training(Evaluation: No Mask Dataset)
- We now train our model on the CASIA dataset with ```No Masks``` and the custom CASIA Dataset we made with ```Masks```. We will evaluate the performance of our model on the ```Lfw``` dataset which contains images with ```No Masks```. The hyperparameters which we will need to tune are as follows:
+ We now train our model on the CASIA dataset with ```No Masks``` and the custom CASIA Dataset we made with ```Masks```. We will evaluate the performance of our model on the ```LFW``` dataset which contains images with ```No Masks```. The hyperparameters which we will need to tune are as follows:
  
  - model_shape :  [None, 112, 112, 3] or [None, 160, 160, 3]
  - infer_method :  inception_resnet_v1 or inception_resnet_v1_reduction
@@ -918,7 +920,7 @@ I set the ratio to ```0.4``` and the batch size to ```196```, and the accuracy i
 We clearly see a great improvement in our testing accuracy but we need to do more tests to ensure the robustness of the model.
 
 #### 3.7.2 Evaluation: Mask Dataset
-What we have been doing till now is train our images on the ```CASIA``` dataset with masks and without masks and then test it onto our **without** mask ```Lfw``` dataset. The accuracy we got before was for face recognition **without** masks. We need to propose another method for the evaluation of faces **with** masks. Out steps are as follows:
+What we have been doing till now is train our images on the ```CASIA``` dataset with masks and without masks and then test it onto our **without** mask ```LFW``` dataset. The accuracy we got before was for face recognition **without** masks. We need to propose another method for the evaluation of faces **with** masks. Out steps are as follows:
 
 1. Use a new dataset that has never been used in our FaceNet training.
 2. Select 1000 different class images(1000 persons) - they are regarded as our face database(reference data: ref_data): No Mask Folder
