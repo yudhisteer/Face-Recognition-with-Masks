@@ -579,6 +579,11 @@ The face masks have successfully been added to the images. Although we have some
 
 ## Phase 3: Implementation
 
+<p align="center">
+  <img src= "https://user-images.githubusercontent.com/59663734/142723211-05e51b72-8794-442e-b1fa-ae9f5a6ed9bc.jpg" />
+</p>
+
+
 ### 3.1 FaceNet
 FaceNet is a deep neural network used for extracting features from an image of a person’s face. It was proposed  in 2015 by three Google Researchers, Florian Schroff, Dmitry Kalenichenko, and James Philbin, in the paper titled _FaceNet: A Unified Embedding for Face Recognition and Clustering._ It achieved state-of-the-art results in the many benchmark face recognition dataset such as **Labeled Faces in the Wild (LFW)** and Youtube Face Database.
 
@@ -722,6 +727,8 @@ When designing a layer for a convNet, we need to pick the type of filters we wan
 
 We can start by understanding the Naive version of the Inception model where we apply different types of kernel on an input and concatenate the output as shown below. The idea is instead of us selecting the filter sizes, we use them all and concatenate their output and let the NN learn whichever combination of filter sizes it wants. However, the problem with this method is the **computational cost**. 
 
+Deep Convolutional Networks are computationally expensive. Also, very deep networks are susceptible to overfitting -  it is hard to pass gradient updates through the entire network.
+
 ![image](https://user-images.githubusercontent.com/59663734/142761227-875b8713-1edb-4058-a6c6-7f396d8cce1e.png)
 
 #### 3.3.1 Network in Network
@@ -739,7 +746,7 @@ We create a bottleneck by shrinking the number of channels from 192 to 16 and th
 
 
 #### 3.3.2 Inception with Dimension Reduction
-To reduce our computational cost we should modify our architecture in fig 3.1 and add 1x1 convolution to it. As shown above, the 1x1 filters will allow us to have fewer weights therefore fewer calculations and therefore faster inference. The figure below shows one Inception module. The Inception network just puts a lot of these modules together.
+To reduce our computational cost we should modify our architecture and add 1x1 convolution to it. As shown above, the 1x1 filters will allow us to have fewer weights therefore fewer calculations and therefore faster inference. The figure below shows one Inception module. The Inception network just puts a lot of these modules together.
 
 ![image](https://user-images.githubusercontent.com/59663734/142762642-b684146a-28c7-4c16-b7ea-26d6a67d8b18.png)
 
@@ -748,6 +755,15 @@ We have ```9``` of the inception block concatenate to each other with some addit
 ![image](https://user-images.githubusercontent.com/59663734/142762952-90a602b5-5fb7-43c7-8589-e41c02f22647.png)
 
 ### 3.4 Inception-Resnet V1 Network
+Inspired by the performance of the ResNet, a hybrid inception module was proposed. There are two sub-versions of Inception ResNet, namely **v1** and **v2**. Inception-ResNet v1 has a computational cost that is similar to that of Inception v3 and Inception-ResNet v2 has a computational cost that is similar to that of Inception v4.
+
+Below are some features of the Inception ResNet architecture:
+
+- For residual addition to work, the input and output after convolution must have the same dimensions. Hence, we use 1x1 convolutions after the original convolutions, to match the depth sizes (Depth is increased after convolution).
+- The pooling operation inside the main inception modules were replaced in favor of the residual connections.
+- Networks with residual units deeper in the architecture caused the network to “die” if the number of filters exceeded 1000. Hence, to increase stability, the authors scaled the residual activations by a value around 0.1 to 0.3.
+
+It was found that Inception-ResNet models were able to achieve higher accuracies at a lower epoch. We will use this network to train and test our Face Recognition with Masks model.
 
 ![image](https://user-images.githubusercontent.com/59663734/142763781-1a990187-307c-45db-9f61-01bf89b1c861.png)
 
@@ -755,9 +771,7 @@ We have ```9``` of the inception block concatenate to each other with some addit
   <img src= "https://user-images.githubusercontent.com/59663734/143538914-da809328-f8ca-4393-b465-df1251fa6e06.png" />
 </p>
 
-<p align="center">
-  <img src= "https://user-images.githubusercontent.com/59663734/142723211-05e51b72-8794-442e-b1fa-ae9f5a6ed9bc.jpg" />
-</p>
+
 
 
  ### 3.5 First Training(Evaluation: No Mask Dataset)
