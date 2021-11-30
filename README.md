@@ -1366,5 +1366,9 @@ The ```Data-Centric``` approach - holding the model fix and iteratively improvin
 16. https://www.geeksforgeeks.org/inception-v4-and-inception-resnets/
 17. https://medium.com/@ageitgey/machine-learning-is-fun-part-4-modern-face-recognition-with-deep-learning-c3cffc121d78
 18. http://llcao.net/cu-deeplearning17/pp/class10_FaceNet.pdf
-19. Aurelien Geron(2017): Hands-On Machine Learning with Scikit-Learn and TensorFlow
+19. https://www.geeksforgeeks.org/residual-networks-resnet-deep-learning/
+20. https://www.geeksforgeeks.org/introduction-to-residual-networks/
+21. https://www.youtube.com/watch?v=CNNnzl8HIIU&t=3425s
+22. https://arxiv.org/abs/1512.03385
+23. Aurelien Geron(2017): Hands-On Machine Learning with Scikit-Learn and TensorFlow
 
