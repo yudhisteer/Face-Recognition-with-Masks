@@ -768,7 +768,7 @@ It was found that Inception-ResNet models were able to achieve higher accuracies
 
 ![image](https://user-images.githubusercontent.com/59663734/142763781-1a990187-307c-45db-9f61-01bf89b1c861.png)
 
-We will use the TensorFlow implementation of the Inception ResNet V1 architecture proposed by David Sandberg. He proposed two models, one trained on the CASIA-Webface dataset and the other on the VGGFace2 dataset. They achieved an accuracy of ```99.05%``` and ```99.65%``` respectively. 
+We will use the TensorFlow implementation of the Inception ResNet V1 architecture proposed by David Sandberg. He proposed two models, one trained on the CASIA-Webface dataset and the other on the VGGFace2 dataset. They achieved an accuracy of ```99.05%``` and ```99.65%``` respectively. We will **not** use the pre-trained model as we will train our model from scratch but we will definitely use the metrics as a benchmark for our model.
 
 <p align="center">
   <img src= "https://user-images.githubusercontent.com/59663734/143538914-da809328-f8ca-4393-b465-df1251fa6e06.png" />
