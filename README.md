@@ -11,9 +11,9 @@ A mask on the face significantly increases the possibility of a solution. After 
 ## Action Plan
 Being a long and complex project I divided it into three phases:
 
- - Phase 1: We will discuss the theoretical and mathematical concept that lies behind face detection, verification, and recognition.
- - Phase 2: Using the concepts discussed, we will perform various image processing techniques on our dataset to clean our data for better accuracy.
- - Phase 3: We will train our model from scratch to perform face mask recognition.
+ - **Phase 1:** We will discuss the theoretical and mathematical concept that lies behind face detection, verification, and recognition.
+ - **Phase 2:** Using the concepts discussed, we will perform various image processing techniques on our dataset to clean our data for better accuracy.
+ - **Phase 3**: We will train our model from scratch to perform face mask recognition.
 
 The most important part of this whole project remains the data collection and data cleaning process. Using a ```data-centric``` approach, we will systematically enhance our dataset to increase our accuracy and prevent overfitting. By performing ```Data Augmentation``` and ```Stratified Sampling``` and keeping our model constant, we will focus on the underlying data to train and evaluate our system.
 
