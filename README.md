@@ -597,6 +597,26 @@ Whereas previously used losses encourage all faces of the same identity onto a s
 ### 3.2 Resnet Network
 FaceNet uses ```Zeiler & Fergus``` architecture and ```GoogLeNet``` style ```Inception``` model as its underlying architecture. Since we will be using the ```Inception ResNet V1``` Network, we will start by first understanding what is a ResNet Network.
 
+Resnet published in 2016 in the paper titled: _Deep Residual Learning for Image Recognition_ by Kaiming He, Xiangyu Zhang, Shaoqing Ren and Jian Sun showed a solution to the paradox of the increase in training and testing error when increasing layers in a CNN. As shown in the graph below, a 56-layer CNN gives more error rate on both training and testing dataset than a 20-layer CNN architecture. This happens due to the phenomenon of the **Vanishing gradient** during backpropagation whereby the gradient becomes 0.
+
+<p align="center">
+  <img src= "https://user-images.githubusercontent.com/59663734/143995794-fb0b3f6a-4fff-4ce2-bd37-ddfa818e3a67.png" />
+</p>
+
+In order to solve the vanishing gradient problem(due to the use of L1 and l2 regularizer), the architecture introduced the **skip connections** which skips training from a few layers and connects directly to the output. This will avoid that problem as gradient can backpropagate via the skip connection. Even if the main path is zero, performance will not degrade as information will flow through skip connection during forward propagation.
+
+<p align="center">
+  <img src= "https://user-images.githubusercontent.com/59663734/143997344-e25136d5-e07d-4b24-b4cb-ae70ce314d84.png" />
+</p>
+
+The below graphs compare the accuracies of a **plain network** with that of a **residual network**. Note that with increasing layers a 34-layer plain network’s accuracy starts to saturate earlier than ResNet’s accuracy.
+
+<p align="center">
+  <img src= "https://user-images.githubusercontent.com/59663734/143997594-971407c0-bd44-4aa5-a021-53996267de86.png" />
+</p>
+
+I propose this simple ResNet archietecture of four ResNet blocks and four max pooling. We will flatten our layer and feed it into a FC of ```128``` units to represent our embedding. 
+
 
 <p align="center">
   <img src= "https://user-images.githubusercontent.com/59663734/142753156-d5bb6d19-ab56-42f2-9522-d06ac374dd66.png" />
