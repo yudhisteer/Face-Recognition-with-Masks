@@ -9,6 +9,14 @@ A mask on the face significantly increases the possibility of a solution. After 
 ```Face detection``` is an old concept, ```face verification``` can be done by a 9-year old and ```face recognition``` now requires only a dozen lines of code. In this project, I want to explore the possibility of ```Face recognition``` while a person is wearing a ```mask```. When wearing a mask, the face of a person is hidden by 60-70%. Using only 30-40% of a person's face, I designed a ```face mask recognition``` model with an accuracy of ```99.84%```. Trained on a modified CASIA dataset containing images with and without masks, the model could successfully get the embeddings of ```85743``` people within 5 min and perform perfect face recognition with and without masks.
 
 ## Dataset(s)
+CASIA-Webface Dataset to train our model: https://drive.google.com/uc?id=1Of_EVz-yHV7QVWQGihYfvtny9Ne8qXVz&export=download
+- dataset contains ```494,414``` images of ```10,575``` people. This dataset does not provide any bounding boxes for faces or any other annotations.
+
+LFW Dataset for evaluation of Face Recognition **without** Masks: http://vis-www.cs.umass.edu/lfw/
+- dataset contains more than ```13233``` images of faces collected from the web of ```5749``` people. Each face has been labeled with the name of the person pictured. ```1680``` of the people pictured have two or more distinct photos in the data set.
+
+1% of the MS-Celeb-1M dataset for evaluation of Face Recognition **with** Masks: https://academictorrents.com/details/9e67eb7cc23c9417f39778a8e06cca5e26196a97/tech&hit=1&filelist=1
+- dataset has ```8,456,240``` images of ```99,892``` celebrities. 	
 
 ## Action Plan
 Being a long and complex project I divided it into three phases:
