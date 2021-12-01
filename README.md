@@ -13,7 +13,7 @@ A mask on the face significantly increases the possibility of a solution. After 
 - dataset contains ```494,414``` images of ```10,575``` people. This dataset does not provide any bounding boxes for faces or any other annotations.
 
 2. LFW Dataset for evaluation of Face Recognition **without** Masks: http://vis-www.cs.umass.edu/lfw/
-- dataset contains more than ```13233``` images of faces collected from the web of ```5749``` people. Each face has been labeled with the name of the person pictured. ```1680``` of the people pictured have two or more distinct photos in the data set.
+- dataset contains more than ```13,233``` images of faces collected from the web of ```5,749``` people. Each face has been labeled with the name of the person pictured. ```1,680``` of the people pictured have two or more distinct photos in the data set.
 
 3. 1% of the MS-Celeb-1M dataset for evaluation of Face Recognition **with** Masks: https://academictorrents.com/details/9e67eb7cc23c9417f39778a8e06cca5e26196a97/tech&hit=1&filelist=1
 - dataset has ```8,456,240``` images of ```99,892``` celebrities. 	
