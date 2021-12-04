@@ -1,12 +1,13 @@
 # Automating Attendance System using Face Recognition with Masks
-Due to Covid-19 and its variants, a lot of people have been contaminated and died in Mauritius. While the financial sector of the island is fragile after a 3 months lockdown, another lockdown can result in an economic crisis. With the risk of contamination higher in environments such as offices, I decided to find a solution that will help as prevention against Covid-19. 
+Due to Covid-19 and its variants, many people have been contaminated and died in Mauritius. While the island's financial sector is fragile after a three-month lockdown, another lockdown can result in an economic crisis. With the risk of contamination higher in environments such as offices, I decided to find a solution that will help as prevention against Covid-19. 
 
-The attendance system at RT Knits is archaic and requires a person to swipe his card on an electronic device. Seeing that we can automate the system in order to avoid contact with potentially contaminated persons, I propose a face recognition system. While this system already exists and is an old system, I realized we will need a ```Face Recognition with Masks```.
+The attendance system at RT Knits is archaic and requires a person to swipe his card on an electronic device. Seeing that we can automate the system to avoid contact with potentially contaminated persons, I propose a face recognition system. While this system already exists and is an old system, I realized we would need a ```Face Recognition with Masks ```.
 
-A mask on the face significantly increases the possibility of a solution. After months of failing, I successfully designed the automated attendance system using face recognition with masks. With the number of deaths due to Covid-19 increasing each day, any precautionary measure not taken can be a question of life and death.
+A mask on the face significantly increases the difficulty of finding a solution. After months of failing, I successfully designed the automated attendance system using face recognition with masks. With the number of deaths due to Covid-19 increasing each day, any precautionary measure not taken can be a question of life and death.
 
 ## Abstract
-```Face detection``` is an old concept, ```face verification``` can be done by a 9-year old and ```face recognition``` now requires only a dozen lines of code. In this project, I want to explore the possibility of ```Face recognition``` while a person is wearing a ```mask```. When wearing a mask, the face of a person is hidden by 60-70%. Using only 30-40% of a person's face, I designed a ```face mask recognition``` model with an accuracy of ```99.84%```. Trained on a modified CASIA dataset containing images with and without masks, the model could successfully get the embeddings of ```85743``` people within 5 min and perform perfect face recognition with and without masks.
+```Face detection``` is an old concept, ```face verification``` can be done by a 9-year old and ```face recognition``` now requires only a dozen lines of code. In this project, I want to explore the possibility of ```Face recognition``` while wearing a ```mask```. When wearing a mask, a person's face is hidden by 60-70%. Using only 30-40% of a person's face, I designed a ```face mask recognition``` model with an accuracy of ```99.84%```. Trained on a modified CASIA dataset containing images with and without masks, the model could successfully get the embeddings of ```85743``` people within 5 min and perform perfect face recognition with and without masks.
+
 
 ## Dataset(s)
 1. CASIA-Webface Dataset to train our model: https://drive.google.com/uc?id=1Of_EVz-yHV7QVWQGihYfvtny9Ne8qXVz&export=download
@@ -25,7 +26,7 @@ Being a long and complex project I divided it into three phases:
  - **Phase 2:** Using the concepts discussed, we will perform various image processing techniques on our dataset to clean our data for better accuracy.
  - **Phase 3**: We will train our model from scratch to perform face mask recognition.
 
-The most important part of this whole project remains the data collection and data cleaning process. Using a ```data-centric``` approach, we will systematically enhance our dataset to increase our accuracy and prevent overfitting. By performing ```Data Augmentation``` and ```Stratified Sampling``` and keeping our model constant, we will focus on the underlying data to train and evaluate our system.
+The most important part of this project remains the data collection and data cleaning process. Using a ```data-centric``` approach, we will systematically enhance our dataset to improve accuracy and prevent overfitting by performing ```Data Augmentation``` and ```Stratified Sampling``` and keeping our model architecture constant.
 
 Many of the concepts explained below have been inspired by ```Andrew Ng's``` Deep Learning Specialization course. After numerous research to explain AI and CNN concepts in the simplest way possible, Andrew Ng's material remains by far the most insightful I encountered. 
 
